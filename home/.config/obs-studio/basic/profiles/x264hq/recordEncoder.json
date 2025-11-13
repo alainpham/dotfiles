@@ -1,0 +1,6 @@
+{
+    "crf": 18,
+    "keyint_sec": 2,
+    "profile": "high",
+    "rate_control": "CRF"
+}

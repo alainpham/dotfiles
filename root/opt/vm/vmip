@@ -1,0 +1,7 @@
+#!/bin/bash
+MAC="52:54:00:00:00:$2"
+IP="192.168.122.$2"
+VMS_DIR=/home/${USER}/virt/runtime
+virsh net-update default add ip-dhcp-host "<host mac='$MAC' name='$1' ip='$IP' />" --live --config
+lineinfile "$VMS_DIR/vms" ".address=.$1" "address=/$1/$IP"
+nmcli general reload

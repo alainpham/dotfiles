@@ -1,0 +1,10 @@
+#!/bin/bash
+
+wget -O /tmp/oteldemo.yaml https://raw.githubusercontent.com/alainpham/debian-os-image/master/scripts/k8s/oteldemo/oteldemo.yaml
+envsubst '${GCLOUD_FARO}' < /tmp/oteldemo.yaml | kubectl apply -n otel-demo -f -
+ 
+
+
+wget -O /tmp/expose.yaml https://raw.githubusercontent.com/alainpham/debian-os-image/master/scripts/k8s/oteldemo/expose.yaml
+envsubst < /tmp/expose.yaml | kubectl apply -n otel-demo -f -
+

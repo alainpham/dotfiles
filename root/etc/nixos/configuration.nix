@@ -125,7 +125,7 @@ in
     kubernetes-helm
 
     # GUI applications
-    st
+    libinput-gestures
   ];
 
   ##################################################

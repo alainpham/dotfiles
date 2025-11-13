@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Usage: ./kubeingress <service-name> <port> <namespace> 
+# Requires: kubectl, $WILDCARD_DOMAIN environment variable
+
+set -e
+
+SERVICE_NAME="$1"
+PORT="$2"
+NAMESPACE="$3"
+
+if [[ -z "$SERVICE_NAME" || -z "$PORT" || -z "$NAMESPACE" ]]; then
+    echo "Usage: $0 <service-name> <port> <namespace>"
+    exit 1
+fi
+
+if [[ -z "$WILDCARD_DOMAIN" ]]; then
+    echo "Error: WILDCARD_DOMAIN environment variable not set."
+    exit 2
+fi
+
+INGRESS_NAME="${SERVICE_NAME}"
+HOST="${SERVICE_NAME}.${WILDCARD_DOMAIN}"
+
+cat <<EOF | kubectl apply -n "$NAMESPACE" -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${SERVICE_NAME}
+spec:
+  rules:
+  - host: ${HOST}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ${SERVICE_NAME}
+            port:
+              number: ${PORT}
+EOF
+
+echo "Ingress '${INGRESS_NAME}' created in namespace '${NAMESPACE}' with host '${HOST}'."

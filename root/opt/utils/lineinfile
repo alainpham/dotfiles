@@ -1,0 +1,31 @@
+#!/bin/bash
+
+file_path="$1"   # First argument: file path
+regex="$2"       # Second argument: regex to search for
+new_line="$3"    # Third argument: new line to replace or add
+create_file="$4" # Fourth argument: create file if not found
+
+if [ -z "$create_file" ]; then
+    create_file=0
+fi
+
+# Check if the file exists
+if [ ! -f "$file_path" ]; then
+    if [ $create_file -eq 1 ]; then
+        echo "File not found creating file !"
+        touch "$file_path"
+    else
+        exit 1
+    fi
+fi
+
+# Check if the line matching the regex exists in the file
+if grep -qE "$regex" "$file_path"; then
+    # If found, replace the matching line
+    sed -i "s]$regex]$new_line]" "$file_path"
+    echo "Line matching '$regex' was replaced."
+else
+    # If not found, append the new line at the end of the file
+    echo "$new_line" >> "$file_path"
+    echo "New line added : $new_line"
+fi

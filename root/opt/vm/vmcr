@@ -1,0 +1,134 @@
+#!/bin/bash
+
+# Take one argument from the commandline: VM name
+if ! [ $# -eq 8 ]; then
+    echo "Usage: $0 <node-name> <ram-MB> <vcpus> <source-image> <mac-ip-suffix> <disk-size> <data-size> <os-variant>"
+    echo "ie: vmcreate prime 2048 4 debian 10 40G 40G debian10"
+    exit 1
+fi
+
+# Directory to store images
+DIR=/home/${USER}/virt/images
+VMS_DIR=/home/${USER}/virt/runtime
+
+# Location of cloud image
+IMAGE=$DIR/$4.qcow2
+
+MEM=$2
+
+# Number of virtual CPUs
+CPUS=$3
+
+DISK=$1.qcow2
+DATA_DISK=$1-data.qcow2
+
+BRIDGE=virbr0
+
+USER_DATA=/tmp/user-data
+META_DATA=/tmp/meta-data
+CI_ISO=$VMS_DIR/$1-cidata.iso
+MAC="52:54:00:00:00:$5"
+IP="192.168.122.$5"
+DSIZE=$6
+DATADSIZE=$7
+OS_VARIANT=$8
+
+echo "$(date -R) creating machine named $1 with $MEM MB of RAM and $CPUS vcpu(s) ...."
+
+echo "$(date -R) creating cloud-init iso"
+SSH_PUB_KEY=`cat ~/.ssh/id_*.pub`
+
+SSH_PRIVVM_KEY=`cat ~/ssh/vm | sed 's/^/    /'`
+SSH_PUBVM_KEY=`cat ~/ssh/vm.pub`
+
+
+cat > $USER_DATA << _EOF_
+#cloud-config
+ssh_pwauth: True
+ssh_authorized_keys:
+  - $SSH_PUB_KEY
+ssh_keys:
+  rsa_private: | 
+$SSH_PRIVVM_KEY
+  rsa_public: $SSH_PUBVM_KEY
+users:
+  - name: ${USER}
+    gecos: ${USER}
+    shell: /bin/bash
+    lock-passwd: false
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - $SSH_PUB_KEY
+chpasswd:
+  list: |
+     root:password
+     ${USER}:password
+  expire: False
+_EOF_
+
+cat > $META_DATA << _EOF_
+instance-id: $1
+local-hostname: $1
+_EOF_
+
+genisoimage -output $CI_ISO  -volid cidata -joliet -rock $USER_DATA $META_DATA
+
+echo "$(date -R) Creating image from template..."
+cp $IMAGE $VMS_DIR/base-$DISK
+qemu-img create -f qcow2 -b $VMS_DIR/base-$DISK -F qcow2 $VMS_DIR/$DISK $DSIZE 
+qemu-img create -f qcow2 $VMS_DIR/$DATA_DISK $DATADSIZE 
+
+
+echo "$(date -R) Setting up dhcp ip server..."
+virsh net-update default add ip-dhcp-host "<host mac='$MAC' name='$1' ip='$IP' />" --live --config
+
+echo "$(date -R) Installing the domain and adjusting the configuration..."
+
+echo "virt-install --import \
+  --name $1 \
+  --ram $MEM \
+  --vcpus $CPUS \
+  --disk $VMS_DIR/$DISK,format=qcow2,bus=virtio \
+  --disk $VMS_DIR/$DATA_DISK,format=qcow2,bus=virtio \
+  --disk $CI_ISO,readonly=on \
+  --network bridge=$BRIDGE,model=virtio,mac=$MAC \
+  --os-variant=$OS_VARIANT \
+  --noautoconsole \
+  --cpu host-passthrough"
+
+virt-install --import \
+  --name $1 \
+  --ram $MEM \
+  --vcpus $CPUS \
+  --disk $VMS_DIR/$DISK,format=qcow2,bus=virtio \
+  --disk $VMS_DIR/$DATA_DISK,format=qcow2,bus=virtio \
+  --disk $CI_ISO,readonly=on \
+  --network bridge=$BRIDGE,model=virtio,mac=$MAC \
+  --os-variant=$OS_VARIANT \
+  --noautoconsole \
+  --cpu host-passthrough
+
+counter=0
+MAC=$(virsh dumpxml $1 | awk -F\' '/mac address/ {print $2}')
+    while true
+    do
+        IP=$(grep -B1 $MAC /var/lib/libvirt/dnsmasq/$BRIDGE.status | head \
+             -n 1 | awk '{print $2}' | sed -e s/\"//g -e s/,//)
+        if [ "$IP" = "" ]
+        then
+            counter=$((counter+1))
+            sleep 1
+        elif [[ "$counter" -gt 10 ]]; then
+            echo "Counter: $counter times reached; Exiting loop!"
+            break
+        else
+            break
+        fi
+    done
+
+# Remove the unnecessary cloud init files
+rm $USER_DATA $META_DATA
+
+echo "$(date -R) DONE. SSH to $1 using ${USER}@$IP , with  username '${USER}'."
+lineinfile "$VMS_DIR/vms" ".address=.$1" "address=/$1/$IP"
+nmcli general reload
