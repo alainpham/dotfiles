@@ -1,3 +1,9 @@
 [submodule "home/wm/dwm-flexipatch"]
 	path = home/wm/dwm-flexipatch
 	url = https://github.com/alainpham/dwm-flexipatch.git
+[submodule "home/wm/st-flexipatch"]
+	path = home/wm/st-flexipatch
+	url = https://github.com/alainpham/st-flexipatch.git
+[submodule "home/wm/demnu-flexipatch"]
+	path = home/wm/demnu-flexipatch
+	url = https://github.com/alainpham/dmenu-flexipatch.git
