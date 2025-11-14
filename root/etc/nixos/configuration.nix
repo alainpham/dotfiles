@@ -8,6 +8,7 @@ let
   keyboardModel = "pc105"; # for macbook use "macbook79"
   wildcardDomain = "houze.dns.army";
   enablekubernetes = true;
+  isvm = false;
 in
 {
   imports =
@@ -63,7 +64,7 @@ in
   services.openssh.enable = true;
 
   # enable spice agent only when running in a VM
-  services.spice-vdagentd.enable = true;
+  services.spice-vdagentd.enable = isvm;
 
   ##################################################
   # essentials
@@ -125,7 +126,48 @@ in
     kubernetes-helm
 
     # GUI applications
+    numlockx
+    usbutils
+    nerd-fonts.noto
+    noto-fonts
     libinput-gestures
+    SDL2
+    ntfs3g
+    ifuse
+    mpv
+    haruna
+    vlc
+    cmatrix
+    nmon
+    mesa-demos
+    fastfetch
+    feh
+    qimgv
+    kdePackages.kimageformats
+    acpitool
+    lm_sensors
+    libnotify
+    dunst
+    mkvtoolnix
+    imagemagick
+    mediainfo-gui
+    mediainfo
+    arandr
+    picom
+    jgmenu
+    brightnessctl
+    cups
+    xsane
+    filezilla
+    speedcrunch
+    font-awesome
+    lxappearance
+    kdePackages.breeze
+    kdePackages.breeze-icons
+    gparted
+    vulkan-tools
+    ffmpeg
+    yt-dlp
   ];
 
   ##################################################
@@ -187,7 +229,17 @@ in
     enable = true;
     xkb.layout = keyboardLayout;
     xkb.model = keyboardModel;
+
     displayManager.startx.enable = true;
+    windowManager.dwm = {
+      enable = true;
+      package = pkgs.dwm.overrideAttrs {
+        src = ./dwm-flexipatch;
+      };
+    };
   };
+
+  services.picom.enable = true;
+
 }
 

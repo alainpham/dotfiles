@@ -1,0 +1,19 @@
+[global]
+monitor = 0
+# follow = keyboard
+font = NotoSans NF 11
+frame_width = 0
+frame_color = "#555753"
+offset = 20x65
+separator_height = 1
+separator_color = "#888a85"
+gap_size = 0
+[urgency_low]
+    background = "#4e9a06"
+    foreground = "#eeeeec"
+[urgency_normal]
+    background = "#555753"
+    foreground = "#eeeeec"
+[urgency_critical]
+    background = "#a40000"
+    foreground = "#eeeeec"
