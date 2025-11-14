@@ -9,6 +9,7 @@ let
   wildcardDomain = "houze.dns.army";
   enablekubernetes = true;
   isvm = false;
+  automaticlogin = true;
 in
 {
   imports =
@@ -62,6 +63,8 @@ in
   '';
   
   services.openssh.enable = true;
+  services.getty.autologinOnce = automaticlogin;
+  services.getty.autologinUser = targetUser;
 
   # enable spice agent only when running in a VM
   services.spice-vdagentd.enable = isvm;
@@ -114,7 +117,6 @@ in
     cloud-utils
     iperf
 
-
     # dev environment
     ansible
     nodejs_24
@@ -126,10 +128,40 @@ in
     kubernetes-helm
 
     # GUI applications
+
+    (dwm.overrideAttrs (oldAttrs: rec {
+      src = builtins.fetchTarball {
+        url = "https://github.com/alainpham/dwm-flexipatch/archive/master.tar.gz";
+      };
+    }))
+
+    (st.overrideAttrs (oldAttrs: rec {
+      src = builtins.fetchTarball {
+        url = "https://github.com/alainpham/st-flexipatch/archive/master.tar.gz";
+      };
+    }))
+    (dmenu.overrideAttrs (oldAttrs: rec {
+      src = builtins.fetchTarball {
+        url = "https://github.com/alainpham/dmenu-flexipatch/archive/master.tar.gz";
+      };
+    }))
+
+    (slock.overrideAttrs (oldAttrs: rec {
+      src = builtins.fetchTarball {
+        url = "https://github.com/alainpham/slock-flexipatch/archive/master.tar.gz";
+      };
+      buildInputs = oldAttrs.buildInputs ++ [ xorg.libXinerama imlib2];  
+    }))
+
+    (dwmblocks.overrideAttrs (oldAttrs: rec {
+      src = builtins.fetchGit {
+        url = "https://github.com/alainpham/dwmblocks.git";
+        ref = "master";
+      };
+    }))
+
     numlockx
     usbutils
-    nerd-fonts.noto
-    noto-fonts
     libinput-gestures
     SDL2
     ntfs3g
@@ -231,15 +263,19 @@ in
     xkb.model = keyboardModel;
 
     displayManager.startx.enable = true;
-    windowManager.dwm = {
-      enable = true;
-      package = pkgs.dwm.overrideAttrs {
-        src = ./dwm-flexipatch;
-      };
-    };
+    # windowManager.dwm = {
+    #   enable = true;
+    #   package = pkgs.dwm.overrideAttrs {
+    #     src = ./dwm-flexipatch;
+    #   };
+    # };
   };
-
+  services.udisks2.enable = true;
   services.picom.enable = true;
 
+  fonts.packages = with pkgs; [
+    nerd-fonts.noto
+    noto-fonts
+  ];
 }
 
