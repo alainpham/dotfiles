@@ -64,26 +64,32 @@ in
   home-manager.users.${targetUser} = {
       home.stateVersion = nixversion;
       home.file = {
-        ".xinitrc".source = "${dotfiles}/home/.xinitrc";
+        ".xinitrc" = { 
+          source = "${dotfiles}/home/.xinitrc"; 
+        };
         ".config/jgmenu" = { 
             source = "${dotfiles}/home/.config/jgmenu";
             recursive = true;
-        }
+        };
         ".config/dunst" = { 
             source = "${dotfiles}/home/.config/dunst";
             recursive = true;
-        }
+        };
+        ".local/share/dwm/autostart.sh" = { 
+            source = "${dotfiles}/home/.local/share/dwm/autostart.sh";
+            executable = true;
+        };
         ".config/obs-studio" = { 
             source = "${dotfiles}/home/.config/obs-studio";
             recursive = true;
-        }
+        };
         ".config/SpeedCrunch" = { 
             source = "${dotfiles}/home/.config/SpeedCrunch";
             recursive = true;
-        }
+        };
         ".config/libinput-gestures.conf" = { 
             source = "${dotfiles}/home/.config/libinput-gestures.conf";
-        }
+        };
     };
   };
 
@@ -343,7 +349,7 @@ in
 
   # remote access
   services.sunshine.enable = true;
-  services.sunshine.autoStart = true;
+  services.sunshine.autoStart = false;
   services.sunshine.openFirewall = true;
 
 }
