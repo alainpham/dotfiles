@@ -44,6 +44,7 @@ in
       extraGroups = [ 
         "wheel"
         "docker"
+        "audio"
       ];
     };
   };
@@ -97,7 +98,9 @@ in
   '';
   };
 
+  nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
+    
     # essentials
     curl
     wget
@@ -130,25 +133,29 @@ in
     # GUI applications
 
     (dwm.overrideAttrs (oldAttrs: rec {
-      src = builtins.fetchTarball {
-        url = "https://github.com/alainpham/dwm-flexipatch/archive/master.tar.gz";
+      src = builtins.fetchGit {
+        url = "https://github.com/alainpham/dwm-flexipatch.git";
+        ref = "master";
       };
     }))
 
     (st.overrideAttrs (oldAttrs: rec {
-      src = builtins.fetchTarball {
-        url = "https://github.com/alainpham/st-flexipatch/archive/master.tar.gz";
+      src = builtins.fetchGit {
+        url = "https://github.com/alainpham/st-flexipatch.git";
+        ref = "master";
       };
     }))
     (dmenu.overrideAttrs (oldAttrs: rec {
-      src = builtins.fetchTarball {
-        url = "https://github.com/alainpham/dmenu-flexipatch/archive/master.tar.gz";
+      src = builtins.fetchGit {
+        url = "https://github.com/alainpham/dmenu-flexipatch.git";
+        ref = "master";
       };
     }))
 
     (slock.overrideAttrs (oldAttrs: rec {
-      src = builtins.fetchTarball {
-        url = "https://github.com/alainpham/slock-flexipatch/archive/master.tar.gz";
+      src = builtins.fetchGit {
+        url = "https://github.com/alainpham/slock-flexipatch.git";
+        ref = "master";
       };
       buildInputs = oldAttrs.buildInputs ++ [ xorg.libXinerama imlib2];  
     }))
@@ -200,6 +207,7 @@ in
     vulkan-tools
     ffmpeg
     yt-dlp
+    google-chrome
   ];
 
   ##################################################
@@ -277,5 +285,9 @@ in
     nerd-fonts.noto
     noto-fonts
   ];
+
+  # sound
+  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.support32Bit = true;
 }
 
