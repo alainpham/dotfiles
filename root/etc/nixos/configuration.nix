@@ -18,6 +18,7 @@ let
   dotfiles = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
+    rev = "54d81ef3eedb0b40fe74ecb6873115582988911a";
   };
 
 in
@@ -67,28 +68,9 @@ in
         ".xinitrc" = { 
           source = "${dotfiles}/home/.xinitrc"; 
         };
-        ".config/jgmenu" = { 
-            source = "${dotfiles}/home/.config/jgmenu";
+        ".config" = { 
+            source = "${dotfiles}/home/.config";
             recursive = true;
-        };
-        ".config/dunst" = { 
-            source = "${dotfiles}/home/.config/dunst";
-            recursive = true;
-        };
-        ".local/share/dwm/autostart.sh" = { 
-            source = "${dotfiles}/home/.local/share/dwm/autostart.sh";
-            executable = true;
-        };
-        ".config/obs-studio" = { 
-            source = "${dotfiles}/home/.config/obs-studio";
-            recursive = true;
-        };
-        ".config/SpeedCrunch" = { 
-            source = "${dotfiles}/home/.config/SpeedCrunch";
-            recursive = true;
-        };
-        ".config/libinput-gestures.conf" = { 
-            source = "${dotfiles}/home/.config/libinput-gestures.conf";
         };
     };
   };
@@ -181,6 +163,7 @@ in
       src = builtins.fetchGit {
         url = "https://github.com/alainpham/dwm-flexipatch.git";
         ref = "master";
+        rev = "aa9548f7ba29529f7c6dfa7d9be367bb424c9d40";
       };
     }))
 
@@ -188,12 +171,15 @@ in
       src = builtins.fetchGit {
         url = "https://github.com/alainpham/st-flexipatch.git";
         ref = "master";
+        rev = "465a432f7dfb5ef01b2436fd35c0f8ee69920b06";
+
       };
     }))
     (dmenu.overrideAttrs (oldAttrs: rec {
       src = builtins.fetchGit {
         url = "https://github.com/alainpham/dmenu-flexipatch.git";
         ref = "master";
+        rev = "90ad650797feab1d9768e93627301fd90b12b4fe";
       };
     }))
 
@@ -201,6 +187,8 @@ in
       src = builtins.fetchGit {
         url = "https://github.com/alainpham/slock-flexipatch.git";
         ref = "master";
+        rev = "b3eb868cfd11a493698afa97aa09afcceed4bf57";
+
       };
       buildInputs = oldAttrs.buildInputs ++ [ xorg.libXinerama imlib2];  
     }))
@@ -209,6 +197,7 @@ in
       src = builtins.fetchGit {
         url = "https://github.com/alainpham/dwmblocks.git";
         ref = "master";
+        rev = "9c2a37eea75047435fe07d4665b1352a226da7cc";
       };
     }))
 
