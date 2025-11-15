@@ -10,11 +10,22 @@ let
   enablekubernetes = true;
   isvm = false;
   automaticlogin = true;
+  
+  home-manager = builtins.fetchTarball (
+    "https://github.com/nix-community/home-manager/archive/release-${nixversion}.tar.gz"
+  );
+
+  dotfiles = builtins.fetchGit {
+    url = "https://github.com/alainpham/dotfiles.git";
+    ref = "master";
+  };
+
 in
 {
   imports =
     [
       ./hardware-configuration.nix
+      (import "${home-manager}/nixos")
     ];
 
   boot.loader.systemd-boot.enable = true;
@@ -25,6 +36,7 @@ in
 
   networking.hostName = hostname;
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.dns = "dnsmasq";
 
   time.timeZone = "Europe/Paris";
 
@@ -46,6 +58,11 @@ in
         "docker"
         "audio"
       ];
+    };
+  };
+
+  home-manager.users.${targetUser} = {
+      home.stateVersion = nixversion;
     };
   };
 
@@ -99,6 +116,7 @@ in
   };
 
   nixpkgs.config.allowUnfree = true;
+
   environment.systemPackages = with pkgs; [
     
     # essentials
@@ -208,6 +226,8 @@ in
     ffmpeg
     yt-dlp
     google-chrome
+
+    lxqt.pavucontrol-qt
   ];
 
   ##################################################
@@ -271,12 +291,6 @@ in
     xkb.model = keyboardModel;
 
     displayManager.startx.enable = true;
-    # windowManager.dwm = {
-    #   enable = true;
-    #   package = pkgs.dwm.overrideAttrs {
-    #     src = ./dwm-flexipatch;
-    #   };
-    # };
   };
   services.udisks2.enable = true;
   services.picom.enable = true;
@@ -287,7 +301,29 @@ in
   ];
 
   # sound
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio.support32Bit = true;
+  boot.kernelModules = [ 
+    "snd-dummy"
+    "snd_aloop"
+  ];
+  boot.extraModprobeConfig = ''
+    options snd-aloop index=10 id=loop
+    options snd-dummy index=11 id=dummy
+  '';
+
+  services.udev.extraRules = ''
+    ATTR{id}=="dummy", ATTR{number}=="11",SUBSYSTEM=="sound", ENV{PULSE_IGNORE}="1",ENV{ACP_IGNORE}="1"
+    ATTR{id}=="loop", ATTR{number}=="10",SUBSYSTEM=="sound", ENV{PULSE_IGNORE}="1"
+    ATTR{id}=="C920", SUBSYSTEM=="sound", ENV{PULSE_IGNORE}="1",ENV{ACP_IGNORE}="1"
+  '';
+
+  services.pipewire.enable = false;
+  services.pulseaudio.enable = true;
+  services.pulseaudio.support32Bit = true;
+
+  # remote access
+  services.sunshine.enable = true;
+  services.sunshine.autoStart = true;
+  services.sunshine.openFirewall = true;
+
 }
 
