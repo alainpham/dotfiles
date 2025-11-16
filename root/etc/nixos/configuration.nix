@@ -7,23 +7,20 @@ let
   keyboardLayout = "fr";
   keyboardModel = "pc105"; # for macbook use "macbook79"
   wildcardDomain = "houze.dns.army";
-  enablekubernetes = true;
-  isVM =lib.strings.hasInfix "QEMU" (builtins.readFile "/sys/class/dmi/id/sys_vendor";) ||
-          lib.strings.hasInfix "VMware" (builtins.readFile "/sys/class/dmi/id/sys_vendor") ||
-          lib.strings.hasInfix "VirtualBox" (builtins.readFile "/sys/class/dmi/id/sys_vendor");
-  
+  enableKubernetes = true;
   automaticlogin = true;
   
   home-manager = builtins.fetchTarball (
     "https://github.com/nix-community/home-manager/archive/release-${nixversion}.tar.gz"
   );
 
-  dotfilesgit = builtins.fetchGit {
+    dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "49750217aa6d9d38f1dd02a732f442f6ed87aa07";
+    rev = "8043157dbee35cd49650d985fc2b916aa682ec1f";
   };
 
+  # desktop related
   dwmgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dwm-flexipatch.git";
     ref = "master";
@@ -53,6 +50,9 @@ let
     ref = "master";
     rev = "9c2a37eea75047435fe07d4665b1352a226da7cc";
   };
+
+  # should not be set manually, but detect if running in vm
+  isVm = lib.elem "virtio_console" config.boot.initrd.kernelModules;
 
 in
 {
@@ -143,7 +143,7 @@ in
   services.envfs.enable = true;
   
   # enable spice agent only when running in a VM
-  services.spice-vdagentd.enable = isvm;
+  services.spice-vdagentd.enable = isVm;
 
   ##################################################
   # essentials
@@ -293,7 +293,7 @@ in
     serviceConfig = {
       Type = "oneshot";
       ExecStart = lib.mkForce (pkgs.writeShellScript "dockernet" ''
-        /run/current-system/sw/bin/docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 primenet || true
+        /run/current-system/sw/bin/docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 -o com.docker.network.bridge.name=primenet primenet  || true
       '');
     };
   };
@@ -302,7 +302,7 @@ in
   # kubernetes
   ##################################################
   services.k3s = {
-    enable = enablekubernetes;
+    enable = enableKubernetes;
     extraFlags = [ 
       "--disable=traefik" 
       "--disable=servicelb"
