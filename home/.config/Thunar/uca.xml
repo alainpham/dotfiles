@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+        <icon>utilities-terminal</icon>
+        <name>Open Terminal Here</name>
+        <submenu></submenu>
+        <unique-id>1727457442655389-1</unique-id>
+        <command>st -d %f</command>
+        <description>Open Terminal here</description>
+        <range></range>
+        <patterns>*</patterns>
+        <startup-notify/>
+        <directories/>
+</action>
+<action>
+        <icon>vscode</icon>
+        <name>VSCode</name>
+        <submenu></submenu>
+        <unique-id>1727457442655389-2</unique-id>
+        <command>code %f</command>
+        <description>Open VSCode here</description>
+        <range></range>
+        <patterns>*</patterns>
+        <startup-notify/>
+        <directories/>
+</action>
+</actions>

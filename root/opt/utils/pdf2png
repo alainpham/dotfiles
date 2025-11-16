@@ -1,0 +1,2 @@
+#!/bin/bash
+convert -density 150 "$1" -background white -alpha remove -alpha off "$1.png"

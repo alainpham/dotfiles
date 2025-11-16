@@ -17,7 +17,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "8043157dbee35cd49650d985fc2b916aa682ec1f";
+    rev = "11a52bb14accbe5eb8138b3705c9f052c589ca4e";
   };
 
   # desktop related
@@ -215,7 +215,7 @@ in
     k9s
     kubernetes-helm
 
-    # GUI applications
+    # Desktop applications
     (dwm.overrideAttrs (oldAttrs: rec {
       src = dwmgit;
     }))
@@ -273,13 +273,25 @@ in
     lxappearance
     kdePackages.breeze
     kdePackages.breeze-icons
+    libsForQt5.breeze-icons
+    kdePackages.breeze-gtk
+
     gparted
     vulkan-tools
     ffmpeg
     yt-dlp
     google-chrome
-
     lxqt.pavucontrol-qt
+    
+    xfce.thunar
+    xfce.thunar-volman
+    xfce.thunar-archive-plugin
+    xfce.thunar-media-tags-plugin
+
+    flameshot
+    maim
+    xclip
+    xdotool
   ];
 
   ##################################################
@@ -376,6 +388,12 @@ in
   services.sunshine.enable = true;
   services.sunshine.autoStart = false;
   services.sunshine.openFirewall = true;
+
+  # obs
+  programs.obs-studio = {
+    enable = true;
+    enableVirtualCamera = true;
+  };
 
 }
 
