@@ -84,6 +84,7 @@ in
     ${targetUser} = { };
   };
 
+  # tbd
   users.users = {
     ${targetUser} = {
       isNormalUser = true;
@@ -100,7 +101,7 @@ in
       programs.git.enable = true;
       programs.bash = { 
         enable = true;
-        profileExtra = builtins.readFile "${dotfilesgit}/home/.bash_profile";
+        profileExtra = builtins.readFile "${dotfilesgit}/home/.profile";
       };
 
       home.file = {
@@ -131,18 +132,26 @@ in
     wheelNeedsPassword = false;
   };
 
+  ##################################################
   # small logs
+  ##################################################
   services.journald.extraConfig = ''
     SystemMaxUse=50M
     SystemMaxFileSize=10M
   '';
   
   services.openssh.enable = true;
+  
+  ##################################################
+  # passwordless sudo for users in wheel group
+  ##################################################
   services.getty.autologinOnce = automaticlogin;
   services.getty.autologinUser = targetUser;
   services.envfs.enable = true;
-  
+
+  ##################################################
   # enable spice agent only when running in a VM
+  ##################################################
   services.spice-vdagentd.enable = isVm;
 
   ##################################################
@@ -207,7 +216,6 @@ in
     kubernetes-helm
 
     # GUI applications
-
     (dwm.overrideAttrs (oldAttrs: rec {
       src = dwmgit;
     }))
