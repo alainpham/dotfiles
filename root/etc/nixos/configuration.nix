@@ -18,7 +18,7 @@ let
   dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "dc5acef33a39b4ce5a1d03f8620d950b81f269fb";
+    rev = "8fb8a79a71d68f3d0141f659e5b64eada022d67d";
   };
 
   dwmgit = builtins.fetchGit {
@@ -94,6 +94,9 @@ in
 
   home-manager.users.${targetUser} = {
       home.stateVersion = nixversion;
+      programs.git.enable = true;
+      programs.bash.enable = true;
+
       home.file = {
         ".xinitrc" = { 
           source = "${dotfilesgit}/home/.xinitrc"; 
