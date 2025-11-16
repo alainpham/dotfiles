@@ -17,7 +17,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "c3edcf61193ac74a2e6d4f11150fa1781232c4b1";
+    rev = "757f7d9bade2e718de49e5c30211b057919b1b2b";
   };
 
   # desktop related
@@ -282,7 +282,6 @@ in
     lxappearance
     kdePackages.breeze
     kdePackages.breeze-icons
-    libsForQt5.breeze-icons
     kdePackages.breeze-gtk
 
     gparted
@@ -301,6 +300,8 @@ in
     maim
     xclip
     xdotool
+
+    vscode
   ];
 
   ##################################################
