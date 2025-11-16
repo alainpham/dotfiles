@@ -17,7 +17,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "11a52bb14accbe5eb8138b3705c9f052c589ca4e";
+    rev = "c3edcf61193ac74a2e6d4f11150fa1781232c4b1";
   };
 
   # desktop related
@@ -92,10 +92,16 @@ in
         "wheel"
         "docker"
         "audio"
+        "video"
+        "networkmanager"
+        "libvirt"
+        "kvm"
+        "input"
       ];
     };
   };
 
+  home-manager.backupFileExtension = "hmbak";
   home-manager.users.${targetUser} = {
       home.stateVersion = nixversion;
       programs.git.enable = true;
@@ -111,6 +117,9 @@ in
         };
         ".gitconfig" = { 
           source = "${dotfilesgit}/home/.gitconfig"; 
+        };
+        ".gtkrc-2.0" = { 
+          source = "${dotfilesgit}/home/.gtkrc-2.0"; 
         };
         # folders
         ".config" = { 
