@@ -15,10 +15,40 @@ let
     "https://github.com/nix-community/home-manager/archive/release-${nixversion}.tar.gz"
   );
 
-  dotfiles = builtins.fetchGit {
+  dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
     rev = "2ec6a182633cca243b5284e7e17d9fea5a7e7a20";
+  };
+
+  dwmgit = builtins.fetchGit {
+    url = "https://github.com/alainpham/dwm-flexipatch.git";
+    ref = "master";
+    rev = "aa9548f7ba29529f7c6dfa7d9be367bb424c9d40";
+  };
+
+  stgit = builtins.fetchGit {
+    url = "https://github.com/alainpham/st-flexipatch.git";
+    ref = "master";
+    rev = "465a432f7dfb5ef01b2436fd35c0f8ee69920b06";
+  };
+
+  dmenugit = builtins.fetchGit {
+    url = "https://github.com/alainpham/dmenu-flexipatch.git";
+    ref = "master";
+    rev = "90ad650797feab1d9768e93627301fd90b12b4fe";
+  };
+
+  slockgit = builtins.fetchGit {
+    url = "https://github.com/alainpham/slock-flexipatch.git";
+    ref = "master";
+    rev = "b3eb868cfd11a493698afa97aa09afcceed4bf57";
+  };
+
+  dwmblocksgit = builtins.fetchGit {
+    url = "https://github.com/alainpham/dwmblocks.git";
+    ref = "master";
+    rev = "9c2a37eea75047435fe07d4665b1352a226da7cc";
   };
 
 in
@@ -66,10 +96,14 @@ in
       home.stateVersion = nixversion;
       home.file = {
         ".xinitrc" = { 
-          source = "${dotfiles}/home/.xinitrc"; 
+          source = "${dotfilesgit}/home/.xinitrc"; 
         };
         ".config" = { 
-            source = "${dotfiles}/home/.config";
+            source = "${dotfilesgit}/home/.config";
+            recursive = true;
+        };
+        ".local" = { 
+            source = "${dotfilesgit}/home/.local";
             recursive = true;
         };
     };
@@ -160,45 +194,24 @@ in
     # GUI applications
 
     (dwm.overrideAttrs (oldAttrs: rec {
-      src = builtins.fetchGit {
-        url = "https://github.com/alainpham/dwm-flexipatch.git";
-        ref = "master";
-        rev = "aa9548f7ba29529f7c6dfa7d9be367bb424c9d40";
-      };
+      src = dwmgit;
     }))
 
     (st.overrideAttrs (oldAttrs: rec {
-      src = builtins.fetchGit {
-        url = "https://github.com/alainpham/st-flexipatch.git";
-        ref = "master";
-        rev = "465a432f7dfb5ef01b2436fd35c0f8ee69920b06";
-
-      };
+      src = stgit;
     }))
+
     (dmenu.overrideAttrs (oldAttrs: rec {
-      src = builtins.fetchGit {
-        url = "https://github.com/alainpham/dmenu-flexipatch.git";
-        ref = "master";
-        rev = "90ad650797feab1d9768e93627301fd90b12b4fe";
-      };
+      src = dmenugit;
     }))
 
     (slock.overrideAttrs (oldAttrs: rec {
-      src = builtins.fetchGit {
-        url = "https://github.com/alainpham/slock-flexipatch.git";
-        ref = "master";
-        rev = "b3eb868cfd11a493698afa97aa09afcceed4bf57";
-
-      };
+      src = slockgit;
       buildInputs = oldAttrs.buildInputs ++ [ xorg.libXinerama imlib2];  
     }))
 
     (dwmblocks.overrideAttrs (oldAttrs: rec {
-      src = builtins.fetchGit {
-        url = "https://github.com/alainpham/dwmblocks.git";
-        ref = "master";
-        rev = "9c2a37eea75047435fe07d4665b1352a226da7cc";
-      };
+      src = dwmblocksgit;
     }))
 
     numlockx
