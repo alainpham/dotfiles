@@ -18,7 +18,7 @@ let
   dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "8fb8a79a71d68f3d0141f659e5b64eada022d67d";
+    rev = "905ff9eefb08c7a402ea0edfabf6b304391d6dc1";
   };
 
   dwmgit = builtins.fetchGit {
@@ -95,7 +95,10 @@ in
   home-manager.users.${targetUser} = {
       home.stateVersion = nixversion;
       programs.git.enable = true;
-      programs.bash.enable = true;
+      programs.bash = { 
+        enable = true;
+        profileExtra = builtins.readFile "${dotfilesgit}/home/.bash_profile.sh";
+      };
 
       home.file = {
         ".xinitrc" = { 
@@ -129,7 +132,8 @@ in
   services.openssh.enable = true;
   services.getty.autologinOnce = automaticlogin;
   services.getty.autologinUser = targetUser;
-
+  services.envfs.enable = true;
+  
   # enable spice agent only when running in a VM
   services.spice-vdagentd.enable = isvm;
 
