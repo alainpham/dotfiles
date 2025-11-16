@@ -8,7 +8,10 @@ let
   keyboardModel = "pc105"; # for macbook use "macbook79"
   wildcardDomain = "houze.dns.army";
   enablekubernetes = true;
-  isvm = false;
+  isVM =lib.strings.hasInfix "QEMU" (builtins.readFile "/sys/class/dmi/id/sys_vendor";) ||
+          lib.strings.hasInfix "VMware" (builtins.readFile "/sys/class/dmi/id/sys_vendor") ||
+          lib.strings.hasInfix "VirtualBox" (builtins.readFile "/sys/class/dmi/id/sys_vendor");
+  
   automaticlogin = true;
   
   home-manager = builtins.fetchTarball (
@@ -18,7 +21,7 @@ let
   dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "905ff9eefb08c7a402ea0edfabf6b304391d6dc1";
+    rev = "49750217aa6d9d38f1dd02a732f442f6ed87aa07";
   };
 
   dwmgit = builtins.fetchGit {
@@ -97,13 +100,18 @@ in
       programs.git.enable = true;
       programs.bash = { 
         enable = true;
-        profileExtra = builtins.readFile "${dotfilesgit}/home/.bash_profile.sh";
+        profileExtra = builtins.readFile "${dotfilesgit}/home/.bash_profile";
       };
 
       home.file = {
+        # files at root of home
         ".xinitrc" = { 
           source = "${dotfilesgit}/home/.xinitrc"; 
         };
+        ".gitconfig" = { 
+          source = "${dotfilesgit}/home/.gitconfig"; 
+        };
+        # folders
         ".config" = { 
             source = "${dotfilesgit}/home/.config";
             recursive = true;

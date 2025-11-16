@@ -17,7 +17,10 @@ if [ -x "/usr/bin/dbus-update-activation-environment" ]; then
     ${NULL+}
 fi
 
-#spice-vdagent
+if grep -qi hypervisor /proc/cpuinfo; then
+    echo inside vm, launching spice-vdagent >>~/.xinit.log
+    spice-vdagent
+fi
 
 numlockx
 
