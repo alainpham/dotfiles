@@ -17,7 +17,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "757f7d9bade2e718de49e5c30211b057919b1b2b";
+    rev = "58cc6a73cb517a822dc3002ceb7ff983ad953a13";
   };
 
   # desktop related
@@ -295,7 +295,8 @@ in
     xfce.thunar-volman
     xfce.thunar-archive-plugin
     xfce.thunar-media-tags-plugin
-
+    xfce.xfconf
+    
     flameshot
     maim
     xclip
