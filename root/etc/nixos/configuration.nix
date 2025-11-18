@@ -17,7 +17,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "8e47f4dc25edcb4e5e5f4939dabb07b6cb20608a";
+    rev = "278151f6a4f57991cc81f3f4b7034214c4ea1a45";
   };
 
   # desktop related
@@ -101,35 +101,67 @@ in
     };
   };
 
-  home-manager.backupFileExtension = "hmbak";
   home-manager.users.${targetUser} = {
-      home.stateVersion = nixversion;
-      programs.git.enable = true;
-      programs.bash = { 
-        enable = true;
-        profileExtra = builtins.readFile "${dotfilesgit}/home/.profile";
-      };
+    home.stateVersion = nixversion;
+    programs.git.enable = true;
+    programs.bash = { 
+      enable = true;
+      profileExtra = builtins.readFile "${dotfilesgit}/home/.profile";
+    };
 
-      home.file = {
-        # files at root of home
-        ".xinitrc" = { 
-          source = "${dotfilesgit}/home/.xinitrc"; 
-        };
-        ".gitconfig" = { 
-          source = "${dotfilesgit}/home/.gitconfig"; 
-        };
-        ".gtkrc-2.0" = { 
-          source = "${dotfilesgit}/home/.gtkrc-2.0"; 
-        };
-        # folders
-        ".config" = { 
-            source = "${dotfilesgit}/home/.config";
-            recursive = true;
-        };
-        ".local" = { 
-            source = "${dotfilesgit}/home/.local";
-            recursive = true;
-        };
+    xfconf.settings = {
+      "thunar" = {
+        "last-view" = "ThunarDetailsView";
+        "last-details-view-zoom-level" = "THUNAR_ZOOM_LEVEL_38_PERCENT";
+        "last-details-view-fixed-columns" = false;
+        "last-details-view-column-widths" = "50,50,137,50,50,50,50,102,1145,50,50,55,107,61";
+
+        "last-details-view-column-order" = "THUNAR_COLUMN_NAME,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_MIME_TYPE,THUNAR_COLUMN_DATE_MODIFIED";
+        "last-details-view-visible-columns" = "THUNAR_COLUMN_NAME,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_MIME_TYPE,THUNAR_COLUMN_DATE_MODIFIED";
+        "last-icon-view-zoom-level" = "THUNAR_ZOOM_LEVEL_100_PERCENT";
+
+        "last-sort-column" = "THUNAR_COLUMN_NAME";
+        "last-sort-order" = "GTK_SORT_ASCENDING";
+        
+        
+        "last-separator-position" = 150;
+        "shortcuts-icon-size" = "THUNAR_ICON_SIZE_32";
+        "tree-icon-size" = "THUNAR_ICON_SIZE_24";
+
+
+        "misc-single-click" = false;
+        "misc-date-style" = "THUNAR_DATE_STYLE_YYYYMMDD";
+        
+        "last-toolbar-items" = "menu:0,back:1,forward:1,open-parent:1,open-home:1,new-tab:0,new-window:0,toggle-split-view:0,undo:0,redo:0,zoom-out:0,zoom-in:0,zoom-reset:0,view-as-icons:0,view-as-detailed-list:0,view-as-compact-list:0,view-switcher:0,location-bar:1,reload:0,search:1,uca-action-0001:1,uca-action-0002:1";
+        
+      };
+    };
+
+    home.file = {
+      # files at root of home
+      ".xinitrc" = { 
+        source = "${dotfilesgit}/home/.xinitrc";
+        force = true;
+      };
+      ".gitconfig" = { 
+        source = "${dotfilesgit}/home/.gitconfig"; 
+        force = true;
+      };
+      ".gtkrc-2.0" = { 
+        source = "${dotfilesgit}/home/.gtkrc-2.0"; 
+        force = true;
+      };
+      # folders
+      ".config" = { 
+          source = "${dotfilesgit}/home/.config";
+          recursive = true;
+          force = true;
+      };
+      ".local" = { 
+          source = "${dotfilesgit}/home/.local";
+          recursive = true;
+          force = true;
+      };
     };
   };
 
@@ -296,6 +328,7 @@ in
     xfce.thunar-archive-plugin
     xfce.thunar-media-tags-plugin
     xfce.xfconf
+    
 
     flameshot
     maim
