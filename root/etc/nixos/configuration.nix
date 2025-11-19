@@ -349,7 +349,7 @@ in
       pname = "scripts";
       version = "master";
 
-      src = dotfilesgit
+      src = dotfilesgit;
 
       installPhase = ''
         mkdir -p $out/bin
@@ -432,7 +432,7 @@ in
     tapping = true;
     naturalScrolling = false;
     disableWhileTyping = true;
-  }
+  };
 
   fonts.packages = with pkgs; [
     nerd-fonts.noto
@@ -464,8 +464,52 @@ in
   '';
 
   services.pipewire.enable = false;
-  services.pulseaudio.enable = true;
-  services.pulseaudio.support32Bit = true;
+  services.pulseaudio = {
+    enable = true;
+    support32Bit = true;
+    extraConfig = ''
+      module-switch-on-connect
+
+      #mic to caller
+      load-module module-alsa-source device_id=loop,0,7 source_name=to-caller source_properties=device.description=to-caller rate=48000 
+      set-source-volume to-caller 65536
+
+      #sink/speaker that loops back to mic on device_id=loop,0,7 
+      load-module module-alsa-sink device_id=loop,1,7 sink_name=to-caller-sink sink_properties=device.description=to-caller-sink rate=48000 
+      set-sink-volume to-caller-sink 65536
+
+      #dummy default sink and source for initial setup
+      load-module module-alsa-source device_id=dummy,0,7 source_name=alsa_input.dummy-source source_properties=device.description=dummy-source rate=48000 
+      set-source-volume alsa_input.dummy-source 65536
+
+      load-module module-alsa-sink device_id=dummy,0,7 sink_name=alsa_output.dummy-sink sink_properties=device.description=dummy-sink rate=48000 
+      set-sink-volume alsa_output.dummy-sink 65536
+
+
+      # redirect from desktop to to-caller-sink and speakers
+      load-module module-remap-sink sink_name=from-desktop sink_properties=device.description=from-desktop master=alsa_output.dummy-sink
+      set-sink-volume from-desktop 62259
+      set-sink-mute from-desktop 0
+
+      # redirect from-caller to speaker only
+      load-module module-remap-sink sink_name=from-caller sink_properties=device.description=from-caller master=alsa_output.dummy-sink
+      set-sink-volume from-caller 62259
+
+      set-sink-volume alsa_output.dummy-sink 29486
+
+      # redirect mic split
+      load-module module-remap-source source_name=mic01-processed master=alsa_input.dummy-source master_channel_map="front-left" channel_map="mono" source_properties=device.description="mic01-processed"
+      load-module module-remap-source source_name=mic02-processed master=alsa_input.dummy-source master_channel_map="front-right" channel_map="mono" source_properties=device.description="mic02-processed"
+
+      set-default-sink from-desktop
+      set-default-source mic01-processed
+    '';
+    daemon.config = {
+      default-sample-rate = 48000;
+      default-sample-format = s16le;
+      resample-method = soxr-hq;
+    };
+  };
 
   # remote access
   services.sunshine.enable = true;
