@@ -506,8 +506,8 @@ in
     '';
     daemon.config = {
       default-sample-rate = 48000;
-      default-sample-format = s16le;
-      resample-method = soxr-hq;
+      default-sample-format = "s16le";
+      resample-method = "soxr-hq";
     };
   };
 
