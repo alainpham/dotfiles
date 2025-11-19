@@ -1,0 +1,9 @@
+#!/bin/bash
+source /usr/local/bin/asndenv
+
+speakers=$acerusbspeakerid
+mic=$acerusbmicid
+speakervolume=$acerusbspeakervolume
+micvolume=$acerusbmicvolume
+
+asnd $speakers $mic $speakervolume $micvolume

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+killall parec
+parec -d from-desktop.monitor --latency-msec=30 --rate=48000 | pacat -d to-caller-sink --latency-msec=30 --rate=48000 &
+parec -d mic01-processed --latency-msec=30 --rate=48000 | pacat -d to-caller-sink --latency-msec=30 --rate=48000 &
+parec -d mic02-processed --latency-msec=30 --rate=48000 | pacat -d to-caller-sink --latency-msec=30 --rate=48000 &
+kill -44 $(pidof dwmblocks)

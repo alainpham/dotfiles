@@ -1,0 +1,117 @@
+#!/bin/bash
+
+source /usr/local/bin/asndenv
+
+internalspeaker=$(pactl list short sinks | grep ${internalspeakerid} | awk '{print $2}')
+internalmic=$(pactl list short sources | grep ${internalmicid} | awk '{print $2}')
+
+focspeaker=$(pactl list short sinks | grep ${focspeakerid} | awk '{print $2}')
+focmic=$(pactl list short sources | grep ${focmicid} | awk '{print $2}')
+
+jbrspeaker=$(pactl list short sinks | grep ${jbrspeakerid} | awk '{print $2}')
+jbrmic=$(pactl list short sources | grep ${jbrmicid} | awk '{print $2}')
+
+bthspeaker=$(pactl list short sinks | grep ${bthspeakerid} | awk '{print $2}')
+bthmic=$(pactl list short sources | grep ${bthmicid} | awk '{print $2}')
+
+hdsspeaker=$(pactl list short sinks | grep ${hdsspeakerid} | awk '{print $2}')
+hdsmic=$(pactl list short sources | grep ${hdsmicid} | awk '{print $2}')
+
+zvspeaker=$(pactl list short sinks | grep ${zvspeakerid} | awk '{print $2}')
+zvmic=$(pactl list short sources | grep ${zvmicid} | awk '{print $2}')
+
+h6speaker=$(pactl list short sinks | grep ${h6speakerid} | awk '{print $2}')
+h6mic=$(pactl list short sources | grep ${h6micid} | awk '{print $2}')
+
+acerusbspeaker=$(pactl list short sinks | grep ${acerusbspeakerid} | awk '{print $2}')
+acerusbmic=$(pactl list short sources | grep ${acerusbmicid} | awk '{print $2}')
+
+dummyspeaker=$(pactl list short sinks | grep ${dummyspeakerid} | awk '{print $2}')
+dummymic=$(pactl list short sources | grep ${dummymicid} | awk '{print $2}')
+
+if [ -n "$focspeaker" ]
+then
+    echo "Focusrite is present"
+    selected_output=$focspeaker
+    selected_input=$focmic
+    selected_speaker_volume=$focspeakervolume
+    selected_microphone_volume=$focmicvolume
+
+    echo $selected_output $selected_input
+elif [ -n "$bthspeaker" ]
+then
+    echo "Bluetooth ADP speaker is present"
+    selected_output=$bthspeaker
+    selected_input=$bthmic
+    selected_speaker_volume=$bthspeakervolume
+    selected_microphone_volume=$bthmicvolume
+
+    echo $selected_output $selected_output
+elif [ -n "$hdsspeaker" ]
+then
+    echo "Bluetooth headset speaker is present"
+    selected_output=$hdsspeaker
+    selected_input=$hdsmic
+    selected_speaker_volume=$hdsspeakervolume
+    selected_microphone_volume=$hdsmicvolume
+
+    echo $selected_output $selected_output
+elif [ -n "$jbrspeaker" ]
+then
+    echo "Jabra speaker is present"
+    selected_output=$jbrspeaker
+    selected_input=$jbrmic
+    selected_speaker_volume=$jbrspeakervolume
+    selected_microphone_volume=$jbrmicvolume
+
+    echo $selected_output $selected_output
+elif [ -n "$zvspeaker" ]
+then
+    echo "Logitech is present"
+    selected_output=$zvspeaker
+    selected_input=$zvmic
+    selected_speaker_volume=$zvspeakervolume
+    selected_microphone_volume=$zvmicvolume
+
+    echo $selected_output $selected_output
+elif [ -n "$h6speaker" ]
+then
+    echo "H6 is present"
+    selected_output=$h6speaker
+    selected_input=$h6mic
+    selected_speaker_volume=$h6speakervolume
+    selected_microphone_volume=$h6micvolume
+
+    echo $selected_output $selected_output
+elif [ -n "$acerusbspeaker" ]
+then
+    echo "Acer usb is present"
+    selected_output=$acerusbspeaker
+    selected_input=$acerusbmic
+    selected_speaker_volume=$acerusbspeakervolume
+    selected_microphone_volume=$acerusbmicvolume
+
+    echo $selected_output $selected_output
+elif [ -n "$internalmic" ]
+then
+    echo "Internal is present"
+    selected_output=$internalspeaker
+    selected_input=$internalmic
+    selected_speaker_volume=$internalspeakervolume
+    selected_microphone_volume=$internalmicvolume
+
+    echo $selected_output $selected_output
+else
+    echo "No sound device found choosing dummy devices"
+    selected_output=$dummyspeaker
+    selected_input=$dummymic
+    selected_speaker_volume=$dummyspeakervolume
+    selected_microphone_volume=$dummymicvolume
+
+    echo $selected_output $selected_output
+fi
+
+speakers=$selected_output
+mic=$selected_input
+
+asnd $selected_output $selected_input $selected_speaker_volume $selected_microphone_volume

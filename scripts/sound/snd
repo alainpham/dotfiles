@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Get list of input devices (sources)
+input_devices=$(pactl list short sources | grep -E "alsa_input|bluez_source" | awk '{print $2}')
+input_devices_desc=$(pactl -f json list sources | jq -r '.[] | select(.name | match("alsa_input|bluez_source")) | .description')
+
+output_devices=$(pactl list short sinks | grep -E "alsa_output|bluez_sink" | awk '{print $2}')
+output_devices_desc=$(pactl -f json list sinks | jq -r '.[] | select(.name | match("alsa_output|bluez_sink")) | .description')
+
+echo "Available Input Devices:"
+i=1
+for device in $input_devices; do
+#echo "==========$i===================================="
+echo "$i)" $(echo "$input_devices_desc" | sed -n "${i}p") 
+#echo $device
+((i++))
+done
+
+# Prompt user to select input device
+read -p "Select input device (1-$((i-1))): " input_choice
+
+selected_input=$(echo "$input_devices" | sed -n "${input_choice}p")
+if [ -n "$selected_input" ]; then
+echo "Selected input device: $selected_input"
+else
+echo "Invalid selection. Exiting."
+exit 1
+fi
+
+# If output device is selected
+echo "Available Output Devices:"
+i=1
+for device in $output_devices; do
+#echo "==========$i===================================="
+echo "$i)" $(echo "$output_devices_desc" | sed -n "${i}p") 
+#echo $device
+((i++))
+done
+#echo "================================================"
+
+# Prompt user to select output device
+read -p "Select output device (1-$((i-1))): " output_choice
+
+selected_output=$(echo "$output_devices" | sed -n "${output_choice}p")
+if [ -n "$selected_output" ]; then
+echo "Selected output device: $selected_output"
+else
+echo "Invalid selection. Exiting."
+exit 1
+fi
+
+#comma separated list of sinks
+speakers=$selected_output
+mic=$selected_input
+asnd $selected_output $selected_input

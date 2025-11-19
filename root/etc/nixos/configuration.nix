@@ -4,6 +4,7 @@ let
   nixversion = "25.05";
   hostname= "nxvm";
   targetUser = "apham";
+  targetUserEmail = "apham@localhost";
   keyboardLayout = "fr";
   keyboardModel = "pc105"; # for macbook use "macbook79"
   wildcardDomain = "houze.dns.army";
@@ -103,7 +104,12 @@ in
 
   home-manager.users.${targetUser} = {
     home.stateVersion = nixversion;
-    programs.git.enable = true;
+    programs.git = {
+      enable = true;
+      userName = targetUser;
+      userEmail = targetUserEmail;
+    };
+
     programs.bash = { 
       enable = true;
       profileExtra = builtins.readFile "${dotfilesgit}/home/.profile";
@@ -316,6 +322,8 @@ in
     kdePackages.breeze-icons
     kdePackages.breeze-gtk
 
+    bluetui
+
     gparted
     vulkan-tools
     ffmpeg
@@ -328,7 +336,6 @@ in
     xfce.thunar-archive-plugin
     xfce.thunar-media-tags-plugin
     xfce.xfconf
-    
 
     flameshot
     maim
@@ -336,6 +343,21 @@ in
     xdotool
 
     vscode
+
+    # all custom scripts
+    (stdenv.mkDerivation {
+      pname = "scripts";
+      version = "master";
+
+      src = dotfilesgit
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp -r scripts/av/* $out/bin/
+        cp -r scripts/desktop/* $out/bin/
+      '';
+    })
+
   ];
 
   ##################################################
@@ -403,10 +425,24 @@ in
   services.udisks2.enable = true;
   services.picom.enable = true;
 
+  services.libinput.touchpad = {
+    tapping = true;
+    naturalScrolling = false;
+    disableWhileTyping = true;
+  }
+
   fonts.packages = with pkgs; [
     nerd-fonts.noto
     noto-fonts
   ];
+
+  # default terminal
+  xdg.terminal-exec.settings = {
+    default = [
+      "st.desktop"
+    ];
+  };
+
 
   # sound
   boot.kernelModules = [ 

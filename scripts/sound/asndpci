@@ -1,0 +1,1 @@
+pactl list short sinks | grep -E "alsa_output.pci-" | awk '{print $2}'

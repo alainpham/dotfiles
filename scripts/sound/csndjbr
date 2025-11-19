@@ -1,0 +1,9 @@
+#!/bin/bash
+source /usr/local/bin/asndenv
+
+speakers=$jbrspeakerid
+mic=$jbrmicid
+speakervolume=$jbrspeakervolume
+micvolume=$jbrmicvolume
+
+asnd $speakers $mic $speakervolume $micvolume
