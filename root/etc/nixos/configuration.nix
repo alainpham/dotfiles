@@ -18,7 +18,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "278151f6a4f57991cc81f3f4b7034214c4ea1a45";
+    rev = "a45f4dcd4dd4d66ac47e43bd2c269c19d29f2e87";
   };
 
   # desktop related
@@ -353,8 +353,11 @@ in
 
       installPhase = ''
         mkdir -p $out/bin
-        cp -r scripts/av/* $out/bin/
-        cp -r scripts/desktop/* $out/bin/
+        cp scripts/av/* $out/bin/
+        cp scripts/desktop/* $out/bin/
+        cp scripts/sound/* $out/bin/
+        cp scripts/vm/* $out/bin/
+        cp scripts/webcam/* $out/bin/
       '';
     })
 
