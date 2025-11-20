@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+import subprocess
+import jc
+import json
+
+def get_xrandr_modes():
+    # Run xrandr and parse with jc
+    result = subprocess.run(['xrandr'], capture_output=True, text=True)
+    parsed = jc.parse('xrandr', result.stdout)
+    maxrate = {}
+    deviceidx = 0
+    # Iterate through the parsed output to find connected devices and their modes
+    for device in parsed['screens'][0]['devices']:
+        if device['is_connected']:
+            modeix = 0
+            maxrate[device['device_name']] = {
+                'datarate': 0,
+                'width': 0,
+                'height': 0,
+                'frequency': 0,
+                'device_index': deviceidx,
+                'mode_index': modeix
+            }
+            for mode in device['resolution_modes']:
+                frequencyidx = 0
+                for frequency in mode['frequencies']:
+                    # Track the maximum resolution for each device
+                    current_max = maxrate[device['device_name']].get('datarate', 0)
+                    datarate = mode['resolution_height'] * mode['resolution_width'] * frequency['frequency']
+                    if datarate > current_max:
+                        maxrate[device['device_name']]['datarate'] = datarate
+                        maxrate[device['device_name']]['width'] = mode['resolution_width']
+                        maxrate[device['device_name']]['height'] = mode['resolution_height']
+                        maxrate[device['device_name']]['frequency'] = frequency['frequency']
+                        maxrate[device['device_name']]['device_index'] = deviceidx
+                        maxrate[device['device_name']]['mode_index'] = modeix
+                        maxrate[device['device_name']]['frequency_index'] = frequencyidx
+                    frequencyidx += 1
+                modeix += 1
+        deviceidx += 1
+
+    min_device = None
+    min_datarate = None
+    bestconfig = None
+    bestwidth = 0
+    bestheight = 0
+    bestfrequency = 0
+
+    for device, info in maxrate.items():
+        if min_datarate is None or info['datarate'] < min_datarate:
+            min_datarate = info['datarate']
+            min_device = device
+            bestconfig = info
+            bestwidth = info['width']
+            bestheight = info['height']
+            bestfrequency = info['frequency']
+        
+    compatible_with_all_connected = True
+    for device in parsed['screens'][0]['devices']:
+        if device['is_connected']:
+            device_is_compatible = False
+            for mode in device['resolution_modes']:
+                for frequency in mode['frequencies']:
+                    if (mode['resolution_width'] == bestwidth and
+                        mode['resolution_height'] == bestheight and
+                        frequency['frequency'] == bestfrequency):
+                        device_is_compatible = True
+                        break
+            if not device_is_compatible:
+                compatible_with_all_connected = False
+    if compatible_with_all_connected:
+        return(f"{bestconfig['width']}x{bestconfig['height']} {bestconfig['frequency']}")
+    else:
+        return 0
+
+if __name__ == "__main__":
+    monitor_mode = get_xrandr_modes()
+    print(monitor_mode)

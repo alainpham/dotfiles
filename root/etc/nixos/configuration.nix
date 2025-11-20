@@ -18,7 +18,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "a45f4dcd4dd4d66ac47e43bd2c269c19d29f2e87";
+    rev = "421727655e71017e0362ed4a8c674501682f8474";
   };
 
   # desktop related
@@ -49,7 +49,7 @@ let
   dwmblocksgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dwmblocks.git";
     ref = "master";
-    rev = "9c2a37eea75047435fe07d4665b1352a226da7cc";
+    rev = "bf55e259f05b1f1e497dc63ed45f332ba1edd174";
   };
 
   # should not be set manually, but detect if running in vm
@@ -361,6 +361,7 @@ in
       '';
     })
 
+
   ];
 
   ##################################################
@@ -468,7 +469,7 @@ in
     enable = true;
     support32Bit = true;
     extraConfig = ''
-      module-switch-on-connect
+      unload-module module-switch-on-connect
 
       #mic to caller
       load-module module-alsa-source device_id=loop,0,7 source_name=to-caller source_properties=device.description=to-caller rate=48000 
