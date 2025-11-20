@@ -1,5 +1,28 @@
 #!/bin/bash
 
+background_files=(
+    "https://free-images.com/or/8606/canyon_antelope_canyon_usa_1.jpg"
+    "https://free-images.com/lg/ac18/city_night_light_bokeh.jpg"
+    "https://free-images.com/lg/5cc4/lights_night_city_night.jpg"
+    "https://raw.githubusercontent.com/simple-sunrise/Light-and-Dark-Wallpapers-for-Gnome/main/Wallpapers/LakesideDeer/LakesideDeer-1.png"
+    "https://raw.githubusercontent.com/simple-sunrise/Light-and-Dark-Wallpapers-for-Gnome/main/Wallpapers/LakesideDeer/LakesideDeer-2.png"
+    "https://w.wallhaven.cc/full/5g/wallhaven-5g22q5.png"
+    "https://w.wallhaven.cc/full/21/wallhaven-21yd3m.jpg"
+    "https://w.wallhaven.cc/full/rq/wallhaven-rqr1xw.jpg"
+    "https://w.wallhaven.cc/full/zp/wallhaven-zpyr5y.png"
+)
+
+# Loop through the list and download each file
+for i in "${!background_files[@]}"; do
+    if [ ! -f "${ROOTFS}/usr/share/backgrounds/$(printf "%02d" $((i+1))).jpg" ]; then
+        wget -O "${ROOTFS}/usr/share/backgrounds/$(printf "%02d" $((i+1))).jpg" "${background_files[$i]}"
+        echo "Downloaded background image $(printf "%02d" $((i+1))).jpg"
+    else
+        echo "Background image $(printf "%02d" $((i+1))).jpg already exists, skipping."
+    fi
+done
+
+
 if [ -n "$1" ]; then
     bgfile=$(printf "%02d.jpg" "$1")
 else

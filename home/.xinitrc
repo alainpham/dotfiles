@@ -64,8 +64,7 @@ while true; do
         ~/.fehbg
         echo feh script exists, setting backround with it>>~/.xinit.log
     else
-        bgfile=$(ls /usr/share/backgrounds/ | shuf -n 1)
-        feh --bg-fill /usr/share/backgrounds/${bgfile}
+        sbg
         echo first boot, setting random>>~/.xinit.log
     fi
     picom -b --config ~/.config/picom/picom.conf

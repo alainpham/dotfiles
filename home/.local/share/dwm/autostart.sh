@@ -1,7 +1,13 @@
 #!/bin/bash
 asnddef &
 mon &
-sleep 5 && ~/.fehbg &
+
+if [ -f "$HOME/.fehbg" ]; then
+    sleep 5 && ~/.fehbg &
+else
+    sleep 5 && sbg &
+fi
+
 
 
 if command -v sunshine >/dev/null 2>&1; then
