@@ -1,5 +1,5 @@
 #!/bin/bash
-source /usr/local/bin/asndenv
+source $(which asndenv)
 
 speakers=$h6speakerid
 mic=$h6micid

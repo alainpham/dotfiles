@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /usr/local/bin/asndenv
+source $(which asndenv)
 
 internalspeaker=$(pactl list short sinks | grep ${internalspeakerid} | awk '{print $2}')
 internalmic=$(pactl list short sources | grep ${internalmicid} | awk '{print $2}')
