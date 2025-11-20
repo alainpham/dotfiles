@@ -14,8 +14,8 @@ background_files=(
 
 # Loop through the list and download each file
 for i in "${!background_files[@]}"; do
-    if [ ! -f "${ROOTFS}/usr/share/backgrounds/$(printf "%02d" $((i+1))).jpg" ]; then
-        wget -O "${ROOTFS}/usr/share/backgrounds/$(printf "%02d" $((i+1))).jpg" "${background_files[$i]}"
+    if [ ! -f ".local/share/backgrounds/$(printf "%02d" $((i+1))).jpg" ]; then
+        wget -O ".local/usr/share/backgrounds/$(printf "%02d" $((i+1))).jpg" "${background_files[$i]}"
         echo "Downloaded background image $(printf "%02d" $((i+1))).jpg"
     else
         echo "Background image $(printf "%02d" $((i+1))).jpg already exists, skipping."
