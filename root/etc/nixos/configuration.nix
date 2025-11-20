@@ -55,6 +55,24 @@ let
   # should not be set manually, but detect if running in vm
   isVm = lib.elem "virtio_console" config.boot.initrd.kernelModules;
 
+  # wallpapers
+  wallpapers = [
+    "https://free-images.com/or/8606/canyon_antelope_canyon_usa_1.jpg"
+    "https://free-images.com/lg/ac18/city_night_light_bokeh.jpg"
+    "https://free-images.com/lg/5cc4/lights_night_city_night.jpg"
+    "https://raw.githubusercontent.com/simple-sunrise/Light-and-Dark-Wallpapers-for-Gnome/main/Wallpapers/LakesideDeer/LakesideDeer-1.png"
+    "https://raw.githubusercontent.com/simple-sunrise/Light-and-Dark-Wallpapers-for-Gnome/main/Wallpapers/LakesideDeer/LakesideDeer-2.png"
+    "https://w.wallhaven.cc/full/5g/wallhaven-5g22q5.png"
+    "https://w.wallhaven.cc/full/21/wallhaven-21yd3m.jpg"
+    "https://w.wallhaven.cc/full/rq/wallhaven-rqr1xw.jpg"
+    "https://w.wallhaven.cc/full/zp/wallhaven-zpyr5y.png"
+  ];
+  
+  downloaded = builtins.listToAttrs (map (url: {
+    name = baseNameOf url;
+    value = pkgs.fetchurl { url = url; };
+  }) wallpapers);
+
 in
 {
   imports =
@@ -168,6 +186,10 @@ in
           recursive = true;
           force = true;
       };
+      builtins.mapAttrs (name: path: {
+        target = ".local/share/backgrounds/${name}";
+        source = path;
+      }) downloaded;
     };
   };
 
@@ -446,7 +468,6 @@ in
       "st.desktop"
     ];
   };
-
 
   # sound
   boot.kernelModules = [ 
