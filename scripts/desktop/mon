@@ -280,6 +280,9 @@ else
     echo "No specific command provided or no docking station detected. Defaulting to laptop screen only."
     lap
 fi
+
+~/.fehbg
+
 }
 
 applylayout
