@@ -27,7 +27,7 @@ done
 if [ -n "$1" ]; then
     bgfile=$(printf "%02d.jpg" "$1")
 else
-    bgfile=$(ls ~/.local/share/backgrounds/ | shuf -n 1)
+    bgfile=$(ls $HOME/.local/share/backgrounds/ | shuf -n 1)
 fi
 
-feh --bg-fill ~/.local/share/backgrounds/${bgfile}
+feh --bg-fill $HOME/.local/share/backgrounds/${bgfile}
