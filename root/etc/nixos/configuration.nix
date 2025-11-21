@@ -332,6 +332,7 @@ in
     yt-dlp
     google-chrome
     lxqt.pavucontrol-qt
+    alsa-utils
     
     xfce.thunar
     xfce.thunar-volman

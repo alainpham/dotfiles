@@ -31,35 +31,28 @@ export XCURSOR_SIZE=24
 while true; do
 
     piddunst=$(pgrep dunst)
-    if [ -z "$piddunst" ]; then
-        dunst > ~/.dunst.log &
-        echo dunst started>>~/.xinit.log
-    else
+    if [ ! -z "$piddunst" ]; then
         kill -9 $piddunst
-        dunst >> ~/.dunst.log &
         echo dunst restarted>>~/.xinit.log
     fi
+    dunst > ~/.dunst.log &
 
     piddwmblocks=$(pgrep dwmblocks)
-    if [ -z "$piddwmblocks" ]; then
-        dwmblocks &
-        echo dwmblocks started>>~/.xinit.log
-    else
+    if [ ! -z "$piddwmblocks" ]; then
         kill -9 $piddwmblocks
-        dwmblocks &
         echo dwmblocks restarted>>~/.xinit.log
     fi
+    dwmblocks &
+
     if command -v libinput-gestures >/dev/null 2>&1; then
         pidgestures=$(pgrep -f libinput-gestures)
-        if [ -z "$pidgestures" ]; then
-            libinput-gestures &
-            echo libinput-gestures started>>~/.xinit.log
-        else
+        if [ ! -z "$pidgestures" ]; then
             kill -9 $pidgestures
-            libinput-gestures &
             echo libinput-gestures restarted>>~/.xinit.log
         fi
+        libinput-gestures &
     fi
+
     if [ -f ~/.fehbg ]; then
         ~/.fehbg
         echo feh script exists, setting backround with it>>~/.xinit.log
@@ -67,13 +60,19 @@ while true; do
         sbg
         echo first boot, setting random>>~/.xinit.log
     fi
+    
+    pidpicom=$(pgrep dwmblocks)
+    if [ ! -z "$pidpicom" ]; then
+        kill -9 $pidpicom
+    fi
     picom -b --config ~/.config/picom/picom.conf
+
     # Log stderror to a file
     dwm 2> ~/.dwm.log
     # No error logging
     #dwm >/dev/null 2>&1
     rebootdwm=$(cat ~/.rebootdwm)
-    if [ "$rebootdwm" = '0' ]; then
+    if [ "$rebootdwm" != '1' ]; then
             break
     fi
 done
