@@ -171,6 +171,16 @@ in
       };
 
     };
+
+    xdg.mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "video/*" = ["org.kde.haruna.desktop"];
+        "audio/*" = ["org.kde.haruna.desktop"];
+        "image/*" = ["qimgv.desktop"];
+
+      };
+    };
   };
 
   ##################################################
