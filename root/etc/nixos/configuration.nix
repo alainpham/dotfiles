@@ -21,7 +21,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "d98abbcd02b10e9fb3209bd04139ca5cbe996c31";
+    rev = "d973f36f16cf61717ac8f75fafbff0ced696b39f";
   };
 
   # desktop related
@@ -225,8 +225,8 @@ in
     description = "disable-intel-turboboost";
     wantedBy = [ "sysinit.target" ];
     serviceConfig = {
-      ExecStart = "turboboost no";
-      ExecStop = "turboboost yes";
+      ExecStart = "${pkgs.scripts}/turboboost no";
+      ExecStop = "${pkgs.scripts}/turboboost yes";
       RemainAfterExit = true;
     };
   };
@@ -395,11 +395,13 @@ in
         cp scripts/sound/* $out/bin/
 
         cp scripts/utils/* $out/bin/
-        cp scripts/utils/shortcuts/* $out/share/applications/
         
         cp scripts/vm/* $out/bin/
         
         cp scripts/webcam/* $out/bin/
+
+        cp shortcuts/* $out/share/applications/
+
       '';
     })
 
