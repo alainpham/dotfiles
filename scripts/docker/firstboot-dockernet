@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "firstboot-dockernet.sh : Setting up dedicated network bridge.."
+echo "firstboot-dockernet : Setting up dedicated network bridge.."
 
 retry=0
 max_retries=5
@@ -21,10 +21,10 @@ fi
 
 if [[ -z "$(docker network ls | grep primenet)" ]] then
      docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 primenet
-     echo "firstboot-dockernet.sh : docker primenet created"
+     echo "firstboot-dockernet : docker primenet created"
      echo "✅ primenet docker network created !">/var/log/firstboot-dockernet.log
 else
-     echo "firstboot-dockernet.sh : docker primenet exists already"
+     echo "firstboot-dockernet : docker primenet exists already"
      echo "✅ primenet already exisits ! ">/var/log/firstboot-dockernet.log
 fi
 

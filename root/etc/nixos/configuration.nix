@@ -18,10 +18,10 @@ let
     "https://github.com/nix-community/home-manager/archive/release-${nixversion}.tar.gz"
   );
 
-    dotfilesgit = builtins.fetchGit {
+  dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "ed87492d0dc66b64cba50f95ac3591832128f4de";
+    rev = "c1e8f054b0c630cbe8e39e62aab986605f944887";
   };
 
   # desktop related
@@ -193,14 +193,6 @@ in
 
     };
 
-    xdg.mimeApps = {
-      enable = true;
-      defaultApplications = {
-        "video/*" = ["org.kde.haruna.desktop"];
-        "audio/*" = ["org.kde.haruna.desktop"];
-        "image/*" = ["qimgv.desktop"];
-      };
-    };
   };
 
   ##################################################
@@ -408,16 +400,14 @@ in
   ##################################################
   virtualisation.docker.enable = true;
 
-  systemd.services.dockernet = {
-    description = "dockernet";
+  systemd.services.firstboot-dockernet = {
+    description = "firstboot-dockernet";
     after = [ "docker.service" ];
     wantedBy = [ "multi-user.target" ];
     path = [ "/run/current-system/sw" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = lib.mkForce (pkgs.writeShellScript "dockernet" ''
-        /run/current-system/sw/bin/docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 -o com.docker.network.bridge.name=primenet primenet || true
-      '');
+      ExecStart = "/run/current-system/sw/bin/firstboot-dockernet";
     };
   };
 
