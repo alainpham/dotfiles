@@ -11,7 +11,7 @@ let
   wildcardDomain = "houze.dns.army";
   enableKubernetes = true;
   automaticlogin = true;
-  disableTurboBoost = true; # disable turbo boost for laptops and minipcs that run intel
+  disableTurboBoost = false; # disable turbo boost for laptops and minipcs that run intel
   # end of change this
 
   home-manager = builtins.fetchTarball (
@@ -21,7 +21,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "d973f36f16cf61717ac8f75fafbff0ced696b39f";
+    rev = "f9832fe02c076028fbf8a98bfca9dc70b3ef9c76";
   };
 
   # desktop related
@@ -58,6 +58,33 @@ let
   # should not be set manually, but detect if running in vm
   isVm = lib.elem "virtio_console" config.boot.initrd.kernelModules;
 
+  scripts = pkgs.stdenv.mkDerivation {
+      pname = "scripts";
+      version = "master";
+
+      src = dotfilesgit;
+
+      installPhase = ''
+        mkdir -p $out/bin
+        mkdir -p $out/share/applications
+        
+        cp scripts/av/* $out/bin/
+        
+        cp scripts/desktop/* $out/bin/
+        
+        cp scripts/os/* $out/bin/
+        
+        cp scripts/sound/* $out/bin/
+
+        cp scripts/utils/* $out/bin/
+        
+        cp scripts/vm/* $out/bin/
+        
+        cp scripts/webcam/* $out/bin/
+
+        cp shortcuts/* $out/share/applications/
+      '';
+    };
 in
 {
   imports =
@@ -224,9 +251,10 @@ in
     enable = disableTurboBoost;
     description = "disable-intel-turboboost";
     wantedBy = [ "sysinit.target" ];
+    path = [ scripts ];
     serviceConfig = {
-      ExecStart = "${pkgs.scripts}/turboboost no";
-      ExecStop = "${pkgs.scripts}/turboboost yes";
+      ExecStart = "turboboost no";
+      ExecStop = "turboboost yes";
       RemainAfterExit = true;
     };
   };
@@ -376,34 +404,35 @@ in
     vscode
 
     # all custom scripts
-    (stdenv.mkDerivation {
-      pname = "scripts";
-      version = "master";
+    scripts
+    # (stdenv.mkDerivation {
+    #   pname = "scripts";
+    #   version = "master";
 
-      src = dotfilesgit;
+    #   src = dotfilesgit;
 
-      installPhase = ''
-        mkdir -p $out/bin
-        mkdir -p $out/share/applications
+    #   installPhase = ''
+    #     mkdir -p $out/bin
+    #     mkdir -p $out/share/applications
         
-        cp scripts/av/* $out/bin/
+    #     cp scripts/av/* $out/bin/
         
-        cp scripts/desktop/* $out/bin/
+    #     cp scripts/desktop/* $out/bin/
         
-        cp scripts/os/* $out/bin/
+    #     cp scripts/os/* $out/bin/
         
-        cp scripts/sound/* $out/bin/
+    #     cp scripts/sound/* $out/bin/
 
-        cp scripts/utils/* $out/bin/
+    #     cp scripts/utils/* $out/bin/
         
-        cp scripts/vm/* $out/bin/
+    #     cp scripts/vm/* $out/bin/
         
-        cp scripts/webcam/* $out/bin/
+    #     cp scripts/webcam/* $out/bin/
 
-        cp shortcuts/* $out/share/applications/
+    #     cp shortcuts/* $out/share/applications/
 
-      '';
-    })
+    #   '';
+    # })
 
 
   ];
