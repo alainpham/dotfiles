@@ -1,0 +1,23 @@
+#!/bin/bash
+input=$1
+if [ "$input" = "no" ]; then
+    state=1	
+elif [ "$input" = "yes" ]; then
+    state=0
+elif [ "$input" = "status" ]; then
+    if [ -f /sys/devices/system/cpu/intel_pstate/no_turbo ]; then
+        cat /sys/devices/system/cpu/intel_pstate/no_turbo
+    else
+        echo "no_turbo file not found"
+    fi
+    exit 0
+else
+    echo "Usage: turboboost.sh {no|yes|status}"
+    exit 1
+fi
+echo "no_turbo=$state"
+if [ -f /sys/devices/system/cpu/intel_pstate/no_turbo ]; then
+    echo $state > /sys/devices/system/cpu/intel_pstate/no_turbo
+else
+    echo "did nothing, no_turbo file not found"
+fi

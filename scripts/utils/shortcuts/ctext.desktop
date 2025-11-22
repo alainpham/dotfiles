@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=ctext
+Exec=ctext %f
+Icon=vscode
+Terminal=false

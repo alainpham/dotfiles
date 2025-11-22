@@ -18,7 +18,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "e3638d594b663ea97f4d3bf93f3a5c77ae68144f";
+    rev = "19daf7a2397555aa29803b6a0ddf09c1829b0d76";
   };
 
   # desktop related
@@ -54,6 +54,9 @@ let
 
   # should not be set manually, but detect if running in vm
   isVm = lib.elem "virtio_console" config.boot.initrd.kernelModules;
+  chassis = builtins.readFile "/sys/class/dmi/id/chassis_type";
+  
+  disableTurboBoost = lib.elem (builtins.trimString "\n" chassis) [ "8" "9" "10" "14" "35" ];
 
 
 in
@@ -65,8 +68,10 @@ in
     ];
 
   boot.loader.systemd-boot.enable = true;
-  boot.loader.timeout = 1;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # fastboot
+  boot.loader.timeout = 1;
 
   system.stateVersion = nixversion;
 
@@ -86,7 +91,7 @@ in
     ${targetUser} = { };
   };
 
-  # tbd
+  # 
   users.users = {
     ${targetUser} = {
       isNormalUser = true;
@@ -178,7 +183,6 @@ in
         "video/*" = ["org.kde.haruna.desktop"];
         "audio/*" = ["org.kde.haruna.desktop"];
         "image/*" = ["qimgv.desktop"];
-
       };
     };
   };
@@ -206,10 +210,16 @@ in
   ##################################################
   services.getty.autologinOnce = automaticlogin;
   services.getty.autologinUser = targetUser;
+
   services.envfs.enable = true;
 
   ##################################################
   # enable spice agent only when running in a VM
+  ##################################################
+  services.spice-vdagentd.enable = isVm;
+
+  ##################################################
+  # disable turbo boost in laptops and minipcs
   ##################################################
   services.spice-vdagentd.enable = isVm;
 
@@ -366,10 +376,21 @@ in
 
       installPhase = ''
         mkdir -p $out/bin
+        mkdir -p $out/share/applications
+        
         cp scripts/av/* $out/bin/
+        
         cp scripts/desktop/* $out/bin/
+        
+        cp scripts/os/* $out/bin/
+        
         cp scripts/sound/* $out/bin/
+
+        cp scripts/utils/* $out/bin/
+        cp scripts/utils/shortcuts/* $out/share/applications/
+        
         cp scripts/vm/* $out/bin/
+        
         cp scripts/webcam/* $out/bin/
       '';
     })
@@ -384,6 +405,20 @@ in
   programs.java.package = pkgs.jdk17_headless;
 
 
+  ##################################################
+  # Disable turbo boost for laptops and minipcs
+  ##################################################
+  systemd.services.disable-intel-turboboost = {
+    enable = disableTurboBoost;
+    description = "disable-intel-turboboost";
+    wantedBy = [ "sysinit.target" ];
+    serviceConfig = {
+      ExecStart = "turboboost no";
+      ExecStop = "turboboost yes";
+      RemainAfterExit = true;
+    };
+  };
+  
   ##################################################
   # Docker
   ##################################################
@@ -400,6 +435,7 @@ in
       '');
     };
   };
+
 
   ##################################################
   # kubernetes

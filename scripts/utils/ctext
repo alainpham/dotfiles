@@ -1,0 +1,3 @@
+#!/bin/bash
+mkdir -p ~/codefld
+code --disable-workspace-trust ~/codefld $1
