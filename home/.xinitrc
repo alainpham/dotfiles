@@ -61,7 +61,7 @@ while true; do
         echo first boot, setting random>>~/.xinit.log
     fi
     
-    pidpicom=$(pgrep dwmblocks)
+    pidpicom=$(pgrep picom)
     if [ ! -z "$pidpicom" ]; then
         kill -9 $pidpicom
     fi
