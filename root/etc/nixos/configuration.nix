@@ -21,7 +21,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "ad40a8c2876715700f4771f16f636e7e2e70c5b3";
+    rev = "ed87492d0dc66b64cba50f95ac3591832128f4de";
   };
 
   # desktop related
@@ -412,10 +412,11 @@ in
     description = "dockernet";
     after = [ "docker.service" ];
     wantedBy = [ "multi-user.target" ];
+    path = [ "/run/current-system/sw" ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = lib.mkForce (pkgs.writeShellScript "dockernet" ''
-        /run/current-system/sw/bin/docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 -o com.docker.network.bridge.name=primenet primenet  || true
+        /run/current-system/sw/bin/docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 -o com.docker.network.bridge.name=primenet primenet || true
       '');
     };
   };
@@ -424,6 +425,7 @@ in
     description = "firstboot-dockerbuildx";
     after = [ "docker.service" ];
     wantedBy = [ "multi-user.target" ];
+    path = [ "/run/current-system/sw" ];
     serviceConfig = {
       Type = "oneshot";
       User = targetUser;

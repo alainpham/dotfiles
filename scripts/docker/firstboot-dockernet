@@ -1,0 +1,31 @@
+#!/bin/bash
+echo "firstboot-dockernet.sh : Setting up dedicated network bridge.."
+
+retry=0
+max_retries=5
+while [ $retry -lt $max_retries ]; do
+    if curl -s --unix-socket /var/run/docker.sock http/_ping 2>&1; then
+        echo "Docker is running."
+        break
+    else
+        echo "Docker is not running. Retrying in 1 seconds..."
+        sleep 1
+        retry=$((retry + 1))
+    fi
+done
+
+if [ $retry -eq $max_retries ]; then
+    echo "Docker failed to start after $max_retries attempts."
+    exit 1
+fi
+
+if [[ -z "$(docker network ls | grep primenet)" ]] then
+     docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 primenet
+     echo "firstboot-dockernet.sh : docker primenet created"
+     echo "✅ primenet docker network created !">/var/log/firstboot-dockernet.log
+else
+     echo "firstboot-dockernet.sh : docker primenet exists already"
+     echo "✅ primenet already exisits ! ">/var/log/firstboot-dockernet.log
+fi
+
+exit 0
