@@ -11,7 +11,7 @@ let
   wildcardDomain = "houze.dns.army";
   enableKubernetes = true;
   automaticlogin = true;
-  disableTurboBoost = false; # disable turbo boost for laptops and minipcs that run intel
+  disableTurboBoost = true; # disable turbo boost for laptops and minipcs that run intel
   # end of change this
 
   home-manager = builtins.fetchTarball (
@@ -21,7 +21,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "53b43ec76de1b8d1ba1dc3af5722cdc0be93e983";
+    rev = "16c1d1129c9adbd49c6de5a2939c23179dd62190";
   };
 
   # desktop related
@@ -169,7 +169,7 @@ in
 
         "misc-single-click" = false;
         "misc-date-style" = "THUNAR_DATE_STYLE_YYYYMMDD";
-        
+        "misc-thumbnail-mode" = "THUNAR_THUMBNAIL_MODE_NEVER";
         "last-toolbar-items" = "menu:0,back:1,forward:1,open-parent:1,open-home:1,new-tab:0,new-window:0,toggle-split-view:0,undo:0,redo:0,zoom-out:0,zoom-in:0,zoom-reset:0,view-as-icons:0,view-as-detailed-list:0,view-as-compact-list:0,view-switcher:0,location-bar:1,reload:0,search:1,uca-action-0001:1,uca-action-0002:1";
         
       };
@@ -245,16 +245,15 @@ in
   services.spice-vdagentd.enable = isVm;
 
   ##################################################
-  # Disable turbo boost for laptops and minipcs
+  # disableturbo
   ##################################################
   systemd.services.disable-intel-turboboost = {
     enable = disableTurboBoost;
     description = "disable-intel-turboboost";
     wantedBy = [ "sysinit.target" ];
-    path = [ scripts ];
     serviceConfig = {
-      ExecStart = "turboboost no";
-      ExecStop = "turboboost yes";
+      ExecStart = "/run/current-system/sw/bin/turboboost no";
+      ExecStop = "/run/current-system/sw/bin/turboboost yes";
       RemainAfterExit = true;
     };
   };
@@ -405,36 +404,6 @@ in
 
     # all custom scripts
     scripts
-    # (stdenv.mkDerivation {
-    #   pname = "scripts";
-    #   version = "master";
-
-    #   src = dotfilesgit;
-
-    #   installPhase = ''
-    #     mkdir -p $out/bin
-    #     mkdir -p $out/share/applications
-        
-    #     cp scripts/av/* $out/bin/
-        
-    #     cp scripts/desktop/* $out/bin/
-        
-    #     cp scripts/os/* $out/bin/
-        
-    #     cp scripts/sound/* $out/bin/
-
-    #     cp scripts/utils/* $out/bin/
-        
-    #     cp scripts/vm/* $out/bin/
-        
-    #     cp scripts/webcam/* $out/bin/
-
-    #     cp shortcuts/* $out/share/applications/
-
-    #   '';
-    # })
-
-
   ];
 
   ##################################################
@@ -461,6 +430,17 @@ in
     };
   };
 
+  systemd.services.firstboot-dockerbuildx = {
+    description = "firstboot-dockerbuildx";
+    after = [ "docker.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = targetUser;
+      ExecStart = "/run/current-system/sw/bin/firstboot-dockerbuildx";
+      RemainAfterExit = true;
+    };
+  };
 
   ##################################################
   # kubernetes
@@ -478,10 +458,14 @@ in
   systemd.services.k3s.wantedBy = lib.mkForce [ ];
   
   # GUI applications
+
+  ##################################################
+  # gui
+  ##################################################
+
   systemd.services.numLockOnTty = {
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      # /run/current-system/sw/bin/setleds -D +num < "$tty";
       ExecStart = lib.mkForce (pkgs.writeShellScript "numLockOnTty" ''
         for tty in /dev/tty{1..6}; do
             ${pkgs.kbd}/bin/setleds -D +num < "$tty";
@@ -489,10 +473,9 @@ in
       '');
     };
   };
-
-  ##################################################
-  # gui
-  ##################################################
+  hardware.graphics = {
+    enable = true;
+  };
   services.xserver = {
     enable = true;
     xkb.layout = keyboardLayout;

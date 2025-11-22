@@ -1,0 +1,31 @@
+#!/bin/bash
+echo "firstboot-dockerbuildx: Setting up multi target builder"
+
+retry=0
+max_retries=5
+while [ $retry -lt $max_retries ]; do
+    if curl -s --unix-socket /var/run/docker.sock http/_ping 2>&1; then
+        echo "Docker is running."
+        break
+    else
+        echo "Docker is not running. Retrying in 1 seconds..."
+        sleep 1
+        retry=$((retry + 1))
+    fi
+done
+
+if [ $retry -eq $max_retries ]; then
+    echo "Docker failed to start after $max_retries attempts."
+    exit 1
+fi
+
+if [[ -z "$(docker buildx ls | grep multibuilder.*linux)" ]] then
+     docker buildx create --name multibuilder --platform linux/amd64,linux/arm/v7,linux/arm64 --use
+     echo "firstboot-dockerbuildx : docker multibuilder created"
+     echo "✅ multibuilder docker buildx created !">~/firstboot-dockerbuildx.log
+else
+     echo "firstboot-dockerbuildx : docker multibuilder exists alread"
+     echo "✅ multibuilder already exisits ! ">~/firstboot-dockerbuildx.log
+fi
+
+exit 0
