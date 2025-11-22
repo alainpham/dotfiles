@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
+  # change this
   nixversion = "25.05";
   hostname= "nxvm";
   targetUser = "apham";
@@ -10,7 +11,9 @@ let
   wildcardDomain = "houze.dns.army";
   enableKubernetes = true;
   automaticlogin = true;
-  
+  disableTurboBoost = true; # disable turbo boost for laptops and minipcs that run intel
+  # end of change this
+
   home-manager = builtins.fetchTarball (
     "https://github.com/nix-community/home-manager/archive/release-${nixversion}.tar.gz"
   );
@@ -18,7 +21,7 @@ let
     dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "19daf7a2397555aa29803b6a0ddf09c1829b0d76";
+    rev = "d98abbcd02b10e9fb3209bd04139ca5cbe996c31";
   };
 
   # desktop related
@@ -54,10 +57,6 @@ let
 
   # should not be set manually, but detect if running in vm
   isVm = lib.elem "virtio_console" config.boot.initrd.kernelModules;
-  chassis = builtins.readFile "/sys/class/dmi/id/chassis_type";
-  
-  disableTurboBoost = lib.elem (builtins.trimString "\n" chassis) [ "8" "9" "10" "14" "35" ];
-
 
 in
 {
@@ -219,9 +218,18 @@ in
   services.spice-vdagentd.enable = isVm;
 
   ##################################################
-  # disable turbo boost in laptops and minipcs
+  # Disable turbo boost for laptops and minipcs
   ##################################################
-  services.spice-vdagentd.enable = isVm;
+  systemd.services.disable-intel-turboboost = {
+    enable = disableTurboBoost;
+    description = "disable-intel-turboboost";
+    wantedBy = [ "sysinit.target" ];
+    serviceConfig = {
+      ExecStart = "turboboost no";
+      ExecStop = "turboboost yes";
+      RemainAfterExit = true;
+    };
+  };
 
   ##################################################
   # essentials
@@ -405,20 +413,6 @@ in
   programs.java.package = pkgs.jdk17_headless;
 
 
-  ##################################################
-  # Disable turbo boost for laptops and minipcs
-  ##################################################
-  systemd.services.disable-intel-turboboost = {
-    enable = disableTurboBoost;
-    description = "disable-intel-turboboost";
-    wantedBy = [ "sysinit.target" ];
-    serviceConfig = {
-      ExecStart = "turboboost no";
-      ExecStop = "turboboost yes";
-      RemainAfterExit = true;
-    };
-  };
-  
   ##################################################
   # Docker
   ##################################################
