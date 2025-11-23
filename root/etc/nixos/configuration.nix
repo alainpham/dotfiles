@@ -21,7 +21,7 @@ let
   dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "a5219647ee5d8f0f20193d6639ced7e94cc4b821";
+    rev = "0324f2d36d7c91e01f08af8960c4815b02326254";
   };
 
   # desktop related
@@ -53,6 +53,12 @@ let
     url = "https://github.com/alainpham/dwmblocks.git";
     ref = "master";
     rev = "bf55e259f05b1f1e497dc63ed45f332ba1edd174";
+  };
+
+  appiconsgit = builtins.fetchGit {
+    url = "https://github.com/dheereshag/coloured-icons.git";
+    ref = "master";
+    rev = "5e55f843379d810870d1708c2fff4fc25c3fea6d";
   };
 
   # should not be set manually, but detect if running in vm
@@ -101,10 +107,20 @@ let
 
         export APPDIR=$out/bin
         export SHORTCUTDIR=$out/share/applications
-        bash -c "$src/webapps/genapps"
+        bash "$src/webapps/genapps"
 
       '';
     };
+
+    appicons = pkgs.stdenv.mkDerivation {
+      pname = "appicons";
+      version = "master";
+      src = appiconsgit;
+      installPhase = ''
+        mkdir -p $out/share/icons/appicons
+        cp -R public/logos $out/share/icons/appicons
+      '';
+    }
 in
 {
   imports =
@@ -426,6 +442,7 @@ in
 
     # all custom scripts
     scripts
+    appicons
   ];
 
   ##################################################
