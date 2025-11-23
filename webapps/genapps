@@ -8,7 +8,7 @@ for entry in "${WEBAPPSLIST[@]}"; do
     url="${entry#*|}"
 cat << EOF | tee $APPDIR/$name
 #!/bin/bash
-google-chrome --app="${url}"
+google-chrome-stable --app="${url}"
 EOF
 chmod 755 $APPDIR/$name
 done
