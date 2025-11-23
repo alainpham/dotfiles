@@ -1,5 +1,7 @@
 #!/bin/bash
 
+WEBAPPSLIST=$1
+APPDIR=$2
 
 for entry in "${WEBAPPSLIST[@]}"; do
     name="${entry%%|*}"
