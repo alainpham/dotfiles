@@ -28,6 +28,7 @@ dunst > ~/.dunst.log &
 echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
 export XCURSOR_SIZE=24
+export TERMINAL=st
 while true; do
 
     piddunst=$(pgrep dunst)

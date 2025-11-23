@@ -124,13 +124,13 @@ in
     };
   };
 
-  environment.variables = {
-    TARGET_USER = targetUserName;
-    KEYBOARD_LAYOUT = keyboardLayout;
-    KEYBOARD_MODEL = keyboardModel;
-    PRODUCT_NAME = builtins.readFile "/sys/devices/virtual/dmi/id/product_name";
-  };
-
+  environment.loginShellInit = ''
+    export TARGET_USER=${targetUserName}
+    export KEYBOARD_LAYOUT=${keyboardLayout}
+    export KEYBOARD_MODEL=${keyboardModel}
+    export TERMINAL="st"
+    export PRODUCT_NAME=$(cat /sys/devices/virtual/dmi/id/product_name)
+  '';
 
   home-manager.users.${targetUserName} = {
     home.stateVersion = nixversion;
