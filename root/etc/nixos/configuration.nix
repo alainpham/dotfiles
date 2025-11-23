@@ -56,9 +56,9 @@ let
   };
 
   appiconsgit = builtins.fetchGit {
-    url = "https://github.com/dheereshag/coloured-icons.git";
+    url = "https://github.com/alainpham/coloured-icons.git";
     ref = "master";
-    rev = "5e55f843379d810870d1708c2fff4fc25c3fea6d";
+    rev = "593a65cb2cd670dd46186fb663cc139d9a131621";
   };
 
   # should not be set manually, but detect if running in vm
@@ -83,25 +83,25 @@ let
         # webapps
 
         export WEBAPPSLIST="
-          gpt|https://chatgpt.com
-          gm|https://mail.google.com/mail/u/1/#inbox
-          cal|https://calendar.google.com/calendar/u/1/r
-          teams|https://teams.microsoft.com/v2/
-          whatsapp|https://web.whatsapp.com
-          messenger|https://www.messenger.com
-          telegram|https://web.telegram.org
-          notes|https://docs.google.com/document/d/1wTwA1NhzgYUGG1eyDyUZj8ExhbhdscQrdYWBOBkLnCs
-          gco|https://docs.google.com/presentation/d/1yo6Q0p0OBK9vIh3abwigtBDlFGMy9NqU7EzRKYjraro
-          gdemo|https://emea.cloud.demokit.grafana.com/a/grafana-asserts-app/assertions?start=now-24h&end=now&search=productcatalogservice%20connected%20services&view=BY_ENTITY
-          spotify|https://open.spotify.com/
-          youtube|https://www.youtube.com/
-          grok|https://grok.com/
-          sd|https://stablediffusionweb.com/app/image-generator
-          brm|https://stablediffusionweb.com/background-remover
-          word|https://word.cloud.microsoft
-          excel|https://excel.cloud.microsoft
-          powerpoint|https://powerpoint.cloud.microsoft
-          deezer|https://www.deezer.com/
+          gpt|chatgpt-light|https://chatgpt.com
+          gm|gmail|https://mail.google.com/mail/u/1/#inbox
+          cal|google|https://calendar.google.com/calendar/u/1/r
+          teams|teams|https://teams.microsoft.com/v2/
+          whatsapp|whatsapp|https://web.whatsapp.com
+          messenger|messenger.|https://www.messenger.com
+          telegram|telegram|https://web.telegram.org
+          notes|onenote|https://docs.google.com/document/d/1wTwA1NhzgYUGG1eyDyUZj8ExhbhdscQrdYWBOBkLnCs
+          gco|grafana|https://docs.google.com/presentation/d/1yo6Q0p0OBK9vIh3abwigtBDlFGMy9NqU7EzRKYjraro
+          gdemo|grafana|https://emea.cloud.demokit.grafana.com/a/grafana-asserts-app/assertions?start=now-24h&end=now&search=productcatalogservice%20connected%20services&view=BY_ENTITY
+          spotify|spotify.|https://open.spotify.com/
+          youtube|youtube|https://www.youtube.com/
+          grok|x-light|https://grok.com/
+          sd|chatgpt-light|https://stablediffusionweb.com/app/image-generator
+          brm|chatgpt-light|https://stablediffusionweb.com/background-remover
+          word|word|https://word.cloud.microsoft
+          excel|excel|https://excel.cloud.microsoft
+          powerpoint|powerpoint|https://powerpoint.cloud.microsoft
+          deezer|applemusic|https://www.deezer.com/
         "
         
 
@@ -118,9 +118,9 @@ let
       src = appiconsgit;
       installPhase = ''
         mkdir -p $out/share/icons/appicons
-        cp -R public/logos $out/share/icons/appicons
+        cp -r $src/public/logos/* "$out/share/icons/appicons/"
       '';
-    }
+    };
 in
 {
   imports =
