@@ -21,7 +21,7 @@ let
   dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "79397f964da8c51a1c435fc69ff7ba49f4faa684";
+    rev = "8acfbef0bdf758dee8985aeb529931eff20daccf";
   };
 
   # desktop related
@@ -99,8 +99,8 @@ let
         )
 
         export APPDIR=$out/bin
-
-        bash $src/webapps/genapps "$WEBAPPSLIST" "$APPDIR"
+        export SHORTCUTDIR=$out/share/applications
+        $src/webapps/genapps
       '';
     };
 in

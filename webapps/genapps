@@ -1,8 +1,5 @@
 #!/bin/bash
 
-WEBAPPSLIST=$1
-APPDIR=$2
-
 for entry in "${WEBAPPSLIST[@]}"; do
     name="${entry%%|*}"
     url="${entry#*|}"
@@ -10,5 +7,16 @@ cat << EOF | tee $APPDIR/$name
 #!/bin/bash
 google-chrome-stable --app="${url}"
 EOF
+
+cat << EOF | tee $SHORTCUTDIR/$name.desktop
+[Desktop Entry]
+Name=$name
+Exec=$name
+Icon=google-chrome
+Terminal=false
+Type=Application
+Categories=Network;
+EOF
+
 chmod 755 $APPDIR/$name
 done
