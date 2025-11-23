@@ -474,8 +474,6 @@ in
     xkb.model = keyboardModel;
 
     displayManager.startx.enable = true;
-    excludePackages = [ pkgs.xterm ];
-
   };
   services.udisks2.enable = true;
   services.picom.enable = true;
