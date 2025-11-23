@@ -58,7 +58,7 @@ let
   appiconsgit = builtins.fetchGit {
     url = "https://github.com/alainpham/coloured-icons.git";
     ref = "master";
-    rev = "5e0adf50e25539f80697c0379f4203a8e37d57d0";
+    rev = "1423f027d4af5d6aaa6e7b096626810bc36a6231";
   };
 
   # should not be set manually, but detect if running in vm
@@ -117,8 +117,8 @@ let
       version = "master";
       src = appiconsgit;
       installPhase = ''
-        mkdir -p $out/share/icons/hicolor/scalable
-        cp -r $src/public/logos/* "$out/share/icons/hicolor/scalable/"
+        mkdir -p $out/share/icons/hicolor/scalable/logos
+        cp -r $src/public/logos/* "$out/share/icons/hicolor/scalable/logos"
       '';
     };
 in
@@ -356,7 +356,7 @@ in
     k9s
     kubernetes-helm
 
-    # Desktop applications
+    # Basic desktop applications
     (dwm.overrideAttrs (oldAttrs: rec {
       src = dwmgit;
     }))
@@ -417,6 +417,7 @@ in
     kdePackages.breeze-gtk
 
     bluetui
+    impala
 
     gparted
     vulkan-tools
@@ -440,9 +441,31 @@ in
 
     vscode
 
-    # all custom scripts
+
+    # virtualization todo
+
+    # all custom scripts & webapps
     scripts
     appicons
+
+
+    # advanced desktop apps
+    kdePackages.kdenlive
+    onlyoffice-desktopeditors
+    mlv-app
+    drawio
+    viber
+    freac
+    localsend
+    avidemux
+    postman
+
+    # emulation
+    emulationstation-de
+    retroarch-full
+    pcsx2
+    dolphin-emu
+    cemu
   ];
 
   ##################################################
