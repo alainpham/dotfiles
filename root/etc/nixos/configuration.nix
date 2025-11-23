@@ -4,7 +4,7 @@ let
   # change this
   nixversion = "25.05";
   hostname= "nxvm";
-  targetUser = "apham";
+  targetUserName = "apham";
   targetUserEmail = "apham@localhost";
   keyboardLayout = "fr";
   keyboardModel = "pc105"; # for macbook use "macbook79"
@@ -104,12 +104,12 @@ in
   };
 
   users.groups = { 
-    ${targetUser} = { };
+    ${targetUserName} = { };
   };
 
   # 
   users.users = {
-    ${targetUser} = {
+    ${targetUserName} = {
       isNormalUser = true;
       extraGroups = [ 
         "wheel"
@@ -124,11 +124,19 @@ in
     };
   };
 
-  home-manager.users.${targetUser} = {
+  environment.variables = {
+    TARGET_USER = targetUserName;
+    KEYBOARD_LAYOUT = keyboardLayout;
+    KEYBOARD_MODEL = keyboardModel;
+    PRODUCT_NAME = lib.getSystemInfo "productName";
+  };
+
+
+  home-manager.users.${targetUserName} = {
     home.stateVersion = nixversion;
     programs.git = {
       enable = true;
-      userName = targetUser;
+      userName = targetUserName;
       userEmail = targetUserEmail;
     };
 
@@ -217,7 +225,7 @@ in
   # passwordless sudo for users in wheel group
   ##################################################
   services.getty.autologinOnce = automaticlogin;
-  services.getty.autologinUser = targetUser;
+  services.getty.autologinUser = targetUserName;
 
   services.envfs.enable = true;
 
@@ -290,7 +298,8 @@ in
     wakeonlan
     cloud-utils
     iperf
-
+    dmidecode
+    
     # dev environment
     ansible
     nodejs_24
@@ -366,6 +375,7 @@ in
     gparted
     vulkan-tools
     ffmpeg
+    fdk_aac
     yt-dlp
     google-chrome
     lxqt.pavucontrol-qt
@@ -418,7 +428,7 @@ in
     path = [ "/run/current-system/sw" ];
     serviceConfig = {
       Type = "oneshot";
-      User = targetUser;
+      User = targetUserName;
       ExecStart = "/run/current-system/sw/bin/firstboot-dockerbuildx";
       RemainAfterExit = true;
     };
