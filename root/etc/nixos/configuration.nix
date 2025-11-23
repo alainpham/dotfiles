@@ -73,6 +73,34 @@ let
         done
 
         cp shortcuts/* $out/share/applications/
+
+        # webapps
+
+        export WEBAPPSLIST=(
+          "gpt|https://chatgpt.com"
+          "gm|https://mail.google.com/mail/u/1/#inbox"
+          "cal|https://calendar.google.com/calendar/u/1/r"
+          "teams|https://teams.microsoft.com/v2/"
+          "whatsapp|https://web.whatsapp.com"
+          "messenger|https://www.messenger.com"
+          "telegram|https://web.telegram.org"
+          "notes|https://docs.google.com/document/d/1wTwA1NhzgYUGG1eyDyUZj8ExhbhdscQrdYWBOBkLnCs"
+          "gco|https://docs.google.com/presentation/d/1yo6Q0p0OBK9vIh3abwigtBDlFGMy9NqU7EzRKYjraro"
+          "gdemo|https://emea.cloud.demokit.grafana.com/a/grafana-asserts-app/assertions?start=now-24h&end=now&search=productcatalogservice%20connected%20services&view=BY_ENTITY"
+          "spotify|https://open.spotify.com/"
+          "youtube|https://www.youtube.com/"
+          "grok|https://grok.com/"
+          "sd|https://stablediffusionweb.com/app/image-generator"
+          "brm|https://stablediffusionweb.com/background-remover"
+          "word|https://word.cloud.microsoft"
+          "excel|https://excel.cloud.microsoft"
+          "powerpoint|https://powerpoint.cloud.microsoft"
+          "deezer|https://www.deezer.com/"
+        )
+
+        export APPDIR=$out/bin
+
+        webapps/genapps 
       '';
     };
 in

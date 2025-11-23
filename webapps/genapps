@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+for entry in "${WEBAPPSLIST[@]}"; do
+    name="${entry%%|*}"
+    url="${entry#*|}"
+cat << EOF | tee $APPDIR/$name
+#!/bin/bash
+google-chrome --app="${url}"
+EOF
+chmod 755 $APPDIR/$name
+done
