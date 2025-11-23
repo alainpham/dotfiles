@@ -355,4 +355,3 @@ video/x-nsv=org.kde.haruna.desktop
 video/x-ogm+ogg=org.kde.haruna.desktop
 video/x-sgi-movie=org.kde.haruna.desktop
 video/x-theora+ogg=org.kde.haruna.desktop
-x-scheme-handler/terminal=st.desktop
