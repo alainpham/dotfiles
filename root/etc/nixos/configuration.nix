@@ -21,7 +21,7 @@ let
   dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "1a52b3e9dbd2e8febdc07d65ee2a005c92975e66";
+    rev = "a73443743b5b3c7c9d50fe4062c83694c1f091fe";
   };
 
   # desktop related
@@ -128,7 +128,6 @@ in
     export TARGET_USER=${targetUserName}
     export KEYBOARD_LAYOUT=${keyboardLayout}
     export KEYBOARD_MODEL=${keyboardModel}
-    export TERMINAL="st"
     export PRODUCT_NAME=$(cat /sys/devices/virtual/dmi/id/product_name)
   '';
 
@@ -333,6 +332,7 @@ in
       src = dwmblocksgit;
     }))
 
+    xdg-terminal-exec
     numlockx
     usbutils
     libinput-gestures
@@ -475,6 +475,8 @@ in
     xkb.model = keyboardModel;
 
     displayManager.startx.enable = true;
+    excludePackages = [ pkgs.xterm ];
+
   };
   services.udisks2.enable = true;
   services.picom.enable = true;
