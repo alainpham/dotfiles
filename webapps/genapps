@@ -1,6 +1,5 @@
 #!/bin/bash
-
-for entry in "${WEBAPPSLIST[@]}"; do
+for entry in $(echo $WEBAPPSLIST); do
     name="${entry%%|*}"
     url="${entry#*|}"
 cat << EOF | tee $APPDIR/$name
