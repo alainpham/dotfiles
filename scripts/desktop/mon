@@ -18,6 +18,9 @@ if [ "$command" == "help" ]; then
     exit 1
 fi
 
+if [ -z "${PRODUCT_NAME}" ]; then
+    export PRODUCT_NAME=$(cat /sys/devices/virtual/dmi/id/product_name)
+fi
 
 # List available monitors using xrandr
 monitors=$(xrandr --query | grep " connected" | awk '{ print $1 }')

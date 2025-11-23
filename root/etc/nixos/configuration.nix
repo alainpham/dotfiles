@@ -21,7 +21,7 @@ let
   dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "c1e8f054b0c630cbe8e39e62aab986605f944887";
+    rev = "1a52b3e9dbd2e8febdc07d65ee2a005c92975e66";
   };
 
   # desktop related
@@ -128,7 +128,7 @@ in
     TARGET_USER = targetUserName;
     KEYBOARD_LAYOUT = keyboardLayout;
     KEYBOARD_MODEL = keyboardModel;
-    PRODUCT_NAME = lib.getSystemInfo "productName";
+    PRODUCT_NAME = builtins.readFile "/sys/devices/virtual/dmi/id/product_name";
   };
 
 
@@ -299,7 +299,8 @@ in
     cloud-utils
     iperf
     dmidecode
-    
+    micro
+
     # dev environment
     ansible
     nodejs_24
