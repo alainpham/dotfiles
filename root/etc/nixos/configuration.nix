@@ -21,7 +21,7 @@ let
   dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "57e79fa99584e0098903fbbeeeeeda42752825ba";
+    rev = "c886a75b01184bafe46d80e9fd3fba97bd381578";
   };
 
   # desktop related
@@ -332,7 +332,6 @@ in
       src = dwmblocksgit;
     }))
 
-    xdg-terminal-exec
     numlockx
     usbutils
     libinput-gestures
@@ -492,12 +491,12 @@ in
     noto-fonts
   ];
 
-  # default terminal
-  xdg.terminal-exec.settings = {
-    default = [
-      "st.desktop"
-    ];
-  };
+  # # default terminal
+  # xdg.terminal-exec.settings = {
+  #   default = [
+  #     "st.desktop"
+  #   ];
+  # };
 
   # sound
   boot.kernelModules = [ 
