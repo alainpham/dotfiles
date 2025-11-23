@@ -21,7 +21,7 @@ let
   dotfilesgit = builtins.fetchGit {
     url = "https://github.com/alainpham/dotfiles.git";
     ref = "master";
-    rev = "0324f2d36d7c91e01f08af8960c4815b02326254";
+    rev = "57761386e37d80fe68303abff66f53a0fd673c31";
   };
 
   # desktop related
@@ -58,7 +58,7 @@ let
   appiconsgit = builtins.fetchGit {
     url = "https://github.com/alainpham/coloured-icons.git";
     ref = "master";
-    rev = "593a65cb2cd670dd46186fb663cc139d9a131621";
+    rev = "5e0adf50e25539f80697c0379f4203a8e37d57d0";
   };
 
   # should not be set manually, but detect if running in vm
@@ -83,21 +83,21 @@ let
         # webapps
 
         export WEBAPPSLIST="
-          gpt|chatgpt-light|https://chatgpt.com
-          gm|gmail|https://mail.google.com/mail/u/1/#inbox
+          gpt|chatgpt-color|https://chatgpt.com
+          gm|gmail-color|https://mail.google.com/mail/u/1/#inbox
           cal|google|https://calendar.google.com/calendar/u/1/r
           teams|teams|https://teams.microsoft.com/v2/
           whatsapp|whatsapp|https://web.whatsapp.com
-          messenger|messenger.|https://www.messenger.com
+          messenger|messenger|https://www.messenger.com
           telegram|telegram|https://web.telegram.org
           notes|onenote|https://docs.google.com/document/d/1wTwA1NhzgYUGG1eyDyUZj8ExhbhdscQrdYWBOBkLnCs
           gco|grafana|https://docs.google.com/presentation/d/1yo6Q0p0OBK9vIh3abwigtBDlFGMy9NqU7EzRKYjraro
           gdemo|grafana|https://emea.cloud.demokit.grafana.com/a/grafana-asserts-app/assertions?start=now-24h&end=now&search=productcatalogservice%20connected%20services&view=BY_ENTITY
-          spotify|spotify.|https://open.spotify.com/
+          spotify|spotify|https://open.spotify.com/
           youtube|youtube|https://www.youtube.com/
-          grok|x-light|https://grok.com/
-          sd|chatgpt-light|https://stablediffusionweb.com/app/image-generator
-          brm|chatgpt-light|https://stablediffusionweb.com/background-remover
+          grok|grok|https://grok.com/
+          sd|chatgpt-color|https://stablediffusionweb.com/app/image-generator
+          brm|chatgpt-color|https://stablediffusionweb.com/background-remover
           word|word|https://word.cloud.microsoft
           excel|excel|https://excel.cloud.microsoft
           powerpoint|powerpoint|https://powerpoint.cloud.microsoft
@@ -117,8 +117,8 @@ let
       version = "master";
       src = appiconsgit;
       installPhase = ''
-        mkdir -p $out/share/icons/appicons
-        cp -r $src/public/logos/* "$out/share/icons/appicons/"
+        mkdir -p $out/share/icons/hicolor/scalable
+        cp -r $src/public/logos/* "$out/share/icons/hicolor/scalable/"
       '';
     };
 in
