@@ -60,13 +60,15 @@ while true; do
         sbg
         echo first boot, setting random>>~/.xinit.log
     fi
-    
-    pidpicom=$(pgrep picom)
-    if [ ! -z "$pidpicom" ]; then
-        kill -9 $pidpicom
-    fi
-    picom -b --config ~/.config/picom/picom.conf
 
+    if [ ! -f ~/.nopicom ]; then
+        pidpicom=$(pgrep picom)
+        if [ ! -z "$pidpicom" ]; then
+            kill -9 $pidpicom
+        fi
+        picom -b --config ~/.config/picom/picom.conf
+    fi
+    
     # Log stderror to a file
     dwm 2> ~/.dwm.log
     # No error logging
