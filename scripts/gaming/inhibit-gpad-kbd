@@ -1,0 +1,2 @@
+#!/bin/bash
+echo 1 > /sys$(udevadm info -q path -n /dev/input/by-id/usb-Shanwan_Twin_Usb_Joystick-event-if02)/device/inhibited
