@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# expand fs on vms
 if [ ! -f /var/log/firstboot.log ]; then
     if lsblk | grep -q vda; then
         DEVICE="/dev/vda"
