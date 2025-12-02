@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ ! -f /var/log/firstboot.log ]; then
+    if lsblk | grep -q vda; then
+        DEVICE="/dev/vda"
+    elif lsblk | grep -q sda; then
+        DEVICE="/dev/sda"
+    else
+        DEVICE="/dev/sda"
+    fi
+    # Code to execute if log file does not exist
+    echo "First boot script has run">/var/log/firstboot.log
+    growpart $DEVICE 1
+    resize2fs ${DEVICE}1
+fi
