@@ -1,4 +1,27 @@
 #!/bin/bash
+
+export WEBAPPSLIST="
+    gpt|chatgpt-color|https://chatgpt.com
+    gm|gmail-color|https://mail.google.com/mail/u/1/#inbox
+    cal|google|https://calendar.google.com/calendar/u/1/r
+    teams|teams|https://teams.microsoft.com/v2/
+    whatsapp|whatsapp|https://web.whatsapp.com
+    messenger|messenger|https://www.messenger.com
+    telegram|telegram|https://web.telegram.org
+    notes|onenote|https://docs.google.com/document/d/1wTwA1NhzgYUGG1eyDyUZj8ExhbhdscQrdYWBOBkLnCs
+    gco|grafana|https://docs.google.com/presentation/d/1yo6Q0p0OBK9vIh3abwigtBDlFGMy9NqU7EzRKYjraro
+    gdemo|grafana|https://emea.cloud.demokit.grafana.com/a/grafana-asserts-app/assertions?start=now-24h&end=now&search=productcatalogservice%20connected%20services&view=BY_ENTITY
+    spotify|spotify|https://open.spotify.com/
+    youtube|youtube|https://www.youtube.com/
+    grok|grok|https://grok.com/
+    sd|chatgpt-color|https://stablediffusionweb.com/app/image-generator
+    brm|chatgpt-color|https://stablediffusionweb.com/background-remover
+    word|word|https://word.cloud.microsoft
+    excel|excel|https://excel.cloud.microsoft
+    powerpoint|powerpoint|https://powerpoint.cloud.microsoft
+    deezer|applemusic|https://www.deezer.com/
+"
+
 for entry in $(echo $WEBAPPSLIST); do
     name="${entry%%|*}"
     icon="${entry#*|}"
