@@ -16,7 +16,7 @@ background_files=(
 for i in "${!background_files[@]}"; do
     if [ ! -f "$HOME/.local/share/backgrounds/$(printf "%02d" $((i+1))).jpg" ]; then
         mkdir -p $HOME/.local/share/backgrounds
-        wget -O "$HOME/.local/share/backgrounds/$(printf "%02d" $((i+1))).jpg" "${background_files[$i]}"
+        curl -Lo "$HOME/.local/share/backgrounds/$(printf "%02d" $((i+1))).jpg" "${background_files[$i]}"
         echo "Downloaded background image $(printf "%02d" $((i+1))).jpg"
     else
         echo "Background image $(printf "%02d" $((i+1))).jpg already exists, skipping."
