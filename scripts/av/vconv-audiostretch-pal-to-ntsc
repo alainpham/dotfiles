@@ -1,0 +1,8 @@
+#!/bin/bash
+extension="${1##*.}"
+filename="${1%.*}"
+stream=${2:-"0:a:0"}
+format=${3:-mka}
+
+
+ffmpeg -i "$1" -map ${stream} -filter:a "atempo=0.95904095904095904096" -c:a aac -b:a 160k "${filename}.${format}"
