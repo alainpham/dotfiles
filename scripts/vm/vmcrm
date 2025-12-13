@@ -1,4 +1,4 @@
 #!/bin/bash
 vmname=${1:-v8m}
 ipaddrsuffix=${2:-30}
-vmcr $vmname 8192 4 lnsvr $ipaddrsuffix 80G 1G linux2016
+vmcr $vmname 8192 4 lnsvr $ipaddrsuffix 80G 1G ubuntu24.04
