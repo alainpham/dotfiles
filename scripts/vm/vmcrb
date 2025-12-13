@@ -3,7 +3,7 @@
 imageurl=https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
 
 mkdir -p /home/$USER/virt/images/
-if [[ ! -f /home/$USER/virt/images/lnsvr-orig.img ]] || [[ "$1" == "1" ]]; then
+if [[ ! -f /home/$USER/virt/images/lnsvr-orig.qcow2 ]] || [[ "$1" == "1" ]]; then
     curl -Lo /home/$USER/virt/images/lnsvr-orig.qcow2 $imageurl
 fi
 
