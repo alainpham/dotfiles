@@ -19,6 +19,8 @@ if command -v gshorts >/dev/null 2>&1; then
 fi
 
 if command -v slack >/dev/null 2>&1; then
-    slack &
-    echo slack started
+    if ! pgrep -x "slack" > /dev/null; then
+        slack &
+        echo slack started
+    fi
 fi
