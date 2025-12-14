@@ -65,7 +65,11 @@ while true; do
         pidpicom=$(pgrep picom)
         if [ ! -z "$pidpicom" ]; then
             kill -9 $pidpicom
+            while pgrep -x picom > /dev/null; do
+                sleep 1
+            done
         fi
+
         picom -b --config ~/.config/picom/picom.conf
     fi
     

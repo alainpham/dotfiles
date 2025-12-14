@@ -8,8 +8,6 @@ else
     sleep 5 && sbg &
 fi
 
-
-
 if command -v sunshine >/dev/null 2>&1; then
     pkill sunshine ; sunshine &
 fi
