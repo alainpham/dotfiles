@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=nmcli
-Exec=nmcli
+Name=nmtui
+Exec=nmtui
 Icon=network-manager
 Terminal=true
