@@ -22,8 +22,6 @@ fi
 from_desktop_exists=$(pactl list sinks short | grep from-desktop | wc -l)
 if [ "$from_desktop_exists" -eq 0 ]; then
 pacmd load-module module-remap-sink sink_name=from-desktop sink_properties=device.description=from-desktop master=alsa_output.dummy-sink
-pacmd set-sink-volume from-desktop 62259
-pacmd set-sink-mute from-desktop 0
 echo creating from-desktop
 else
 echo from-desktop sink exists
@@ -33,8 +31,6 @@ fi
 from_caller_exists=$(pactl list sinks short | grep from-caller | wc -l)
 if [ "$from_caller_exists" -eq 0 ]; then
 pacmd load-module load-module module-remap-sink sink_name=from-caller sink_properties=device.description=from-caller master=alsa_output.dummy-sink
-set-sink-volume from-caller 62259
-pacmd set-sink-mute from-caller 0
 echo creating from-caller
 else
 echo from-caller sink exists
@@ -55,6 +51,25 @@ pacmd move-sink-input $cspeaker_sink_input_id $speakers
 # mics_raw_module_id=$(pactl list short modules | grep "source_name=mics-raw" | awk '{print $1}')
 # mics_raw_source_output_id=$(pactl -f json list source-outputs | jq -r ".[] | select(.owner_module == \"$mics_raw_module_id\") | .index")
 # pacmd move-source-output $mics_raw_source_output_id $mic
+
+# sink does not exist so create it from-desktop
+mic01_processed_exists=$(pactl list sources short | grep mic01-processed | wc -l)
+if [ "$mic01_processed_exists" -eq 0 ]; then
+pacmd load-module module-remap-source source_name=mic01-processed master=alsa_input.dummy-source master_channel_map="front-left" channel_map="mono" source_properties=device.description="mic01-processed"
+echo creating mic01-processed
+else
+echo mic01-processed source exists
+fi
+
+# sink does not exist so create it from-desktop
+mic02_processed_exists=$(pactl list sources short | grep mic02-processed | wc -l)
+if [ "$mic02_processed_exists" -eq 0 ]; then
+pacmd load-module module-remap-source source_name=mic02-processed master=alsa_input.dummy-source master_channel_map="front-right" channel_map="mono" source_properties=device.description="mic02-processed"
+echo creating mic02-processed
+else
+echo mic02-processed source exists
+fi
+
 
 echo "hookup mic01 to physical mic"
 mic01_module_id=$(pactl list short modules | grep "source_name=mic01-processed" | awk '{print $1}')
