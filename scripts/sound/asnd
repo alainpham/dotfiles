@@ -18,6 +18,28 @@ if [ -z "$mic" ]; then
     exit 1
 fi
 
+# sink does not exist so create it from-desktop
+from_desktop_exists=$(pactl list sinks short | grep from-desktop | wc -l)
+if [ "$from_desktop_exists" -eq 0 ]; then
+pacmd load-module module-remap-sink sink_name=from-desktop sink_properties=device.description=from-desktop master=alsa_output.dummy-sink
+pacmd set-sink-volume from-desktop 62259
+pacmd set-sink-mute from-desktop 0
+echo creating from-desktop
+else
+echo from-desktop sink exists
+fi
+
+# sink does not exist so create it from-desktop
+from_caller_exists=$(pactl list sinks short | grep from-caller | wc -l)
+if [ "$from_caller_exists" -eq 0 ]; then
+pacmd load-module load-module module-remap-sink sink_name=from-caller sink_properties=device.description=from-caller master=alsa_output.dummy-sink
+set-sink-volume from-caller 62259
+pacmd set-sink-mute from-caller 0
+echo creating from-caller
+else
+echo from-caller sink exists
+fi
+
 # 
 echo "hookup from-desktop to physical speakers"
 cspeaker_module_id=$(pactl list short modules | grep "sink_name=from-desktop" | awk '{print $1}')
