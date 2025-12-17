@@ -1,6 +1,7 @@
 .include /etc/pulse/default.pa
 
 unload-module module-switch-on-connect
+unload-module module-suspend-on-idle
 
 #mic to caller
 load-module module-alsa-source device_id=loop,0,7 source_name=to-caller source_properties=device.description=to-caller rate=48000 
