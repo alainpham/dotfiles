@@ -30,7 +30,7 @@ fi
 # sink does not exist so create it from-desktop
 from_caller_exists=$(pactl list sinks short | grep from-caller | wc -l)
 if [ "$from_caller_exists" -eq 0 ]; then
-pacmd load-module load-module module-remap-sink sink_name=from-caller sink_properties=device.description=from-caller master=alsa_output.dummy-sink
+pacmd load-module module-remap-sink sink_name=from-caller sink_properties=device.description=from-caller master=alsa_output.dummy-sink
 echo creating from-caller
 else
 echo from-caller sink exists
