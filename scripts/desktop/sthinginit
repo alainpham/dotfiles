@@ -1,0 +1,118 @@
+#!/bin/bash
+cd ~
+if [ -d lab ]; then
+    echo "lab directory exists"
+    rm -rf lab
+fi
+git clone https://github.com/alainpham/lab.git
+cd lab
+touch secret
+source initlab
+lab run syncthing
+curl http://192.168.8.100:28000/secret.sh > /tmp/secret.sh
+source /tmp/secret.sh
+rm /tmp/secret.sh
+
+# export BASHRC="/etc/bash.bashrc"
+
+# # secret should set the following env vars
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_ADDR*=.*" "export SYNCTHING_HUB_ADDR=$SYNCTHING_HUB_ADDR"
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_ADDRVPN*=.*" "export SYNCTHING_HUB_ADDRVPN=$SYNCTHING_HUB_ADDRVPN"
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_APIURL*=.*" "export SYNCTHING_HUB_APIURL=$SYNCTHING_HUB_APIURL"
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_ID*=.*" "export SYNCTHING_HUB_ID=$SYNCTHING_HUB_ID"
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_APIKEY*=.*" "export SYNCTHING_HUB_APIKEY=$SYNCTHING_HUB_APIKEY"
+    
+API_KEY=$(docker exec syncthing cat /var/syncthing/config/config.xml | grep -oP '(?<=<apikey>).*?(?=</apikey>)')
+
+# ##### SET DEVICE NAME
+
+# Get local device ID (try config file first, fall back to system status)
+MY_ID=$(curl -s -H "X-API-Key: $API_KEY" http://localhost:8384/rest/system/status | grep -oP '"myID"\s*:\s*"\K[^"]+')
+
+curl -X PATCH \
+  -H "X-API-Key: $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"name\": \"$HOSTNAME\"}" \
+  http://localhost:8384/rest/config/devices/$MY_ID
+
+echo "Requested rename of device $MY_ID -> $HOSTNAME"
+# ##### END SET DEVICE NAME
+
+# ##### ADD DEVICE ON CENTRAL SERVER
+DEVICE_JSON=$(cat <<EOF
+{
+    "deviceID": "$MY_ID",
+    "name": "$HOSTNAME",
+    "autoAcceptFolders": true
+}
+EOF
+)
+
+curl -s -X POST \
+    -H "X-API-Key: $SYNCTHING_HUB_APIKEY" \
+    -H "Content-Type: application/json" \
+    -d "$DEVICE_JSON" \
+    $SYNCTHING_HUB_APIURL/rest/config/devices
+
+echo "New device added on central server"
+# ##### ADD DEVICE ON CENTRAL SERVER
+
+# ##### ADD CENTRAL TO LOCAL
+DEVICE_JSON=$(cat <<EOF
+{
+    "deviceID": "$SYNCTHING_HUB_ID",
+    "addresses": ["$SYNCTHING_HUB_ADDR","$SYNCTHING_HUB_ADDRVPN"]
+}
+EOF
+)
+
+curl -s -X POST \
+    -H "X-API-Key: $API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "$DEVICE_JSON" \
+    http://localhost:8384/rest/config/devices
+echo "Central server added on local device"
+# ##### ADD CENTRAL TO LOCAL
+
+# Define key+folder list (format: id|path). Add as many lines as needed.
+entries=(
+    "retroarch-saves|/var/syncthing/saves"
+    "retroarch-states|/var/syncthing/states"
+    "downloaded-media|/var/syncthing/downloaded_media"
+    "pcsx2-memcards|/var/syncthing/PCSX2/memcards"
+    "pcsx2-sstates|/var/syncthing/PCSX2/sstates"
+    "pcsx2-covers|/var/syncthing/PCSX2/covers"
+    "cemu-saves|/var/syncthing/cemu"
+)
+
+
+# Loop through list, build JSON and POST each folder to the Syncthing API
+for entry in "${entries[@]}"; do
+    FOLDER_ID="${entry%%|*}"
+    PATH_ON_HOST="${entry#*|}"
+
+FOLDER_JSON=$(cat <<EOF
+{
+    "id": "$FOLDER_ID",
+    "path": "$PATH_ON_HOST",
+    "devices": [
+        {
+            "deviceID": "$SYNCTHING_HUB_ID"
+        }
+    ]
+}
+EOF
+)
+
+
+curl -X DELETE -H "X-API-Key: ${API_KEY}" http://localhost:8384/rest/config/folders/${FOLDER_ID}
+echo "purged folder $FOLDER_ID"
+
+curl -s -X POST \
+    -H "X-API-Key: $API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "$FOLDER_JSON" \
+    http://localhost:8384/rest/config/folders
+echo "created folder $FOLDER_ID"
+
+done
