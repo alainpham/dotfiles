@@ -1,5 +1,5 @@
 [Hotkeys]
-Device = SDL/0/X360 Controller
+Device = SDL/0/PS3 Controller
 Emulation Speed/Disable Emulation Speed Limit = Tab
 Stepping/Step Into = F11
 Stepping/Step Over = @(Shift+F10)
