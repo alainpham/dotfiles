@@ -1,5 +1,0 @@
-[Hotkeys]
-Device = SDL/0/PS3 Controller
-General/Exit = @(Guide+Start)
-Save State/Save State Slot 1 = @(Guide+`Button W`)
-Load State/Load State Slot 1 = @(Guide+`Button N`)
