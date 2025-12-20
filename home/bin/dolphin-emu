@@ -30,6 +30,21 @@ SDL_GAMECONTROLLERCONFIG="${SDL_GAMECONTROLLERCONFIG}05009b514c050000cc090000008
 
 export SDL_GAMECONTROLLERCONFIG=$SDL_GAMECONTROLLERCONFIG
 
+CONFIG="$HOME/.local/share/dolphin-emu/WiimoteNew.ini"
+if [ ! -f "$CONFIG" ]; then
+    cp $CONFIG.template "$CONFIG"
+fi
+
+CONFIG="$HOME/.local/share/dolphin-emu/GCPadNew.ini"
+if [ ! -f "$CONFIG" ]; then
+    cp $CONFIG.template "$CONFIG"
+fi
+
+CONFIG="$HOME/.local/share/dolphin-emu/Hotkeys.ini"
+if [ ! -f "$CONFIG" ]; then
+    cp $CONFIG.template "$CONFIG"
+fi
+
 if [ -f /usr/local/bin/dolphin-emu ]; then
     echo launching from /usr/local/bin/dolphin-emu
     /usr/local/bin/dolphin-emu "$@"
