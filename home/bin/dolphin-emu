@@ -35,12 +35,12 @@ if [ ! -f "$CONFIG" ]; then
     cp $CONFIG.template "$CONFIG"
 fi
 
-CONFIG="$HOME/.local/dolphin-emu/GCPadNew.ini"
+CONFIG="$HOME/.config/dolphin-emu/GCPadNew.ini"
 if [ ! -f "$CONFIG" ]; then
     cp $CONFIG.template "$CONFIG"
 fi
 
-CONFIG="$HOME/.local/dolphin-emu/Hotkeys.ini"
+CONFIG="$HOME/.config/dolphin-emu/Hotkeys.ini"
 if [ ! -f "$CONFIG" ]; then
     cp $CONFIG.template "$CONFIG"
 fi
