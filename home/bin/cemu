@@ -1,1 +1,30 @@
 #!/bin/bash
+
+
+
+
+lines=$(sdl2-jstest --list | awk '
+/Joystick GUID:/  { print $3 }
+' | awk '{
+  if (!($0 in count)) {
+    count[$0] = 0
+  } else {
+    count[$0]++
+  }
+  print count[$0] "_" $0
+}')
+
+for line in $lines; do
+    guid="${line#*_}"
+    echo "$line -> $guid"
+done
+
+if [ -f /usr/local/bin/cemu ]; then
+    echo launching from /usr/local/bin/cemu
+    /usr/local/bin/cemu "$@"
+fi
+
+if [ -f /run/current-system/sw/bin/dolphin-emu ]; then
+    echo launching from /run/current-system/sw/bin/cemu
+    /run/current-system/sw/bin/cemu "$@"
+fi
