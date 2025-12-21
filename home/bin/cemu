@@ -2,7 +2,6 @@
 
 
 
-
 lines=$(sdl2-jstest --list | awk '
 /Joystick GUID:/  { print $3 }
 ' | awk '{
@@ -14,10 +13,18 @@ lines=$(sdl2-jstest --list | awk '
   print count[$0] "_" $0
 }')
 
+rm ~/.config/Cemu/controllerProfiles/controller*.xml
+
+counter=0
 for line in $lines; do
-    guid="${line#*_}"
-    echo "$line -> $guid"
+  guid="${line#*_}"
+  echo "$counter: $line -> $guid"
+  export UUID=$line
+  envsubst < ~/.config/Cemu/controllerProfiles/sdl.xml > ~/.config/Cemu/controllerProfiles/controller${counter}.xml
+  ((counter++))
 done
+
+
 
 if [ -f /usr/local/bin/cemu ]; then
     echo launching from /usr/local/bin/cemu
