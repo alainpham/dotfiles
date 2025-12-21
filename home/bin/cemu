@@ -1,7 +1,6 @@
 #!/bin/bash
 
 
-
 lines=$(sdl2-jstest --list | awk '
 /Joystick GUID:/  { print $3 }
 ' | awk '{
@@ -19,7 +18,7 @@ counter=0
 for line in $lines; do
   guid="${line#*_}"
   echo "$counter: $line -> $guid"
-  export UUID=$line
+  export PAD_UUID=$line
   envsubst < ~/.config/Cemu/controllerProfiles/sdl.xml > ~/.config/Cemu/controllerProfiles/controller${counter}.xml
   ((counter++))
 done
