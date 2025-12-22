@@ -10,11 +10,11 @@ else
 fi
 
 if command -v sunshine >/dev/null 2>&1; then
-    pkill sunshine ; sunshine &
+    pkill sunshine ; sleep 5; sunshine &
 fi
 
 if command -v gshorts >/dev/null 2>&1; then
-    pkill gshorts ; gshorts &
+    pkill gshorts ; sleep 5; gshorts &
 fi
 
 if command -v slack >/dev/null 2>&1; then
