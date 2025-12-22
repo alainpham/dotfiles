@@ -1,4 +1,8 @@
 #!/bin/bash
+
+export DISPLAY=:0
+export XAUTHORITY="$HOME/.Xauthority"
+
 asnddef &
 mon &
 
