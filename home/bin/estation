@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ -z "$TERMINAL" ]; then
+TERMINAL=$(command -v st || command -v xterm)
+fi
+
+echo "TERMINAL is set to: $TERMINAL"
+
+if [ -f /run/current-system/sw/bin/estation ]; then
+$TERMINAL -e /run/current-system/sw/bin/estation
+fi
+
+if [ -f /usr/local/bin/estation ]; then
+$TERMINAL -e /usr/local/bin/estation
+fi
