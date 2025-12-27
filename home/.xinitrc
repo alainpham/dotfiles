@@ -22,7 +22,9 @@ if grep -qi hypervisor /proc/cpuinfo; then
     spice-vdagent
 fi
 
-numlockx
+if [ ! -f ~/.nonumlock ]; then
+    numlockx
+fi
 
 dunst > ~/.dunst.log &
 echo 1 | tee ~/.rebootdwm
