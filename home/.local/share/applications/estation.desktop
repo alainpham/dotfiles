@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=estation
+Type=Application
+Terminal=false
+Icon=estation
+Exec=estation
+GenericName=EmulationStation
+Categories=Game;Emulator;
