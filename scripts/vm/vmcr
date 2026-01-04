@@ -11,6 +11,13 @@ fi
 DIR=/home/${USER}/virt/images
 VMS_DIR=/home/${USER}/virt/runtime
 
+mkdir -p $DIR
+mkdir -p $VMS_DIR
+touch $VMS_DIR/vms
+if [ ! -L /etc/NetworkManager/dnsmasq.d/vms ]; then
+  sudo ln -s  $VMS_DIR/vms /etc/NetworkManager/dnsmasq.d/vms
+fi
+
 # Location of cloud image
 IMAGE=$DIR/$4.qcow2
 
