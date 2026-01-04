@@ -10,7 +10,9 @@ else
 fi
 
 if command -v sunshine >/dev/null 2>&1; then
-    pkill sunshine ; sunshine &
+    if [ -f "$HOME/.shunshineonboot" ]; then
+        pkill sunshine ; sunshine &
+    fi
 fi
 
 if command -v gshorts >/dev/null 2>&1; then
