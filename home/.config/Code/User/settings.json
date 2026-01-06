@@ -1,0 +1,70 @@
+{
+    "git.openRepositoryInParentFolders": "never",
+    "window.title": "${rootNameShort}",
+    "redhat.telemetry.enabled": false,
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell"
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ],
+            "args": [],
+            "icon": "terminal-cmd"
+        },
+        "Git Bash": {
+            "source": "Git Bash"
+        },
+        "Ubuntu (WSL)": {
+            "path": "C:\\Windows\\System32\\wsl.exe",
+            "args": [
+                "-d",
+                "Ubuntu"
+            ]
+        }
+    },
+    "files.eol": "\n",
+    "git.ignoreMissingGitWarning": true,
+    "remote.autoForwardPortsSource": "hybrid",
+    "editor.fontFamily": "NotoSansM NF",
+    "settingsSync.ignoredExtensions": [],
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false,
+        "shellscript": false
+    },
+    "security.workspace.trust.untrustedFiles": "open",
+    "[dockercompose]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "terminal.integrated.stickyScroll.enabled": false,
+    "workbench.startupEditor": "none",
+    "window.commandCenter": false,
+    "nix.formatterPath": "alejandra",
+    "nix.serverPath": "nil", // or "ni
+    "nix.serverSettings": {
+        // check https://github.com/oxalica/nil/blob/main/docs/configuration.md for all options available
+        "nil": {
+            // "diagnostics": {
+            //  "ignored": ["unused_binding", "unused_with"],
+            // },
+            "formatting": {
+                "command": [
+                    "nixfmt"
+                ],
+            },
+        }
+    },
+    "nix.enableLanguageServer": false
+}
