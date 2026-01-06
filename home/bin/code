@@ -1,0 +1,38 @@
+#!/bin/bash
+
+if [ -f /run/current-system/sw/bin/code ]; then
+    export CODECMD=/run/current-system/sw/bin/code
+elif [ -f /usr/bin/code ]; then
+    export CODECMD=/usr/bin/code
+else
+    echo "code not found" >&2
+    exit 1
+fi
+
+
+export EXTENSION_LIST="
+    alphabotsec.vscode-eclipse-keybindings
+    yzhang.markdown-all-in-one
+    ms-python.python
+    ms-vscode.cpptools-extension-pack
+    vscjava.vscode-java-pack
+    ms-dotnettools.csharp
+    golang.go
+    xdebug.php-pack
+    github.copilot-chat
+    grafana.grafana-alloy
+    ms-vscode-remote.remote-wsl
+    redhat.vscode-xml
+    redhat.vscode-yaml
+    jnoortheen.nix-ide
+"
+
+INSTALLED_EXTENSIONS=$($CODECMD --list-extensions)
+
+for extension in $EXTENSION_LIST; do
+    if ! echo "$INSTALLED_EXTENSIONS" | grep -q "$extension"; then
+        # $CODECMD --install-extension "$extension"
+        echo installing $extension
+    fi
+done
+
