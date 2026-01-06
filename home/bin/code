@@ -31,8 +31,8 @@ INSTALLED_EXTENSIONS=$($CODECMD --list-extensions)
 
 for extension in $EXTENSION_LIST; do
     if ! echo "$INSTALLED_EXTENSIONS" | grep -q "$extension"; then
-        # $CODECMD --install-extension "$extension"
         echo installing $extension
+        $CODECMD --install-extension "$extension"
     fi
 done
 
