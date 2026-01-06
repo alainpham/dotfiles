@@ -36,3 +36,5 @@ for extension in $EXTENSION_LIST; do
     fi
 done
 
+
+$CODECMD "$@"
