@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ -z "$TERMINAL" ]; then
+TERMINAL=$(command -v st || command -v xterm)
+fi
+
+echo "TERMINAL is set to: $TERMINAL"
+
+
 if [ -f /run/current-system/sw/bin/code ]; then
     export CODECMD=/run/current-system/sw/bin/code
 elif [ -f /usr/bin/code ]; then
@@ -28,13 +35,21 @@ export EXTENSION_LIST="
 "
 
 INSTALLED_EXTENSIONS=$($CODECMD --list-extensions)
+INSTALL_INSTRUCTIONS=""
 
 for extension in $EXTENSION_LIST; do
     if ! echo "$INSTALLED_EXTENSIONS" | grep -q "$extension"; then
         echo installing $extension
-        $CODECMD --install-extension "$extension"
+        INSTALL_INSTRUCTIONS="$CODECMD --install-extension $extension ; "$INSTALL_INSTRUCTIONS
     fi
 done
 
 
-$CODECMD "$@"
+if [ -n "$INSTALL_INSTRUCTIONS" ]; then
+    echo "installing ..."
+    $TERMINAL -e "$INSTALL_INSTRUCTIONS"
+else
+    $CODECMD "$@"
+fi
+
+
