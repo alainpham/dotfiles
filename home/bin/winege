@@ -18,8 +18,8 @@ export WINEDLLOVERRIDES="ddraw=n,b"
 
 if command -v fhsrun &> /dev/null; then
     echo using fhsrun wrapper
-    fhsrun $WINE_GE_PATH/wine "$@"
+    fhsrun $WINE_GE_PATH/bin/wine "$@"
 else
     echo using regular wine without wrapper
-    $WINE_GE_PATH/wine "$@"
+    $WINE_GE_PATH/bin/wine "$@"
 fi
