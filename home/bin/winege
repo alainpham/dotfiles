@@ -1,0 +1,19 @@
+#!/bin/bash
+WINE_GE_BIN_PATH=$HOME/ROMs/desktop/compat-runners/wine-ge-8-26/bin
+
+if [ -d "$WINE_GE_BIN_PATH" ]; then
+    echo "using wine-ge-8-26"
+    export PATH=$WINE_GE_BIN_PATH:$PATH
+    export WINEDLLOVERRIDES="ddraw=n,b"
+else
+    echo "winege not found" >&2
+    exit 1
+fi
+
+if command -v fhsrun &> /dev/null; then
+    echo using fhsrun wrapper
+    fhsrun wine "$@"
+else
+    echo using regular wine without wrapper
+    wine "$@"
+fi
