@@ -47,9 +47,7 @@ done
 
 if [ -n "$INSTALL_INSTRUCTIONS" ]; then
     echo "installing ..."
-    $TERMINAL -e "$INSTALL_INSTRUCTIONS"
-else
-    $CODECMD "$@"
+    $TERMINAL -e $INSTALL_INSTRUCTIONS
 fi
 
-
+$CODECMD "$@"
