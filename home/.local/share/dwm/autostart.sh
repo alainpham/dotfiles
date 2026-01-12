@@ -3,6 +3,8 @@
 asnddef &
 mon &
 
+pkill thunar ; sleep 1 ; thunar --daemon & 
+
 if [ -f "$HOME/.fehbg" ]; then
     sleep 5 && ~/.fehbg &
 else
