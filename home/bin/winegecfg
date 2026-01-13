@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+RUNNERS_PATH=$HOME/ROMs/desktop/compat-runners
+WINE_GE_PATH=$RUNNERS_PATH/wine-ge-8-26
+
+if [ -d "$WINE_GE_PATH" ]; then
+    echo "using wine-ge-8-26"
+else
+    echo "winege not found downloading..." >&2
+    # downloading
+    mkdir -p $RUNNERS_PATH
+    curl -L -o $RUNNERS_PATH/wine-ge-8-26.tar.xz  https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-26/wine-lutris-GE-Proton8-26-x86_64.tar.xz
+    tar xvf $RUNNERS_PATH/wine-ge-8-26.tar.xz -C $RUNNERS_PATH && mv $RUNNERS_PATH/lutris-GE-Proton8-26-x86_64 $WINE_GE_PATH
+fi
+
+export PATH=$WINE_GE_PATH/bin:$PATH
+export WINEDLLOVERRIDES="ddraw=n,b"
+
+if command -v fhsrun &> /dev/null; then
+    echo using fhsrun wrapper
+    fhsrun $WINE_GE_PATH/bin/winecfg "$@"
+else
+    echo using regular wine without wrapper
+    $WINE_GE_PATH/bin/winecfg "$@"
+fi
