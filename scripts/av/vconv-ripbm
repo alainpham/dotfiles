@@ -6,7 +6,6 @@ preset=${2:-fast}
 crf=${3:-23}
 ab=${4:-160}
 
-export FFREPORT=file="${filename}.log:level=48"
 
 COMPILED_WITH_DECKLINK=$(ffmpeg -sources decklink 2>&1 | grep "decklink:" | wc -l)
 
@@ -24,6 +23,8 @@ if [ "$COMPILED_WITH_DECKLINK" -eq 0 ]; then
         docker build -t ffmpeg .
     fi
 fi
+
+export FFREPORT=file="${WORKFOLDER}${filename}.log:level=48"
 
 # -format_code 23ps \
 $FFMPEGCMD  \
