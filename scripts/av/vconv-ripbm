@@ -10,10 +10,13 @@ export FFREPORT=file="${filename}.log:level=48"
 
 COMPILED_WITH_DECKLINK=$(ffmpeg -sources decklink 2>&1 | grep "decklink:" | wc -l)
 
+FFMPEGCMD=ffmpeg
+WORKFOLDER=""
 # if not comiled with decklink create a docker container
 if [ "$COMPILED_WITH_DECKLINK" -eq 0 ]; then
     DOCKER_CONTAINER_EXISTS=$(docker images | grep ffmpeg | wc -l)
-    alias ffmpeg='docker run --rm --device=/dev/blackmagic ffmpeg'
+    WORKFOLDER=/work/
+    FFMPEGCMD="docker run --rm --device=/dev/blackmagic -v $(pwd):$WORKFOLDER ffmpeg"
     if [ "$DOCKER_CONTAINER_EXISTS" -eq 0 ]; then
         mkdir -p /tmp/ffmpegdocker
         cd /tmp/ffmpegdocker
@@ -23,8 +26,9 @@ if [ "$COMPILED_WITH_DECKLINK" -eq 0 ]; then
 fi
 
 # -format_code 23ps \
-ffmpeg  \
+$FFMPEGCMD  \
     -f decklink \
+        -video_input hdmi \
         -i 'DeckLink Mini Recorder' \
     -f matroska \
         -t ${duration} \
@@ -37,4 +41,4 @@ ffmpeg  \
         -c:a libfdk_aac \
         -b:a ${ab}k \
         -report \
-        $filename
+        ${WORKFOLDER}${filename}
