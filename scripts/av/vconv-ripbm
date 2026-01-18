@@ -13,7 +13,7 @@ COMPILED_WITH_DECKLINK=$(ffmpeg -sources decklink 2>&1 | grep "decklink:" | wc -
 # if not comiled with decklink create a docker container
 if [ "$COMPILED_WITH_DECKLINK" -eq 0 ]; then
     DOCKER_CONTAINER_EXISTS=$(docker images | grep ffmpeg | wc -l)
-    alias ffmpeg="docker run --rm --device=/dev/blackmagic ffmpeg"
+    alias ffmpeg='docker run --rm --device=/dev/blackmagic ffmpeg'
     if [ "$DOCKER_CONTAINER_EXISTS" -eq 0 ]; then
         mkdir -p /tmp/ffmpegdocker
         cd /tmp/ffmpegdocker
