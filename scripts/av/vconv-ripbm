@@ -2,7 +2,7 @@
 filename=$(date +"%Y-%m-%d_%H-%M-%S").mkv
 # duration="03:03:31" is exactly 11011 seconds, 24000/1001*11011=264000 frames
 duration=${1:-"03:03:31"}
-preset=${2:-fast}
+preset=${2:-faster}
 crf=${3:-23}
 ab=${4:-160}
 
