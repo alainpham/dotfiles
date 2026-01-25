@@ -10,7 +10,7 @@ format=${6:-mp4}
 ffmpeg -y \
     -i $1 \
     -f ${format} \
-        -preset slow \
+        -preset ${preset} \
         -pix_fmt yuv420p \
         -c:v libx264 \
         -crf ${crf} \
@@ -19,4 +19,4 @@ ffmpeg -y \
         -c:a libfdk_aac \
         -b:a ${ab}k \
         -movflags +faststart \
-        ${filename}-x264-crf${crf}-fdk_aac-ab${ab}k.${format}
+        ${filename}-x264-crf${crf}-maxrate${maxrate}k-fdk_aac-ab${ab}k.${format}
