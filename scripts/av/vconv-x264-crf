@@ -1,10 +1,11 @@
 #!/bin/bash
 extension="${1##*.}"
 filename="${1%.*}"
-preset=${2:-slow}
+preset=${2:-faster}
 crf=${3:-23}
-ab=${4:-160}
-format=${5:-mp4}
+maxrate=${4:3936}
+ab=${5:-160}
+format=${6:-mp4}
 
 ffmpeg -y \
     -i $1 \
@@ -13,8 +14,8 @@ ffmpeg -y \
         -pix_fmt yuv420p \
         -c:v libx264 \
         -crf ${crf} \
-        -bufsize 16384k \
-        -maxrate 16384k \
+        -bufsize ${maxrate}k \
+        -maxrate ${maxrate}k \
         -c:a libfdk_aac \
         -b:a ${ab}k \
         -movflags +faststart \
