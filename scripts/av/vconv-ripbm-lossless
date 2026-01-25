@@ -1,0 +1,40 @@
+#!/bin/bash
+filename=$(date +"%Y-%m-%d_%H-%M-%S").mkv
+# duration="03:03:31" is exactly 11011 seconds, 24000/1001*11011=264000 frames
+duration=${1:-"03:03:31"}
+
+
+COMPILED_WITH_DECKLINK=$(ffmpeg -sources decklink 2>&1 | grep "decklink:" | wc -l)
+
+FFMPEGCMD=ffmpeg
+WORKFOLDER=""
+# if not comiled with decklink create a docker container
+if [ "$COMPILED_WITH_DECKLINK" -eq 0 ]; then
+    DOCKER_CONTAINER_EXISTS=$(docker images | grep ffmpeg | wc -l)
+    WORKFOLDER=/work/
+    FFMPEGCMD="docker run --rm --device=/dev/blackmagic -v $(pwd):$WORKFOLDER ffmpeg"
+    if [ "$DOCKER_CONTAINER_EXISTS" -eq 0 ]; then
+        mkdir -p /tmp/ffmpegdocker
+        cd /tmp/ffmpegdocker
+        wget https://raw.githubusercontent.com/alainpham/FFmpeg/refs/heads/7.1.1-ap/docker/Dockerfile
+        docker build -t ffmpeg .
+    fi
+fi
+
+export FFREPORT=file="${WORKFOLDER}${filename}.log:level=48"
+
+# -format_code 23ps \
+$FFMPEGCMD  \
+    -f decklink \
+        -video_input hdmi \
+        -i 'DeckLink Mini Recorder' \
+    -f matroska \
+        -t ${duration} \
+        -fps_mode cfr \
+        -preset ultrafast \
+        -pix_fmt yuv420p \
+        -c:v libx264 \
+        -qp 0 \
+        -c:a copy \
+        -report \
+        ${WORKFOLDER}${filename}
