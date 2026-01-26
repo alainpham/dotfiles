@@ -2,10 +2,11 @@
 extension="${1##*.}"
 filename="${1%.*}"
 #1080p 4096k
-#720p  2264k
-bitrate=${2:-3936}
-ab=${3:-160}
-format=${4:-mp4}
+#720p  1888k
+preset=${2:-faster}
+bitrate=${3:-3936}
+ab=${4:-160}
+format=${5:-mp4}
 
 maxrate=$((($ab + $bitrate) * 4))
 # main profile level 4.0 for max compat
@@ -13,12 +14,10 @@ if [ $maxrate -gt 19456 ]; then
     maxrate=19456
 fi
 
-
-
 ffmpeg -y \
     -i $1 \
     -f ${format} \
-        -preset slow \
+        -preset $preset \
         -pix_fmt yuv420p \
         -c:v libx264 \
         -b:v ${bitrate}k  \
@@ -31,7 +30,7 @@ ffmpeg -y \
 ffmpeg \
     -i $1 \
     -f ${format} \
-        -preset slow \
+        -preset $preset \
         -pix_fmt yuv420p \
         -c:v libx264 \
         -b:v ${bitrate}k  \
