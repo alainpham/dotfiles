@@ -5,8 +5,15 @@ filename="${1%.*}"
 #720p  2264k
 bitrate=${2:-3936}
 ab=${3:-160}
-maxrate=$((($ab + $bitrate) * 4))
 format=${4:-mp4}
+
+maxrate=$((($ab + $bitrate) * 4))
+# main profile level 4.0 for max compat
+if [ $maxrate -gt 19456 ]; then
+    maxrate=19456
+fi
+
+
 
 ffmpeg -y \
     -i $1 \
