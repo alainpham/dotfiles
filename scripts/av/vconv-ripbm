@@ -4,7 +4,9 @@ filename=$(date +"%Y-%m-%d_%H-%M-%S").mkv
 duration=${1:-"03:03:31"}
 preset=${2:-faster}
 crf=${3:-23}
-ab=${4:-160}
+# maxrate for main profiles L4.0 is 19456k or 3936+10%
+maxrate=${4:-4320}
+ab=${5:-160}
 
 
 COMPILED_WITH_DECKLINK=$(ffmpeg -sources decklink 2>&1 | grep "decklink:" | wc -l)
@@ -38,6 +40,8 @@ $FFMPEGCMD  \
         -pix_fmt yuv420p \
         -c:v libx264 \
         -crf ${crf} \
+        -bufsize ${maxrate}k \
+        -maxrate ${maxrate}k \
         -g 24 \
         -c:a libfdk_aac \
         -b:a ${ab}k \
