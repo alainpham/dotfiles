@@ -3,7 +3,7 @@ extension="${1##*.}"
 filename="${1%.*}"
 
 encoder=${2}
-quality=26
+bitrate=768
 
 if [[ "$encoder" == "vaapi" ]]; then
     inputparam="
@@ -16,14 +16,14 @@ if [[ "$encoder" == "vaapi" ]]; then
     -vaapi_device /dev/dri/renderD128 
     -c:v h264_vaapi
     -vf format=nv12|vaapi,hwupload,scale_vaapi=w=1024:h=-2 
-    -qp ${quality}
+    -b:v ${bitrate}k
     "
 elif [[ "$encoder" == "nvenc" ]]; then
     inputparam="-hwaccel cuda -hwaccel_output_format cuda"
-    video_codec="-preset p1 -c:v h264_nvenc -vf scale_cuda=w=1024:h=-2 -rc:v vbr -cq:v ${quality} -b:v 0"
+    video_codec="-preset p1 -c:v h264_nvenc -vf scale_cuda=w=1024:h=-2 -b:v ${bitrate}k"
 else
     inputparam=""
-    video_codec="-preset fast -pix_fmt yuv420p -c:v libx264 -vf scale=1024:-2 -crf ${quality}"
+    video_codec="-preset faster -pix_fmt yuv420p -c:v libx264 -vf scale=1024:-2 -b:v ${bitrate}k"
 fi
 
 ffmpeg -y \
