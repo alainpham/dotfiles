@@ -14,8 +14,9 @@ if [ $maxrate -gt 19808 ]; then
     maxrate=19808
 fi
 
+# pass 1
 ffmpeg -y \
-    -i $1 \
+    -i "$1" \
     -f ${format} \
         -preset $preset \
         -pix_fmt yuv420p \
@@ -27,8 +28,9 @@ ffmpeg -y \
         -an \
         /dev/null
 
+# pass 2
 ffmpeg \
-    -i $1 \
+    -i "$1" \
     -f ${format} \
         -preset $preset \
         -pix_fmt yuv420p \
@@ -40,4 +42,4 @@ ffmpeg \
         -c:a libfdk_aac \
         -b:a ${ab}k \
         -movflags +faststart \
-        ${filename}-x264-vbr${bitrate}k-aac-ab${ab}k.${format}
+        "${filename}-x264-vbr${bitrate}k-faac-ab${ab}k.${format}"

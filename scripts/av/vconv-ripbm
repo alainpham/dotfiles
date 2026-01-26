@@ -46,4 +46,4 @@ $FFMPEGCMD  \
         -c:a libfdk_aac \
         -b:a ${ab}k \
         -report \
-        ${WORKFOLDER}${filename}
+        "${WORKFOLDER}${filename}"

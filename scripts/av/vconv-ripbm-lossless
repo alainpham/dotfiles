@@ -37,4 +37,4 @@ $FFMPEGCMD  \
         -crf 0 \
         -c:a copy \
         -report \
-        ${WORKFOLDER}${filename}
+        "${WORKFOLDER}${filename}"

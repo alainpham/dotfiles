@@ -1,13 +1,17 @@
 #!/bin/bash
 extension="${1##*.}"
 filename="${1%.*}"
-#1080p 3904k
-#720p  2264k
-bitrate=${2:-3904}
-ab=${3:-96}
+bitrate=${2:-3936}
+ab=${3:-320}
 format=${4:-mp4}
 
-echo "ffmpeg -vaapi_device /dev/dri/renderD128 -hwaccel vaapi -hwaccel_output_format vaapi -i $1 -vf 'format=nv12|vaapi,hwupload' -vcodec h264_vaapi -b:v ${bitrate}k -acodec aac -ab ${ab}k ${filename}-h264-vaapi-vbr${bitrate}k-aac-ab${ab}k.${format}"
-
-ffmpeg -vaapi_device /dev/dri/renderD128 -hwaccel vaapi -hwaccel_output_format vaapi -i $1 -vf 'format=nv12|vaapi,hwupload' -vcodec h264_vaapi -b:v ${bitrate}k -acodec libfdk_aac -ab ${ab}k ${filename}-h264-vaapi-vbr${bitrate}k-aac-ab${ab}k.${format}
-
+ffmpeg -y \
+    -vaapi_device /dev/dri/renderD128 \
+    -i "$1" \
+    -f ${format} \
+        -vf 'format=nv12|vaapi,hwupload' \
+        -c:v h264_vaapi \
+        -b:v ${bitrate}k
+        -c:a libfdk_aac \
+        -ab ${ab}k \
+        ${filename}-h264-vaapi-qp${qp}-faac-ab${ab}k.${format}
