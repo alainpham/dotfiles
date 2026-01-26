@@ -5,4 +5,10 @@ stream=${2:-"0:a:0"}
 format=${3:-mka}
 
 
-ffmpeg -i "$1" -map ${stream} -filter:a "atempo=24000/1001/25" -c:a aac -b:a 160k "${filename}.${format}"
+ffmpeg -y \
+    -i "$1" \
+    -map ${stream} \
+    -filter:a "atempo=24000/1001/25" \
+    -c:a aac \
+    -b:a 160k \
+    "${filename}.${format}"
