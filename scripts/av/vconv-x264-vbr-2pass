@@ -10,8 +10,8 @@ format=${5:-mp4}
 
 maxrate=$((($ab + $bitrate) * 4))
 # main profile level 4.0 for max compat
-if [ $maxrate -gt 19456 ]; then
-    maxrate=19456
+if [ $maxrate -gt 19808 ]; then
+    maxrate=19808
 fi
 
 ffmpeg -y \
