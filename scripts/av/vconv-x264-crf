@@ -3,7 +3,7 @@ extension="${1##*.}"
 filename="${1%.*}"
 preset=${2:-faster}
 crf=${3:-23}
-maxrate=${4:-3936}
+maxrate=${4:-4320}
 ab=${5:-160}
 format=${6:-mp4}
 
