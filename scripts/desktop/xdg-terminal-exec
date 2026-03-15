@@ -1,2 +1,4 @@
 #!/bin/bash
-st $@
+TERMINAL=$(command -v st || command -v cosmic-term || command -v xterm)
+echo "terminal is set to : $TERMINAL"
+$TERMINAL $@

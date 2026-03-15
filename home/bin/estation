@@ -1,10 +1,6 @@
 #!/bin/sh
 
-if [ -z "$TERMINAL" ]; then
-TERMINAL=$(command -v st || command -v xterm)
-fi
-
-echo "TERMINAL is set to: $TERMINAL"
+TERMINAL=xdg-terminal-exec
 
 if [ -f /run/current-system/sw/bin/estation ]; then
 $TERMINAL -e /run/current-system/sw/bin/estation
