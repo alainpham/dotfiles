@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: ./kubeingress <service-name> <port> <namespace> 
+# Usage: ./kubeexpose <service-name> <port> <namespace> 
 # Requires: kubectl, $WILDCARD_DOMAIN environment variable
 
 set -e
