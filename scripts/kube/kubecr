@@ -1,9 +1,27 @@
 #!/bin/bash
+
+network=$1
+
 if command -v k3s &> /dev/null; then
 echo k3s binary already installed
 else
 echo reinstall k3s binary
 curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_ENABLE="true" INSTALL_K3S_SKIP_START="true" INSTALL_K3S_VERSION="${K3S_VERSION}" K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="server --disable=servicelb,traefik --bind-address 172.17.0.1 --node-ip 172.17.0.1 --advertise-address 172.17.0.1" sh -
+fi
+
+if [ -f /usr/local/bin/k3s ] && [ "$network" = "public" ]; then
+  sudo mkdir -p /etc/systemd/system/k3s.service.d
+  sudo tee /etc/systemd/system/k3s.service.d/override.conf > /dev/null <<EOF
+[Service]
+ExecStart=
+ExecStart=/usr/local/bin/k3s \
+    server \
+    '--disable=servicelb,traefik'
+EOF
+  sudo systemctl daemon-reload
+else
+  sudo rm -f /etc/systemd/system/k3s.service.d/override.conf
+  sudo systemctl daemon-reload
 fi
 
 if command -v systemctl &> /dev/null; then
