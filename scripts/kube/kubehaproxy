@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# ── Configuration ─────────────────────────────────────────────────────────────
+NAMESPACE="haproxy"
+SECRET_NAME="haproxy-tls"
+CERT_FILE="$HOME/apps/tls/cfg/live/$WILDCARD_DOMAIN/fullchain.pem"   # path to TLS certificate
+KEY_FILE="$HOME/apps/tls/cfg/live/$WILDCARD_DOMAIN/privkey.pem"  # path to TLS private key
+
+# ── Create namespace ──────────────────────────────────────────────────────────
+kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+
+# ── TLS Secret ────────────────────────────────────────────────────────────────
+kubectl create secret tls "$SECRET_NAME" \
+  --cert="$CERT_FILE" \
+  --key="$KEY_FILE" \
+  --namespace="$NAMESPACE" \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+# ── Helm install ──────────────────────────────────────────────────────────────
+helm repo add haproxytech https://haproxytech.github.io/helm-charts
+helm repo update
+
+sed \
+  -e "s/__NAMESPACE__/${NAMESPACE}/g" \
+  -e "s/__SECRET_NAME__/${SECRET_NAME}/g" \
+  -e "s/__WILDCARD_DOMAIN__/${WILDCARD_DOMAIN}/g" \
+  <<'EOF' | helm upgrade --install haproxy haproxytech/kubernetes-ingress \
+  --namespace "$NAMESPACE" \
+  --values -
+controller:
+  kind: DaemonSet
+
+  service:
+    type: ClusterIP
+
+  daemonset:
+    useHostPort: true
+    hostPorts:
+      http: 80
+      https: 443
+      stat: 1024
+
+  ingressClass: haproxy
+
+  ingressClassResource:
+    name: haproxy
+    default: true
+
+  defaultTLSSecret:
+    enabled: true
+    secretNamespace: __NAMESPACE__
+    secret: __SECRET_NAME__
+
+  logging:
+    level: info
+
+EOF
