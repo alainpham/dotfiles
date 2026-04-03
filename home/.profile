@@ -1,4 +1,9 @@
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+if [ -r /sys/devices/virtual/dmi/id/product_name ]; then
+    export PRODUCT_NAME=$(cat /sys/devices/virtual/dmi/id/product_name)
+else
+    export PRODUCT_NAME="GENERIC"
+fi
 export PRODUCT_NAME=$(cat /sys/devices/virtual/dmi/id/product_name)
 export LIBVIRT_DEFAULT_URI='qemu:///system'
 # shanwaw wireless controller make look like a PS3 controller
