@@ -1,0 +1,19 @@
+{
+  "version": "2026.329.1951",
+  "filteringModes": {
+    "none": [
+      "grafana.com",
+      "teams.microsoft.com",
+      "google.com",
+      "join.igraal.com",
+      "fr.igraal.com",
+      "www.norauto.fr",
+      "track.effiliation.com"
+    ],
+    "basic": [],
+    "optimal": [
+      "all-urls"
+    ],
+    "complete": []
+  }
+}
