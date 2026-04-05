@@ -1,38 +1,43 @@
 #!/bin/bash
-
-# setup ppsspp data as folder cannot be redirected
-mkdir -p /home/${USER}/syncthing/ppsspp/SAVEDATA
-mkdir -p /home/${USER}/syncthing/ppsspp/PPSSPP_STATE
-
-rm -rf /home/${USER}/.config/ppsspp/PSP/SAVEDATA
-rm -rf /home/${USER}/.config/ppsspp/PSP/PPSSPP_STATE
-
-ln -sf /home/${USER}/syncthing/ppsspp/SAVEDATA /home/${USER}/.config/ppsspp/PSP/SAVEDATA
-ln -sf /home/${USER}/syncthing/ppsspp/PPSSPP_STATE /home/${USER}/.config/ppsspp/PSP/PPSSPP_STATE
-
-API_KEY=$(cat $HOME/.local/state/syncthing/config.xml | grep -oP '(?<=<apikey>).*?(?=</apikey>)')
-
 cd ~
-# trying local otherwise test through vpn
+if [ -d lab ]; then
+    echo "lab directory exists"
+    rm -rf lab
+fi
+git clone https://github.com/alainpham/lab.git
+cd lab
+touch secret
+source initlab
+lab run syncthing
 if ! curl -fsSL http://192.168.8.100:28000/secret.sh -o /tmp/secret.sh; then
     curl -fsSL http://10.13.13.2:28000/secret.sh -o /tmp/secret.sh
 fi
-
 source /tmp/secret.sh
 rm /tmp/secret.sh
+
+# export BASHRC="/etc/bash.bashrc"
+
+# # secret should set the following env vars
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_ADDR*=.*" "export SYNCTHING_HUB_ADDR=$SYNCTHING_HUB_ADDR"
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_ADDRVPN*=.*" "export SYNCTHING_HUB_ADDRVPN=$SYNCTHING_HUB_ADDRVPN"
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_APIURL*=.*" "export SYNCTHING_HUB_APIURL=$SYNCTHING_HUB_APIURL"
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_ID*=.*" "export SYNCTHING_HUB_ID=$SYNCTHING_HUB_ID"
+# sudo lineinfile ${ROOTFS}${BASHRC} ".*export.*SYNCTHING_HUB_APIKEY*=.*" "export SYNCTHING_HUB_APIKEY=$SYNCTHING_HUB_APIKEY"
+    
+API_KEY=$(docker exec syncthing cat /var/syncthing/config/config.xml | grep -oP '(?<=<apikey>).*?(?=</apikey>)')
 
 # ##### SET DEVICE NAME
 
 # Get local device ID (try config file first, fall back to system status)
 MY_ID=$(curl -s -H "X-API-Key: $API_KEY" http://localhost:8384/rest/system/status | grep -oP '"myID"\s*:\s*"\K[^"]+')
 
-# curl -X PATCH \
-#   -H "X-API-Key: $API_KEY" \
-#   -H "Content-Type: application/json" \
-#   -d "{\"name\": \"$HOSTNAME\"}" \
-#   http://localhost:8384/rest/config/devices/$MY_ID
+curl -X PATCH \
+  -H "X-API-Key: $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"name\": \"$HOSTNAME\"}" \
+  http://localhost:8384/rest/config/devices/$MY_ID
 
-# echo "Requested rename of device $MY_ID -> $HOSTNAME"
+echo "Requested rename of device $MY_ID -> $HOSTNAME"
 # ##### END SET DEVICE NAME
 
 # ##### ADD DEVICE ON CENTRAL SERVER
@@ -69,12 +74,13 @@ curl -s -X POST \
     -d "$DEVICE_JSON" \
     http://localhost:8384/rest/config/devices
 echo "Central server added on local device"
-# ##### EN ADD CENTRAL TO LOCAL
+# ##### ADD CENTRAL TO LOCAL
 
 # Define key+folder list (format: id|path). Add as many lines as needed.
 entries=(
     "syncthing|/home/${USER}/syncthing"
 )
+
 
 
 # Loop through list, build JSON and POST each folder to the Syncthing API
