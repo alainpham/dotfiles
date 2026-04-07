@@ -25,5 +25,17 @@ if command -v slack >/dev/null 2>&1; then
     if ! pgrep -x "slack" > /dev/null; then
         slack &
         echo slack started
+    else
+        echo slack already started
     fi
 fi
+
+if flatpak list | grep -q slack; then
+    if ! pgrep -x "slack" > /dev/null; then
+        flatpak run com.slack.Slack &
+        echo flatpak slack started
+    else
+        echo flatpak slack already started
+    fi
+fi
+
