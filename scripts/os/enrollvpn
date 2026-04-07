@@ -1,2 +1,4 @@
+
 ssh user@192.168.8.100 ~/apps/wgserver/config/mapping.sh $HOSTNAME>~/waaon.conf
-nmcli connection import type wireguard file ~/waaon.conf
+nmcli connection show waaon > /dev/null 2>&1 && echo "waaon connection exists" || nmcli connection import type wireguard file ~/waaon.conf
+rm ~/waaon.conf
