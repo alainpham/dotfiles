@@ -75,7 +75,7 @@ echo "Moonlight screen: $moonlight"
 # default behavior
 default() {
     if [ ! -f ~/.sclayout ]; then
-        echo "lap" > ~/.sclayout
+        echo "la" > ~/.sclayout
     fi
     export command=$(cat ~/.sclayout)
     echo default layout is $command
