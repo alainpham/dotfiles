@@ -29,7 +29,7 @@ fi
 dunst > ~/.dunst.log &
 echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
-export XCURSOR_SIZE=24
+[ -f ~/.Xresources ] && xrdb -merge ~/.Xresources
 while true; do
 
     piddunst=$(pgrep dunst)
