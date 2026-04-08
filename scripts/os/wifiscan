@@ -1,0 +1,1 @@
+PAGER= nmcli device wifi list --rescan yes
