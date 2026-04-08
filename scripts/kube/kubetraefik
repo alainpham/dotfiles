@@ -3,8 +3,8 @@
 # ── Configuration ─────────────────────────────────────────────────────────────
 NAMESPACE="traefik"
 SECRET_NAME="traefik-tls"
-CERT_FILE="$HOME/apps/tls/cfg/live/$WILDCARD_DOMAIN/fullchain.pem"   # path to TLS certificate
-KEY_FILE="$HOME/apps/tls/cfg/live/$WILDCARD_DOMAIN/privkey.pem"  # path to TLS private key
+CERT_FILE="$HOME/apps/tls/cfg/live/$K3S_WILDCARD_DOMAIN/fullchain.pem"   # path to TLS certificate
+KEY_FILE="$HOME/apps/tls/cfg/live/$K3S_WILDCARD_DOMAIN/privkey.pem"  # path to TLS private key
 
 # ── Create namespace ──────────────────────────────────────────────────────────
 kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
@@ -22,7 +22,7 @@ helm repo update
 
 sed \
   -e "s/__SECRET_NAME__/${SECRET_NAME}/g" \
-  -e "s/__WILDCARD_DOMAIN__/${WILDCARD_DOMAIN}/g" \
+  -e "s/__K3S_WILDCARD_DOMAIN__/${K3S_WILDCARD_DOMAIN}/g" \
   <<'EOF' | helm upgrade --install traefik traefik/traefik \
   --namespace "$NAMESPACE" \
   --values -
@@ -50,7 +50,7 @@ tlsStore:
 ingressRoute:
   dashboard:
     enabled: true
-    matchRule: 'Host(`traefik.__WILDCARD_DOMAIN__`)'
+    matchRule: 'Host(`traefik.__K3S_WILDCARD_DOMAIN__`)'
     entryPoints: ["websecure"]
     middlewares:
       - name: traefik-dashboard-auth
