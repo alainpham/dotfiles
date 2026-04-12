@@ -1,0 +1,13 @@
+#!/bin/bash
+container_name="$1"
+# Enable bash completion for container names
+if [ -z "$container_name" ]; then
+    echo "Usage: $0 <container_name>"
+    exit 1
+fi
+
+if docker exec "$container_name" command -v bash > /dev/null 2>&1; then
+    exec docker exec -it "$container_name" bash
+else
+    exec docker exec -it "$container_name" sh
+fi
