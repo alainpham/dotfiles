@@ -45,7 +45,11 @@ echo "$(date -R) creating machine named $1 with $MEM MB of RAM and $CPUS vcpu(s)
 
 
 echo "$(date -R) creating cloud-init iso"
-SSH_PUB_KEY=`cat ~/.ssh/id_*.pub`
+if [ -f ~/.ssh/id_*.pub ]; then
+  SSH_PUB_KEY=`cat ~/.ssh/id_*.pub`
+else
+  SSH_PUB_KEY=`cat ~/ssh/id_*.pub`
+fi
 
 echo checking for ssh certs or create them
 if [ ! -f ~/ssh/vm ]; then

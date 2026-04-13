@@ -1,0 +1,16 @@
+#!/bin/bash
+
+IMAGE="ghcr.io/ggml-org/llama.cpp:server-vulkan"
+
+if [ "$1" = "upgrade" ]; then
+    docker pull --force "$IMAGE"
+    exit $?
+fi
+
+docker run --rm -it \
+    --name llama-cpp \
+    --device /dev/dri:/dev/dri \
+    -v "$HOME/.cache/llama.cpp:/root/.cache/llama.cpp" \
+    -v "$HOME/.cache/huggingface:/root/.cache/huggingface" \
+    -p 8080:8080 \
+    "$IMAGE" "$@"
