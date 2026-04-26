@@ -1,16 +1,36 @@
 #!/bin/bash
 
-IMAGE="ghcr.io/ggml-org/llama.cpp:server-vulkan"
+if command -v nvidia-smi &> /dev/null && nvidia-smi &> /dev/null; then
+    IMAGE="ghcr.io/ggml-org/llama.cpp:server-cuda"
+    DEVICEMAP="--device=nvidia.com/gpu=all"
+else
+    IMAGE="ghcr.io/ggml-org/llama.cpp:server-vulkan"
+    DEVICEMAP="--device /dev/dri:/dev/dri"
+fi
 
 if [ "$1" = "upgrade" ]; then
     docker pull --force "$IMAGE"
     exit $?
 fi
 
+#DEFAULTMODEL=ggml-org/gemma-4-26B-A4B-it-GGUF:Q4_K_M
+if [ -z "$DEFAULTMODEL" ]; then
+DEFAULTMODEL="ggml-org/gemma-4-E2B-it-GGUF:Q8_0 --reasoning off"
+fi
+
+if [ -z "$1" ]; then
+    
+    COMMAND=(-hf $DEFAULTMODEL)
+
+else
+    COMMAND=("$@")
+fi
+
+
 docker run --rm -it \
     --name llama-cpp \
-    --device /dev/dri:/dev/dri \
+    $DEVICEMAP \
     -v "$HOME/.cache/llama.cpp:/root/.cache/llama.cpp" \
     -v "$HOME/.cache/huggingface:/root/.cache/huggingface" \
     -p 8080:8080 \
-    "$IMAGE" "$@"
+    "$IMAGE" "${COMMAND[@]}"

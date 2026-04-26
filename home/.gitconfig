@@ -1,5 +1,6 @@
 [core]
     editor = vim
+    # sshCommand = ssh -i /home/user/ssh/id_ed25519
 [user]
     name = alainpham
     email = 13981031+alainpham@users.noreply.github.com
