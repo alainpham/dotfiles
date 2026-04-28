@@ -1,4 +1,8 @@
 #!/bin/bash
+server_name=$(pactl info | grep "Server Name")
+if echo "$server_name" | grep -qi "pipewire"; then
+    exit 0
+fi
 
 killall parec
 parec -d from-desktop.monitor --latency-msec=30 --rate=48000 | pacat -d to-caller-sink --latency-msec=30 --rate=48000 &

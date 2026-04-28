@@ -18,73 +18,140 @@ if [ -z "$mic" ]; then
     exit 1
 fi
 
-# sink does not exist so create it from-desktop
-from_desktop_exists=$(pactl list sinks short | grep from-desktop | wc -l)
-if [ "$from_desktop_exists" -eq 0 ]; then
-pacmd load-module module-remap-sink sink_name=from-desktop sink_properties=device.description=from-desktop master=alsa_output.dummy-sink
-echo creating from-desktop
+disconnect_node() {
+  local NODE="$1"
+
+  pw-link -ol | awk -v node="$NODE" '
+    /^[^ ]/ { current = $1 }
+    /^\s+\|->/ {
+      target = $2
+      split(current, a, ":")
+      split(target, b, ":")
+      if (a[1] == node || b[1] == node) print current " " target
+    }
+  ' | while read -r src dst; do
+    echo "Disconnecting $src -> $dst"
+    pw-link -d "$src" "$dst"
+  done
+}
+
+server_name=$(pactl info | grep "Server Name")
+if echo "$server_name" | grep -qi "pipewire"; then
+    svr="pw"
+elif echo "$server_name" | grep -qi "pulseaudio"; then
+    svr="pa"
 else
-echo from-desktop sink exists
+    exit 1
 fi
 
+
 # sink does not exist so create it from-desktop
-from_caller_exists=$(pactl list sinks short | grep from-caller | wc -l)
-if [ "$from_caller_exists" -eq 0 ]; then
-pacmd load-module module-remap-sink sink_name=from-caller sink_properties=device.description=from-caller master=alsa_output.dummy-sink
-echo creating from-caller
-else
-echo from-caller sink exists
+if [ "$svr" == "pa" ]; then 
+    from_desktop_exists=$(pactl list sinks short | grep from-desktop | wc -l)
+    if [ "$from_desktop_exists" -eq 0 ]; then
+    pacmd load-module module-remap-sink sink_name=from-desktop sink_properties=device.description=from-desktop master=alsa_output.dummy-sink
+    echo creating from-desktop
+    else
+    echo from-desktop sink exists
+    fi
+
+    # sink does not exist so create it from-desktop
+    from_caller_exists=$(pactl list sinks short | grep from-caller | wc -l)
+    if [ "$from_caller_exists" -eq 0 ]; then
+    pacmd load-module module-remap-sink sink_name=from-caller sink_properties=device.description=from-caller master=alsa_output.dummy-sink
+    echo creating from-caller
+    else
+    echo from-caller sink exists
+    fi
 fi
 
 # 
 echo "hookup from-desktop to physical speakers"
-cspeaker_module_id=$(pactl list short modules | grep "sink_name=from-desktop" | awk '{print $1}')
-cspeaker_sink_input_id=$(pactl -f json list sink-inputs | jq -r ".[] | select(.owner_module == \"$cspeaker_module_id\") | .index")
-pacmd move-sink-input $cspeaker_sink_input_id $speakers
+if [ "$svr" == "pa" ]; then 
+    cspeaker_module_id=$(pactl list short modules | grep "sink_name=from-desktop" | awk '{print $1}')
+    cspeaker_sink_input_id=$(pactl -f json list sink-inputs | jq -r ".[] | select(.owner_module == \"$cspeaker_module_id\") | .index")
+    pacmd move-sink-input $cspeaker_sink_input_id $speakers
+else
+    disconnect_node from-desktop
+    pw-link from-desktop:monitor_FL "${speakers}:playback_FL"
+    pw-link from-desktop:monitor_FR "${speakers}:playback_FR"
+fi
 
-echo "hookup from-desktop to physical speakers"
-cspeaker_module_id=$(pactl list short modules | grep "sink_name=from-caller" | awk '{print $1}')
-cspeaker_sink_input_id=$(pactl -f json list sink-inputs | jq -r ".[] | select(.owner_module == \"$cspeaker_module_id\") | .index")
-pacmd move-sink-input $cspeaker_sink_input_id $speakers
-
+echo "hookup from-caller to physical speakers"
+if [ "$svr" == "pa" ]; then 
+    cspeaker_module_id=$(pactl list short modules | grep "sink_name=from-caller" | awk '{print $1}')
+    cspeaker_sink_input_id=$(pactl -f json list sink-inputs | jq -r ".[] | select(.owner_module == \"$cspeaker_module_id\") | .index")
+    pacmd move-sink-input $cspeaker_sink_input_id $speakers
+else
+    disconnect_node from-caller
+    pw-link from-caller:monitor_FL "${speakers}:playback_FL"
+    pw-link from-caller:monitor_FR "${speakers}:playback_FR"
+fi
 # echo "hookup mics_raw to physical mic"
 # mics_raw_module_id=$(pactl list short modules | grep "source_name=mics-raw" | awk '{print $1}')
 # mics_raw_source_output_id=$(pactl -f json list source-outputs | jq -r ".[] | select(.owner_module == \"$mics_raw_module_id\") | .index")
 # pacmd move-source-output $mics_raw_source_output_id $mic
 
-# sink does not exist so create it from-desktop
-mic01_processed_exists=$(pactl list sources short | grep mic01-processed | wc -l)
-if [ "$mic01_processed_exists" -eq 0 ]; then
-pacmd load-module module-remap-source source_name=mic01-processed master=alsa_input.dummy-source master_channel_map="front-left" channel_map="mono" source_properties=device.description="mic01-processed"
-echo creating mic01-processed
-else
-echo mic01-processed source exists
-fi
+# sink does not exist so create it
+if [ "$svr" == "pa" ]; then 
+    mic01_processed_exists=$(pactl list sources short | grep mic01-processed | wc -l)
+    if [ "$mic01_processed_exists" -eq 0 ]; then
+    pacmd load-module module-remap-source source_name=mic01-processed master=alsa_input.dummy-source master_channel_map="front-left" channel_map="mono" source_properties=device.description="mic01-processed"
+    echo creating mic01-processed
+    else
+    echo mic01-processed source exists
+    fi
 
-# sink does not exist so create it from-desktop
-mic02_processed_exists=$(pactl list sources short | grep mic02-processed | wc -l)
-if [ "$mic02_processed_exists" -eq 0 ]; then
-pacmd load-module module-remap-source source_name=mic02-processed master=alsa_input.dummy-source master_channel_map="front-right" channel_map="mono" source_properties=device.description="mic02-processed"
-echo creating mic02-processed
-else
-echo mic02-processed source exists
+    # sink does not exist so create it
+    mic02_processed_exists=$(pactl list sources short | grep mic02-processed | wc -l)
+    if [ "$mic02_processed_exists" -eq 0 ]; then
+    pacmd load-module module-remap-source source_name=mic02-processed master=alsa_input.dummy-source master_channel_map="front-right" channel_map="mono" source_properties=device.description="mic02-processed"
+    echo creating mic02-processed
+    else
+    echo mic02-processed source exists
+    fi
 fi
-
 
 echo "hookup mic01 to physical mic"
-mic01_module_id=$(pactl list short modules | grep "source_name=mic01-processed" | awk '{print $1}')
-mic01_source_output_id=$(pactl -f json list source-outputs | jq -r ".[] | select(.owner_module == \"$mic01_module_id\") | .index")
-pacmd move-source-output $mic01_source_output_id $mic
+if [ "$svr" == "pa" ]; then 
+    mic01_module_id=$(pactl list short modules | grep "source_name=mic01-processed" | awk '{print $1}')
+    mic01_source_output_id=$(pactl -f json list source-outputs | jq -r ".[] | select(.owner_module == \"$mic01_module_id\") | .index")
+    pacmd move-source-output $mic01_source_output_id $mic
+else
+    disconnect_node mic01-processed
+    # pw-link mic01-processed:capture_MONO to-caller:input_FL
+    # pw-link mic01-processed:capture_MONO to-caller:input_FR
+
+    nb_mic_channels=$(pw-link -o | grep "^${mic}" | wc -l)
+    if [ "$nb_mic_channels" -eq 2 ]; then 
+        pw-link "${mic}:capture_FL" mic01-processed:input_MONO
+    else
+        pw-link "${mic}:capture_MONO" mic01-processed:input_MONO
+    fi
+
+fi
 
 echo "hookup mic02 to physical mic"
-mic02_module_id=$(pactl list short modules | grep "source_name=mic02-processed" | awk '{print $1}')
-mic02_source_output_id=$(pactl -f json list source-outputs | jq -r ".[] | select(.owner_module == \"$mic02_module_id\") | .index")
-pacmd move-source-output $mic02_source_output_id $mic
+if [ "$svr" == "pa" ]; then 
+    mic02_module_id=$(pactl list short modules | grep "source_name=mic02-processed" | awk '{print $1}')
+    mic02_source_output_id=$(pactl -f json list source-outputs | jq -r ".[] | select(.owner_module == \"$mic02_module_id\") | .index")
+    pacmd move-source-output $mic02_source_output_id $mic
+else
+    disconnect_node mic02-processed
+    nb_mic_channels=$(pw-link -o | grep "^${mic}" | wc -l)
+    if [ "$nb_mic_channels" -eq 2 ]; then 
+        # pw-link mic02-processed:capture_MONO to-caller:input_FL
+        # pw-link mic02-processed:capture_MONO to-caller:input_FR
+        pw-link "${mic}:capture_FR" mic02-processed:input_MONO
+    fi
+fi
 
 # set default mic apps
+echo setting default mic
 pactl set-default-source mic01-processed
 
 # set default output for apps
+echo setting default speaker
 pactl set-default-sink from-desktop
 
 # set physical volumes
@@ -101,8 +168,10 @@ pactl set-sink-mute from-desktop 0
 pactl set-sink-volume from-caller 95%
 pactl set-sink-mute from-caller 0
 
+if [ "$svr" == "pa" ]; then 
 pactl set-sink-volume to-caller-sink 100%
 pactl set-sink-mute to-caller-sink 0
+fi
 
 # pactl set-sink-volume cspeakers 45%
 # pactl set-sink-mute cspeakers 0
