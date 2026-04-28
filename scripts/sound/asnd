@@ -119,8 +119,8 @@ if [ "$svr" == "pa" ]; then
     pacmd move-source-output $mic01_source_output_id $mic
 else
     disconnect_node mic01-processed
-    # pw-link mic01-processed:capture_MONO to-caller:input_FL
-    # pw-link mic01-processed:capture_MONO to-caller:input_FR
+    pw-link mic01-processed:capture_MONO to-caller:input_FL
+    pw-link mic01-processed:capture_MONO to-caller:input_FR
 
     nb_mic_channels=$(pw-link -o | grep "^${mic}" | wc -l)
     if [ "$nb_mic_channels" -eq 2 ]; then 
@@ -140,8 +140,8 @@ else
     disconnect_node mic02-processed
     nb_mic_channels=$(pw-link -o | grep "^${mic}" | wc -l)
     if [ "$nb_mic_channels" -eq 2 ]; then 
-        # pw-link mic02-processed:capture_MONO to-caller:input_FL
-        # pw-link mic02-processed:capture_MONO to-caller:input_FR
+        pw-link mic02-processed:capture_MONO to-caller:input_FL
+        pw-link mic02-processed:capture_MONO to-caller:input_FR
         pw-link "${mic}:capture_FR" mic02-processed:input_MONO
     fi
 fi
