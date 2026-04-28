@@ -75,6 +75,8 @@ else
     disconnect_node from-desktop
     pw-link from-desktop:monitor_FL "${speakers}:playback_FL"
     pw-link from-desktop:monitor_FR "${speakers}:playback_FR"
+    pw-link from-desktop:monitor_FL to-caller:input_FL
+    pw-link from-desktop:monitor_FR to-caller:input_FR
 fi
 
 echo "hookup from-caller to physical speakers"
