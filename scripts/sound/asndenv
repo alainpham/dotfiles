@@ -94,7 +94,7 @@ export h6micvolume="100"
 
 export acerusbspeakerid="alsa_output.usb-0c76_USB_Speaker-00.analog-stereo"
 export acerusbmicid="alsa_input.dummy-source"
-export acerusbspeakervolume="70"
+export acerusbspeakervolume="45"
 export acerusbmicvolume="100"
 
 export dummyspeakerid="alsa_output.dummy-sink"
