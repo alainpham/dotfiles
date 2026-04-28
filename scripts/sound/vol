@@ -1,0 +1,36 @@
+server_name=$(pactl info | grep "Server Name")
+
+if echo "$server_name" | grep -qi "pipewire"; then
+    svr="pw"
+elif echo "$server_name" | grep -qi "pulseaudio"; then
+    svr="pa"
+else
+    exit 1
+fi
+
+if echo "$server_name" | grep -qi "pipewire"; then
+    cspeaker_sink_input_id=$(
+
+pw-link -l | awk '
+  /^from-desktop:/ {f=1; next}
+  /^[^[:space:]]/  {f=0}
+  f && /\|->/ {print $2}
+' | cut -d: -f1 | sort -u | grep -E '^(alsa_output|bluez_output)'
+
+)
+
+else
+    cspeaker_module_id=$(pactl list short modules | grep "sink_name=from-desktop" | awk '{print $1}')
+    cspeaker_sink_input_id=$(pactl -f json list sink-inputs | jq -r ".[] | select(.owner_module == \"$cspeaker_module_id\") | .sink")
+fi
+
+case "$1" in
+  up)
+    pactl set-sink-volume $cspeaker_sink_input_id +5%
+    ;;
+  dn)
+    pactl set-sink-volume $cspeaker_sink_input_id -5%
+    ;;
+esac
+
+kill -44 $(pidof dwmblocks)
