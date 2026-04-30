@@ -2,7 +2,6 @@
 
 TERMINAL=xdg-terminal-exec
 
-
 if [ -f /run/current-system/sw/bin/code ]; then
     export CODECMD=/run/current-system/sw/bin/code
 elif [ -f /usr/bin/code ]; then
@@ -12,21 +11,39 @@ else
     exit 1
 fi
 
-
 export EXTENSION_LIST="
     alphabotsec.vscode-eclipse-keybindings
-    yzhang.markdown-all-in-one
-    ms-python.python
-    ms-vscode.cpptools-extension-pack
-    vscjava.vscode-java-pack
-    ms-dotnettools.csharp
+    anthropic.claude-code
     golang.go
-    xdebug.php-pack
     grafana.grafana-alloy
+    jnoortheen.nix-ide
+    ms-dotnettools.csharp
+    ms-dotnettools.vscode-dotnet-runtime
+    ms-python.debugpy
+    ms-python.python
+    ms-python.vscode-pylance
+    ms-python.vscode-python-envs
     ms-vscode-remote.remote-wsl
+    ms-vscode.cmake-tools
+    ms-vscode.cpp-devtools
+    ms-vscode.cpptools
+    ms-vscode.cpptools-extension-pack
+    ms-vscode.cpptools-themes
+    ms-vscode.powershell
+    openai.chatgpt
+    redhat.java
     redhat.vscode-xml
     redhat.vscode-yaml
-    jnoortheen.nix-ide
+    vscjava.vscode-gradle
+    vscjava.vscode-java-debug
+    vscjava.vscode-java-dependency
+    vscjava.vscode-java-pack
+    vscjava.vscode-java-test
+    vscjava.vscode-maven
+    xdebug.php-debug
+    xdebug.php-pack
+    yzhang.markdown-all-in-one
+    zobo.php-intellisense
 "
 
 INSTALLED_EXTENSIONS=$($CODECMD --list-extensions)
@@ -38,7 +55,6 @@ for extension in $EXTENSION_LIST; do
         INSTALL_INSTRUCTIONS="$CODECMD --install-extension $extension ; "$INSTALL_INSTRUCTIONS
     fi
 done
-
 
 if [ -n "$INSTALL_INSTRUCTIONS" ]; then
     echo "installing ..."
