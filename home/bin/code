@@ -22,7 +22,6 @@ export EXTENSION_LIST="
     ms-dotnettools.csharp
     golang.go
     xdebug.php-pack
-    github.copilot-chat
     grafana.grafana-alloy
     ms-vscode-remote.remote-wsl
     redhat.vscode-xml
