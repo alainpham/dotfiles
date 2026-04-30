@@ -1,0 +1,1 @@
+yt-dlp -f "bestvideo[ext=mp4][vcodec^=avc1][height<=?480]+bestaudio[ext=m4a]" --embed-thumbnail -o '%(title)s.%(ext)s' "$@"
