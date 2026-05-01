@@ -31,6 +31,7 @@ echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
 [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources
 export XCURSOR_SIZE=24
+export XCURSOR_THEME="Adwaita";
 while true; do
 
     piddunst=$(pgrep dunst)
