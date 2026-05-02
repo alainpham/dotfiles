@@ -29,9 +29,9 @@ fi
 dunst > ~/.dunst.log &
 echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
-[ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded"
+export XCURSOR_THEME="Adwaita"
 export XCURSOR_SIZE=24
-export XCURSOR_THEME="Adwaita";
+[ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded"
 while true; do
 
     piddunst=$(pgrep dunst)
