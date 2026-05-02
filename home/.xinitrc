@@ -31,6 +31,10 @@ echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
 while true; do
 
+    if [ -f ~/.xdpi ]; then 
+        export XDPI=$(cat ~/.xdpi); 
+        xrandr --dpi $XDPI
+    fi
     export XCURSOR_THEME="Adwaita"
     export XCURSOR_SIZE=24
     [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded">>~/.xinit.log
