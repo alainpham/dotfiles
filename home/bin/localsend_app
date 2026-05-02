@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ -f /var/lib/flatpak/exports/share/applications/org.localsend.localsend_app.desktop ]]; then
+  gtk-launch org.localsend.localsend_app.desktop
+else
+  gtk-launch LocalSend.desktop
+fi
+
