@@ -32,7 +32,7 @@ export rebootdwm=$(cat ~/.rebootdwm)
 while true; do
 
     if [ -f ~/.xdpi ]; then 
-        export XDPI=$(cat ~/.xdpi); 
+        export XDPI=$(cat ~/.xdpi)
         xrandr --dpi $XDPI
     fi
     export XCURSOR_THEME="Adwaita"
