@@ -29,10 +29,9 @@ fi
 dunst > ~/.dunst.log &
 echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
-# [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded"
+[ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded"
 export XCURSOR_SIZE=24
-[ -d /run/current-system/sw ] && xsetroot -xcf /run/current-system/sw/share/icons/Adwaita/cursors/left_ptr 24 && echo "setting xsetroot"
-# export XCURSOR_THEME="Adwaita";
+export XCURSOR_THEME="Adwaita";
 while true; do
 
     piddunst=$(pgrep dunst)
