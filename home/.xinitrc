@@ -29,10 +29,11 @@ fi
 dunst > ~/.dunst.log &
 echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
-export XCURSOR_THEME="Adwaita"
-export XCURSOR_SIZE=24
-[ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded"
 while true; do
+
+    export XCURSOR_THEME="Adwaita"
+    export XCURSOR_SIZE=24
+    [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded">>~/.xinit.log
 
     piddunst=$(pgrep dunst)
     if [ ! -z "$piddunst" ]; then
