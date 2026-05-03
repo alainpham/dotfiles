@@ -1,5 +1,13 @@
 #!/bin/bash
-csnddmy
+server_name=$(pactl info | grep "Server Name")
+if echo "$server_name" | grep -qi "pipewire"; then
+    svr="pw"
+elif echo "$server_name" | grep -qi "pulseaudio"; then
+    svr="pa"
+    csnddmy
+else
+    exit 1
+fi
 
 CARD=$(pactl list short cards | grep bluez_card | awk '{print $2}')
 sndprofile=$(
@@ -10,7 +18,6 @@ sndprofile=$(
         | keys[]' | grep -E "^handsfree_head_unit$|^headset-head-unit$"
 )
 pactl set-card-profile "$CARD" "$sndprofile"
-
 source $(which asndenv)
 
 speakers=$hdsspeakerid
@@ -18,4 +25,5 @@ mic=$hdsmicid
 speakervolume=$hdsspeakervolume
 micvolume=$hdsmicvolume
 
+asnd $speakers $mic $speakervolume $micvolume
 asnd $speakers $mic $speakervolume $micvolume

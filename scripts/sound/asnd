@@ -73,8 +73,16 @@ if [ "$svr" == "pa" ]; then
     pacmd move-sink-input $cspeaker_sink_input_id $speakers
 else
     disconnect_node from-desktop
-    pw-link from-desktop:monitor_FL "${speakers}:playback_FL"
-    pw-link from-desktop:monitor_FR "${speakers}:playback_FR"
+
+    nb_spk_channels=$(pw-link -i | grep "^${speakers}" | wc -l)
+    if [ "$nb_spk_channels" -eq 2 ]; then 
+        pw-link from-desktop:monitor_FL "${speakers}:playback_FL"
+        pw-link from-desktop:monitor_FR "${speakers}:playback_FR"
+    else
+        pw-link from-desktop:monitor_FL "${speakers}:playback_MONO"
+        pw-link from-desktop:monitor_FR "${speakers}:playback_MONO"    
+    fi
+
     pw-link from-desktop:monitor_FL to-caller:input_FL
     pw-link from-desktop:monitor_FR to-caller:input_FR
 fi
@@ -86,8 +94,14 @@ if [ "$svr" == "pa" ]; then
     pacmd move-sink-input $cspeaker_sink_input_id $speakers
 else
     disconnect_node from-caller
-    pw-link from-caller:monitor_FL "${speakers}:playback_FL"
-    pw-link from-caller:monitor_FR "${speakers}:playback_FR"
+    nb_spk_channels=$(pw-link -i | grep "^${speakers}" | wc -l)
+    if [ "$nb_spk_channels" -eq 2 ]; then 
+        pw-link from-caller:monitor_FL "${speakers}:playback_FL"
+        pw-link from-caller:monitor_FR "${speakers}:playback_FR"
+    else
+        pw-link from-caller:monitor_FL "${speakers}:playback_MONO"
+        pw-link from-caller:monitor_FR "${speakers}:playback_MONO"    
+    fi
 fi
 # echo "hookup mics_raw to physical mic"
 # mics_raw_module_id=$(pactl list short modules | grep "source_name=mics-raw" | awk '{print $1}')
