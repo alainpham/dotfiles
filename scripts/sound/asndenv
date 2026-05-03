@@ -50,12 +50,9 @@ fi
 # specific to lenovo t14 amd
 if [ "${PRODUCT_NAME}" == "21MCCTO1WW" ]; then
     # pipewire
-    if [ -z "${internalspeakerid}" ]; then
-    export internalspeakerid="alsa_output.pci-0000_c4_00.6.HiFi__Speaker__sink"
-    fi
-    if [ -z "${internalmicid}" ]; then
-    export internalmicid="alsa_input.pci-0000_c4_00.6.HiFi__Mic2__source"
-    fi
+    export internalspeakerid=$(pactl list short sinks | grep -E "alsa_output.pci-0000_c4_00.6.HiFi__Speaker__sink" | awk '{print $2}')
+    export internalmicid=$(pactl list short sources | grep -E "alsa_input.pci-0000_c4_00.6.HiFi__Mic1__source" | awk '{print $2}')
+    
     # pulseaudio
     if [ -z "${internalspeakerid}" ]; then
     export internalspeakerid="alsa_output.pci-0000_c4_00.6.HiFi__hw_Generic_1__sink"
