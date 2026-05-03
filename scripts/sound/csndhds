@@ -26,4 +26,3 @@ speakervolume=$hdsspeakervolume
 micvolume=$hdsmicvolume
 
 asnd $speakers $mic $speakervolume $micvolume
-asnd $speakers $mic $speakervolume $micvolume
