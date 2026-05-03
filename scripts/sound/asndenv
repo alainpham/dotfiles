@@ -27,14 +27,18 @@ fi
 
 # specific to dell g15 5520
 if [ "${PRODUCT_NAME}" == "Dell G15 5520" ]; then
-    export internalspeakerid=$(pactl list short sinks | grep -E "alsa_output.pci-0000_00_1f.*Speaker" | awk '{print $2}')
-    export internalmicid=$(pactl list short sources | grep -E "alsa_input.pci-0000_00_1f.*Mic" | awk '{print $2}')
 
-    # ubuntu & older kernels
+    # pulseaudio
+    if [ -z "${internalspeakerid}" ]; then
+    export internalspeakerid=$(pactl list short sinks | grep -E "alsa_output.pci-0000_00_1f.*Speaker" | awk '{print $2}')
+    fi
+    if [ -z "${internalmicid}" ]; then
+    export internalmicid=$(pactl list short sources | grep -E "alsa_input.pci-0000_00_1f.*Mic" | awk '{print $2}')
+    fi    
+    # ubuntu & older kernels pulse
     if [ -z "${internalspeakerid}" ]; then
     export internalspeakerid="alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp__sink"
     fi
-
     if [ -z "${internalmicid}" ]; then
     export internalmicid="alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp_6__source"
     fi
@@ -45,55 +49,78 @@ fi
 
 # specific to lenovo t14 amd
 if [ "${PRODUCT_NAME}" == "21MCCTO1WW" ]; then
+    # pipewire
+    if [ -z "${internalspeakerid}" ]; then
+    export internalspeakerid="alsa_output.pci-0000_c4_00.6.HiFi__Speaker__sink"
+    fi
+    if [ -z "${internalmicid}" ]; then
+    export internalmicid="alsa_input.pci-0000_c4_00.6.HiFi__Mic2__source"
+    fi
+    # pulseaudio
+    if [ -z "${internalspeakerid}" ]; then
     export internalspeakerid="alsa_output.pci-0000_c4_00.6.HiFi__hw_Generic_1__sink"
+    fi
+    if [ -z "${internalmicid}" ]; then
     export internalmicid="alsa_input.pci-0000_c4_00.6.HiFi__hw_acp63__source"
-    
+    fi
+
     export internalspeakervolume="45"
     export internalmicvolume="95"
 fi
 
 # end of internal mic/speaker
 
-export focspeakerid="alsa_output.usb-Focusrite_Scarlett_2i2_USB_Y8QWAQ69B26B58-00.analog-stereo"
-export focmicid="alsa_input.usb-Focusrite_Scarlett_2i2_USB_Y8QWAQ69B26B58-00.analog-stereo"
+
+CARD=$(pactl list short cards | grep alsa_card.usb-Focusrite_Scarlett_2i2_USB | awk '{print $2}')
+if [ ! -z "${CARD}" ]; then
+    directexists=$(
+        pactl -f json list cards | jq -r --arg CARD "$CARD" '
+        .[]
+        | select(.name == $CARD)
+        | .profiles
+        | keys[]
+        '| grep Direct | wc -l
+    )
+    if [ "$directexists" == "1" ]; then
+        pactl set-card-profile "$CARD" Direct
+    fi
+fi
+export focspeakerid=$(pactl list short sinks | grep -E "alsa_output.usb-Focusrite_Scarlett_2i2.*" | awk '{print $2}')
+export focmicid=$(pactl list short sources | grep -E "alsa_input.usb-Focusrite_Scarlett_2i2.*" | awk '{print $2}')
 export focspeakervolume="45"
 export focmicvolume="100"
 
-export jbrspeakerid="alsa_output.usb-_Jabra_Link_390_6CFBED605E08-00.analog-stereo"
-export jbrmicid="alsa_input.usb-_Jabra_Link_390_6CFBED605E08-00.mono-fallback"
+export jbrspeakerid=$(pactl list short sinks | grep -E "alsa_output.usb-_Jabra_Link_390_6CFBED605E08-00.*" | awk '{print $2}')
+export jbrmicid=$(pactl list short sources | grep -E "alsa_input.usb-_Jabra_Link_390_6CFBED605E08-00.*" | awk '{print $2}')
 export jbrspeakervolume="45"
 export jbrmicvolume="100"
 
-btsink=$(pactl list sinks short | grep bluez_ | awk '{print $2}')
-btmacaddr=$(echo "$btsink" | grep -o '[0-9A-F]\{2\}_[0-9A-F]\{2\}_[0-9A-F]\{2\}_[0-9A-F]\{2\}_[0-9A-F]\{2\}_[0-9A-F]\{2\}')
+export hdsspeakerid=$(pactl list short sinks | grep -E "bluez_sink|bluez_output" | awk '{print $2}')
+export hdsmicid=$(pactl list short sources | grep -E "bluez_source|bluez_input" | awk '{print $2}')
+export hdsspeakervolume="45"
+export hdsmicvolume="100"
 
-export bthspeakerid="bluez_sink.${btmacaddr}.a2dp_sink"
+export bthspeakerid=${hdsspeakerid}
 export bthmicid="$internalmicid"
 export bthspeakervolume="45"
 export bthmicvolume="$internalmicvolume"
 
-export btfspeakerid="$bthspeakerid"
+export btfspeakerid=${hdsspeakerid}
 export btfmicid="$focmicid"
 export btfspeakervolume="$bthspeakervolume"
 export btfmicvolume="$focmicvolume"
 
-export hdsspeakerid="bluez_sink.${btmacaddr}.handsfree_head_unit"
-export hdsmicid="bluez_source.${btmacaddr}.handsfree_head_unit"
-export hdsspeakervolume="45"
-export hdsmicvolume="100"
-
-
-export zvspeakerid="alsa_output.usb-Logitech_Zone_Vibe_125_2216MH00LMF8-00.analog-stereo"
-export zvmicid="alsa_input.usb-Logitech_Zone_Vibe_125_2216MH00LMF8-00.mono-fallback"
+export zvspeakerid=$(pactl list short sinks | grep -E "alsa_output.usb-Logitech_Zone_Vibe_125.*" | awk '{print $2}')
+export zvmicid=$(pactl list short sources | grep -E "alsa_input.usb-Logitech_Zone_Vibe_125.*" | awk '{print $2}')
 export zvspeakervolume="45"
 export zvmicvolume="100"
 
-export h6speakerid="alsa_output.usb-sky_wing_EKSA_PC_Adapter_20211221100133-01.analog-stereo"
-export h6micid="alsa_input.usb-sky_wing_EKSA_PC_Adapter_20211221100133-01.mono-fallback"
+export h6speakerid=$(pactl list short sinks | grep -E "alsa_output.usb-sky_wing_EKSA_PC_Adapter.*" | awk '{print $2}')
+export h6micid=$(pactl list short sources | grep -E "alsa_input.usb-sky_wing_EKSA_PC_Adapter.*" | awk '{print $2}')
 export h6speakervolume="45"
 export h6micvolume="100"
 
-export acerusbspeakerid="alsa_output.usb-0c76_USB_Speaker-00.analog-stereo"
+export acerusbspeakerid=$(pactl list short sinks | grep -E "alsa_output.usb-0c76_USB_Speaker-00.*" | awk '{print $2}')
 export acerusbmicid="alsa_input.dummy-source"
 export acerusbspeakervolume="45"
 export acerusbmicvolume="100"
