@@ -2,7 +2,14 @@
 csnddmy
 
 CARD=$(pactl list short cards | grep bluez_card | awk '{print $2}')
-pactl set-card-profile "$CARD" a2dp_sink
+sndprofile=$(
+    pactl -f json list cards | jq -r --arg CARD "$CARD" '
+        .[]
+        | select(.name == $CARD)
+        | .profiles
+        | keys[]' | grep ^a2dp.sink$
+)
+pactl set-card-profile "$CARD" "$sndprofile"
 
 source $(which asndenv)
 

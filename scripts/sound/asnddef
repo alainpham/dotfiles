@@ -2,32 +2,85 @@
 
 source $(which asndenv)
 
-internalspeaker=$(pactl list short sinks | grep ${internalspeakerid} | awk '{print $2}')
-internalmic=$(pactl list short sources | grep ${internalmicid} | awk '{print $2}')
+if [ -n "${internalspeakerid}" ]; then
+    internalspeaker=$(pactl list short sinks | grep "${internalspeakerid}" | awk '{print $2}')
+fi
 
-focspeaker=$(pactl list short sinks | grep ${focspeakerid} | awk '{print $2}')
-focmic=$(pactl list short sources | grep ${focmicid} | awk '{print $2}')
+if [ -n "${internalmicid}" ]; then
+    internalmic=$(pactl list short sources | grep "${internalmicid}" | awk '{print $2}')
+fi
 
-jbrspeaker=$(pactl list short sinks | grep ${jbrspeakerid} | awk '{print $2}')
-jbrmic=$(pactl list short sources | grep ${jbrmicid} | awk '{print $2}')
 
-bthspeaker=$(pactl list short sinks | grep ${bthspeakerid} | awk '{print $2}')
-bthmic=$(pactl list short sources | grep ${bthmicid} | awk '{print $2}')
+if [ -n "${focspeakerid}" ]; then
+    focspeaker=$(pactl list short sinks | grep "${focspeakerid}" | awk '{print $2}')
+fi
 
-hdsspeaker=$(pactl list short sinks | grep ${hdsspeakerid} | awk '{print $2}')
-hdsmic=$(pactl list short sources | grep ${hdsmicid} | awk '{print $2}')
+if [ -n "${focmicid}" ]; then
+    focmic=$(pactl list short sources | grep "${focmicid}" | awk '{print $2}')
+fi
 
-zvspeaker=$(pactl list short sinks | grep ${zvspeakerid} | awk '{print $2}')
-zvmic=$(pactl list short sources | grep ${zvmicid} | awk '{print $2}')
 
-h6speaker=$(pactl list short sinks | grep ${h6speakerid} | awk '{print $2}')
-h6mic=$(pactl list short sources | grep ${h6micid} | awk '{print $2}')
+if [ -n "${jbrspeakerid}" ]; then
+    jbrspeaker=$(pactl list short sinks | grep "${jbrspeakerid}" | awk '{print $2}')
+fi
 
-acerusbspeaker=$(pactl list short sinks | grep ${acerusbspeakerid} | awk '{print $2}')
-acerusbmic=$(pactl list short sources | grep ${acerusbmicid} | awk '{print $2}')
+if [ -n "${jbrmicid}" ]; then
+    jbrmic=$(pactl list short sources | grep "${jbrmicid}" | awk '{print $2}')
+fi
 
-dummyspeaker=$(pactl list short sinks | grep ${dummyspeakerid} | awk '{print $2}')
-dummymic=$(pactl list short sources | grep ${dummymicid} | awk '{print $2}')
+
+if [ -n "${bthspeakerid}" ]; then
+    bthspeaker=$(pactl list short sinks | grep "${bthspeakerid}" | awk '{print $2}')
+fi
+
+if [ -n "${bthmicid}" ]; then
+    bthmic=$(pactl list short sources | grep "${bthmicid}" | awk '{print $2}')
+fi
+
+
+if [ -n "${hdsspeakerid}" ]; then
+    hdsspeaker=$(pactl list short sinks | grep "${hdsspeakerid}" | awk '{print $2}')
+fi
+
+if [ -n "${hdsmicid}" ]; then
+    hdsmic=$(pactl list short sources | grep "${hdsmicid}" | awk '{print $2}')
+fi
+
+
+if [ -n "${zvspeakerid}" ]; then
+    zvspeaker=$(pactl list short sinks | grep "${zvspeakerid}" | awk '{print $2}')
+fi
+
+if [ -n "${zvmicid}" ]; then
+    zvmic=$(pactl list short sources | grep "${zvmicid}" | awk '{print $2}')
+fi
+
+
+if [ -n "${h6speakerid}" ]; then
+    h6speaker=$(pactl list short sinks | grep "${h6speakerid}" | awk '{print $2}')
+fi
+
+if [ -n "${h6micid}" ]; then
+    h6mic=$(pactl list short sources | grep "${h6micid}" | awk '{print $2}')
+fi
+
+
+if [ -n "${acerusbspeakerid}" ]; then
+    acerusbspeaker=$(pactl list short sinks | grep "${acerusbspeakerid}" | awk '{print $2}')
+fi
+
+if [ -n "${acerusbmicid}" ]; then
+    acerusbmic=$(pactl list short sources | grep "${acerusbmicid}" | awk '{print $2}')
+fi
+
+
+if [ -n "${dummyspeakerid}" ]; then
+    dummyspeaker=$(pactl list short sinks | grep "${dummyspeakerid}" | awk '{print $2}')
+fi
+
+if [ -n "${dummymicid}" ]; then
+    dummymic=$(pactl list short sources | grep "${dummymicid}" | awk '{print $2}')
+fi
 
 if [ -n "$focspeaker" ]
 then

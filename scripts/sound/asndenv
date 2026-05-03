@@ -132,35 +132,83 @@ export dummymicvolume="100"
 
 declare -A shortsoundnames
 
-shortsoundnames[${internalspeakerid}]="INT"
-shortsoundnames[${internalmicid}]="INT"
+if [ -n "${internalspeakerid}" ]; then
+    shortsoundnames[${internalspeakerid}]="INT"
+fi
 
-shortsoundnames[${focspeakerid}]="2I2"
-shortsoundnames[${focmicid}]="2I2"
-
-shortsoundnames[${jbrspeakerid}]="JBR"
-shortsoundnames[${jbrmicid}]="JBR"
-
-shortsoundnames[${bthspeakerid}]="BTH"
-shortsoundnames[${bthmicid}]="INT"
-
-shortsoundnames[${hdsspeakerid}]="HDS"
-shortsoundnames[${hdsmicid}]="HDS"
-
-shortsoundnames[${dummyspeakerid}]="DMY"
-shortsoundnames[${dummymicid}]="DMY"
-
-shortsoundnames[${zvspeakerid}]="ZVI"
-shortsoundnames[${zvmicid}]="ZVI"
-
-shortsoundnames[${h6speakerid}]="H6"
-shortsoundnames[${h6micid}]="H6"
-
-shortsoundnames[${acerusbspeakerid}]="ACR"
-shortsoundnames[${acerusbmicid}]="DMY"
-
-shortsoundnames[${dummyspeakerid}]="DMY"
-shortsoundnames[${dummymicid}]="DMY"
+if [ -n "${internalmicid}" ]; then
+    shortsoundnames[${internalmicid}]="INT"
+fi
 
 
+if [ -n "${focspeakerid}" ]; then
+    shortsoundnames[${focspeakerid}]="2I2"
+fi
+
+if [ -n "${focmicid}" ]; then
+    shortsoundnames[${focmicid}]="2I2"
+fi
+
+
+if [ -n "${jbrspeakerid}" ]; then
+    shortsoundnames[${jbrspeakerid}]="JBR"
+fi
+
+if [ -n "${jbrmicid}" ]; then
+    shortsoundnames[${jbrmicid}]="JBR"
+fi
+
+
+if [ -n "${bthspeakerid}" ]; then
+    shortsoundnames[${bthspeakerid}]="BTH"
+fi
+
+if [ -n "${bthmicid}" ]; then
+    shortsoundnames[${bthmicid}]="INT"
+fi
+
+
+if [ -n "${hdsspeakerid}" ]; then
+    shortsoundnames[${hdsspeakerid}]="HDS"
+fi
+
+if [ -n "${hdsmicid}" ]; then
+    shortsoundnames[${hdsmicid}]="HDS"
+fi
+
+
+if [ -n "${dummyspeakerid}" ]; then
+    shortsoundnames[${dummyspeakerid}]="DMY"
+fi
+
+if [ -n "${dummymicid}" ]; then
+    shortsoundnames[${dummymicid}]="DMY"
+fi
+
+
+if [ -n "${zvspeakerid}" ]; then
+    shortsoundnames[${zvspeakerid}]="ZVI"
+fi
+
+if [ -n "${zvmicid}" ]; then
+    shortsoundnames[${zvmicid}]="ZVI"
+fi
+
+
+if [ -n "${h6speakerid}" ]; then
+    shortsoundnames[${h6speakerid}]="H6"
+fi
+
+if [ -n "${h6micid}" ]; then
+    shortsoundnames[${h6micid}]="H6"
+fi
+
+
+if [ -n "${acerusbspeakerid}" ]; then
+    shortsoundnames[${acerusbspeakerid}]="ACR"
+fi
+
+if [ -n "${acerusbmicid}" ]; then
+    shortsoundnames[${acerusbmicid}]="DMY"
+fi
 export shortsoundnames
