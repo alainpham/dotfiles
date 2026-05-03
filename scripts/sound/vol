@@ -14,11 +14,14 @@ if echo "$server_name" | grep -qi "pipewire"; then
 pw-link -l | awk '
   /^from-desktop:/ {f=1; next}
   /^[^[:space:]]/  {f=0}
-  f && /\|->/ {print $2}
-' | cut -d: -f1 | sort -u | grep -E '^(alsa_output|bluez_output)'
+  f && /\|->/ {
+    sub(/.*\|-> /, "", $0)
+    print
+  }
+' | rev | cut -d: -f2- | rev | sort -u |
+grep -E '^(alsa_output|bluez_output)'
 
 )
-
 else
     cspeaker_module_id=$(pactl list short modules | grep "sink_name=from-desktop" | awk '{print $1}')
     cspeaker_sink_input_id=$(pactl -f json list sink-inputs | jq -r ".[] | select(.owner_module == \"$cspeaker_module_id\") | .sink")
