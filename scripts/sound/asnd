@@ -18,16 +18,37 @@ if [ -z "$mic" ]; then
     exit 1
 fi
 
-disconnect_node() {
+disconnect_node_output() {
   local NODE="$1"
 
   pw-link -ol | awk -v node="$NODE" '
     /^[^ ]/ { current = $1 }
     /^\s+\|->/ {
       target = $2
-      split(current, a, ":")
-      split(target, b, ":")
-      if (a[1] == node || b[1] == node) print current " " target
+
+      # only disconnect OUTGOING links from node
+      if (current ~ "^" node ":") {
+        print current " " target
+      }
+    }
+  ' | while read -r src dst; do
+    echo "Disconnecting $src -> $dst"
+    pw-link -d "$src" "$dst"
+  done
+}
+
+disconnect_node_input() {
+  local NODE="$1"
+
+  pw-link -ol | awk -v node="$NODE" '
+    /^[^ ]/ { current = $1 }
+    /^\s+\|->/ {
+      target = $2
+
+      # only disconnect INCOMING links to node
+      if (target ~ "^" node ":") {
+        print current " " target
+      }
     }
   ' | while read -r src dst; do
     echo "Disconnecting $src -> $dst"
@@ -72,7 +93,7 @@ if [ "$svr" == "pa" ]; then
     cspeaker_sink_input_id=$(pactl -f json list sink-inputs | jq -r ".[] | select(.owner_module == \"$cspeaker_module_id\") | .index")
     pacmd move-sink-input $cspeaker_sink_input_id $speakers
 else
-    disconnect_node from-desktop
+    disconnect_node_output from-desktop
 
     nb_spk_channels=$(pw-link -i | grep "^${speakers}" | wc -l)
     if [ "$nb_spk_channels" -eq 2 ]; then 
@@ -93,7 +114,7 @@ if [ "$svr" == "pa" ]; then
     cspeaker_sink_input_id=$(pactl -f json list sink-inputs | jq -r ".[] | select(.owner_module == \"$cspeaker_module_id\") | .index")
     pacmd move-sink-input $cspeaker_sink_input_id $speakers
 else
-    disconnect_node from-caller
+    disconnect_node_output from-caller
     nb_spk_channels=$(pw-link -i | grep "^${speakers}" | wc -l)
     if [ "$nb_spk_channels" -eq 2 ]; then 
         pw-link from-caller:monitor_FL "${speakers}:playback_FL"
@@ -134,7 +155,7 @@ if [ "$svr" == "pa" ]; then
     mic01_source_output_id=$(pactl -f json list source-outputs | jq -r ".[] | select(.owner_module == \"$mic01_module_id\") | .index")
     pacmd move-source-output $mic01_source_output_id $mic
 else
-    disconnect_node mic01-processed
+    disconnect_node_input mic01-processed
     pw-link mic01-processed:capture_MONO to-caller:input_FL
     pw-link mic01-processed:capture_MONO to-caller:input_FR
 
@@ -153,7 +174,7 @@ if [ "$svr" == "pa" ]; then
     mic02_source_output_id=$(pactl -f json list source-outputs | jq -r ".[] | select(.owner_module == \"$mic02_module_id\") | .index")
     pacmd move-source-output $mic02_source_output_id $mic
 else
-    disconnect_node mic02-processed
+    disconnect_node_input mic02-processed
     nb_mic_channels=$(pw-link -o | grep "^${mic}" | wc -l)
     if [ "$nb_mic_channels" -eq 2 ]; then 
         pw-link mic02-processed:capture_MONO to-caller:input_FL
