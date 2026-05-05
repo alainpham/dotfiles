@@ -2,6 +2,7 @@
 # This script is used to set the monitor configuration for X11.
 
 command=$1
+echo $(date) "setting monitor to $command">>~/.mon.log
 
 if [ "$command" == "help" ]; then
     echo "Usage: $0 <command>"
@@ -84,7 +85,7 @@ default() {
 
 lap() {
 
-    echo "Laptop screen only."
+    echo $(date) "Laptop screen only.">>~/.mon.log
 
     appendcommand=""
 
@@ -98,7 +99,7 @@ lap() {
 }
 
 hdmi(){
-    echo "HDMI screen only"
+    echo $(date) "DMI screen only">>~/.mon.log
 
     appendcommand=""
     for monitor in $monitors; do
@@ -112,7 +113,7 @@ hdmi(){
 }
 
 hdmileft(){
-    echo "HDMI left of Laptop screen"
+    echo $(date) "HDMI left of Laptop screen">>~/.mon.log
 
     appendcommand=""
     for monitor in $monitors; do
@@ -128,7 +129,7 @@ hdmileft(){
 }
 
 hdmiright(){
-    echo "HDMI right of Laptop screen"
+    echo $(date) "HDMI right of Laptop screen">>~/.mon.log
 
     appendcommand=""
     for monitor in $monitors; do
@@ -145,6 +146,7 @@ hdmiright(){
 
 copyallscreens(){
     copy_mode=$(bestmode)
+    echo $(date) "mirror on all available screens with resolution ${copy_mode}">>~/.mon.log
     
     if [ "$copy_mode" == "0" ]; then
         echo "No suitable copy mode found. Defaulting to laptop resolution."
@@ -174,6 +176,8 @@ copyallscreens(){
 
 centerdock(){
     echo "Center dock screen"
+    echo $(date) "Center dock screen">>~/.mon.log
+
     appendcommand=""
     for monitor in $monitors; do
         if [ "$monitor" != "$dock_center" ]; then
@@ -187,7 +191,8 @@ centerdock(){
 }
 
 centerandleftdock(){
-    echo "Center and left dock screen"
+    echo $(date) "Center and left dock screen">>~/.mon.log
+
     appendcommand=""
     for monitor in $monitors; do
         if [ "$monitor" != "$dock_left" ] && [ "$monitor" != "$dock_center" ]; then
@@ -202,7 +207,8 @@ centerandleftdock(){
 }
 
 centerleftml(){
-    echo "Center and left dock screen moonlight all left"
+    echo $(date) "Moonlight, dock left, dock center">>~/.mon.log
+
     appendcommand=""
     for monitor in $monitors; do
         if [ "$monitor" != "$dock_left" ] && [ "$monitor" != "$dock_center" ] && [ "$monitor" != "$moonlight" ]; then
@@ -218,7 +224,7 @@ centerleftml(){
 }
 
 home() {
-
+    echo $(date) "dock left, dock center, laptop">>~/.mon.log
     appendcommand=""
     for monitor in $monitors; do
         if [ "$monitor" != "$dock_left" ] && [ "$monitor" != "$dock_center" ] && [ "$monitor" != "$laptop" ]; then
@@ -268,16 +274,10 @@ elif [ "$command" == "clm" ] && echo "$monitors" | grep -q "$dock_left" && echo 
     
     centerleftml
 
-elif [ "$command" == "" ] && echo "$monitors" | grep -q "$dock_left" && echo "$monitors" | grep -q "$dock_center"  && echo "$monitors" | grep -q "$moonlight"; then
+elif [ "$command" == "" ] && echo "$monitors" | grep -q "$dock_left" && echo "$monitors" | grep -q "$dock_center" ; then
     echo "Docking station detected, setting up DisplayPort monitors."
-    default
-
+    home
 elif [ "$command" == "" ] && echo "$monitors" | grep -q "$hdmi" ; then
-    
-    echo "Docking station detected, setting up DisplayPort monitors."
-    default
-
-elif [ "$command" == "" ] && echo "$monitors" | grep -q "$dock_left" && echo "$monitors" | grep -q "$dock_center"  && echo "$monitors"; then
     
     echo "Docking station detected, setting up DisplayPort monitors."
     default
