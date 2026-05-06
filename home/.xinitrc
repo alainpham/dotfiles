@@ -29,6 +29,9 @@ fi
 dunst > ~/.dunst.log &
 echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
+if [ ! -f "~/.gtkrc-2.0" ]:then 
+theme
+fi
 while true; do
 
     if [ -f ~/.xdpi ]; then 
