@@ -1,20 +1,9 @@
 #!/bin/bash
 
-TEMPLATE_DIR="/home/$USER/themecfgs"
+TEMPLATE_DIR="~/themecfgs"
 COLORMODE=$1
 
-if [ "$COLORMODE" == "dark" ]; then
-export GTK_THEME="Breeze-Dark"
-export GTK_ICON_THEME="breeze-dark"
-export GTK_FONT_NAME="Noto Sans 10"
-export GTK_CURSOR_THEME="Adwaita"
-export GTK_CURSOR_SIZE="24"
-export GTK_COLOR_SCHEME="prefer-dark"
-export GTK_PREFER_DARK="1"
-export FG_COLOR="eeeeec"
-export FLOAT_COLOR="555753"
-export BORDER_COLOR="555753"
-else
+if [ "$COLORMODE" == "light" ]; then
 export GTK_THEME="Breeze"
 export GTK_ICON_THEME="breeze"
 export GTK_FONT_NAME="Noto Sans 10"
@@ -28,6 +17,17 @@ export BORDER_COLOR="555753"
 # export FG_COLOR="2e3436"
 # export FLOAT_COLOR="eeeeec"
 # export BORDER_COLOR="eeeeec"
+else
+export GTK_THEME="Breeze-Dark"
+export GTK_ICON_THEME="breeze-dark"
+export GTK_FONT_NAME="Noto Sans 10"
+export GTK_CURSOR_THEME="Adwaita"
+export GTK_CURSOR_SIZE="24"
+export GTK_COLOR_SCHEME="prefer-dark"
+export GTK_PREFER_DARK="1"
+export FG_COLOR="eeeeec"
+export FLOAT_COLOR="555753"
+export BORDER_COLOR="555753"
 fi
 
 find "$TEMPLATE_DIR" -type f | while read -r src; do
