@@ -1,0 +1,53 @@
+#!/bin/bash
+
+TEMPLATE_DIR="/home/$USER/themecfgs"
+COLORMODE=$1
+
+if [ "$COLORMODE" == "dark" ]; then
+export GTK_THEME="Breeze-Dark"
+export GTK_ICON_THEME="breeze-dark"
+export GTK_FONT_NAME="Noto Sans 10"
+export GTK_CURSOR_THEME="Adwaita"
+export GTK_CURSOR_SIZE="24"
+export GTK_COLOR_SCHEME="prefer-dark"
+export GTK_PREFER_DARK="1"
+export FG_COLOR="eeeeec"
+export FLOAT_COLOR="555753"
+export BORDER_COLOR="555753"
+else
+export GTK_THEME="Breeze"
+export GTK_ICON_THEME="breeze"
+export GTK_FONT_NAME="Noto Sans 10"
+export GTK_CURSOR_THEME="Adwaita"
+export GTK_CURSOR_SIZE="24"
+export GTK_COLOR_SCHEME="prefer-light"
+export GTK_PREFER_DARK="0"
+export FG_COLOR="eeeeec"
+export FLOAT_COLOR="555753"
+export BORDER_COLOR="555753"
+# export FG_COLOR="2e3436"
+# export FLOAT_COLOR="eeeeec"
+# export BORDER_COLOR="eeeeec"
+fi
+
+find "$TEMPLATE_DIR" -type f | while read -r src; do
+    rel="${src#$TEMPLATE_DIR/}"
+    dest="$HOME/$rel"
+    mkdir -p "$(dirname "$dest")"
+    [ -L "$dest" ] && rm "$dest"
+    envsubst < "$src" > "$dest"
+done
+
+dconf reset -f /
+
+gsettings set org.gnome.desktop.interface gtk-theme "${GTK_THEME}"
+gsettings set org.gnome.desktop.interface icon-theme "${GTK_ICON_THEME}"
+gsettings set org.gnome.desktop.interface font-name "${GTK_FONT_NAME}"
+gsettings set org.gnome.desktop.interface cursor-theme "${GTK_CURSOR_THEME}"
+gsettings set org.gnome.desktop.interface cursor-size "${GTK_CURSOR_SIZE}"
+gsettings set org.gnome.desktop.interface font-hinting slight
+gsettings set org.gnome.desktop.interface color-scheme "${GTK_COLOR_SCHEME}"
+
+
+pkill  thunar
+thunar --daemon &
