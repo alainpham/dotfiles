@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEMPLATE_DIR="~/themecfgs"
+TEMPLATE_DIR="$HOME/themecfgs"
 COLORMODE=$1
 
 if [ "$COLORMODE" == "light" ]; then
