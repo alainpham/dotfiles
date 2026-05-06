@@ -34,7 +34,7 @@ find "$TEMPLATE_DIR" -type f | while read -r src; do
     rel="${src#$TEMPLATE_DIR/}"
     dest="$HOME/$rel"
     mkdir -p "$(dirname "$dest")"
-    [ -L "$dest" ] && rm "$dest"
+    rm "$dest"
     envsubst < "$src" > "$dest"
 done
 
