@@ -74,13 +74,21 @@ echo "Dock Center: $dock_center"
 echo "Moonlight screen: $moonlight"
 
 # default behavior
+export ITERATION_FLAG=0
 default() {
     if [ ! -f ~/.sclayout ]; then
         echo "la" > ~/.sclayout
     fi
     export command=$(cat ~/.sclayout)
+    
+    # default layout can't be applied defaulting to laptop
+    if [ "${ITERATION_FLAG}" == "1" ];then 
+        export command="la"
+    fi
+    export ITERATION_FLAG=1
     echo default layout is $command
     applylayout
+
 }
 
 lap() {
@@ -274,17 +282,11 @@ elif [ "$command" == "clm" ] && echo "$monitors" | grep -q "$dock_left" && echo 
     
     centerleftml
 
-elif [ "$command" == "" ] && echo "$monitors" | grep -q "$dock_left" && echo "$monitors" | grep -q "$dock_center" ; then
-    echo "Docking station detected, setting up DisplayPort monitors."
+elif [ "$command" == "lcl" ] && echo "$monitors" | grep -q "$dock_left" && echo "$monitors" | grep -q "$dock_center" ; then
     home
-elif [ "$command" == "" ] && echo "$monitors" | grep -q "$hdmi" ; then
-    
-    echo "Docking station detected, setting up DisplayPort monitors."
-    default
-
 else
-    echo "No specific command provided or no docking station detected. Defaulting to laptop screen only."
-    lap
+    echo "No specific command provided or no docking station detected. Defaulting"
+    default
 fi
 
 ~/.fehbg
