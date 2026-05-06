@@ -23,9 +23,12 @@ export GTK_CURSOR_THEME="Adwaita"
 export GTK_CURSOR_SIZE="24"
 export GTK_COLOR_SCHEME="prefer-light"
 export GTK_PREFER_DARK="0"
-export FG_COLOR="2e3436"
-export FLOAT_COLOR="eeeeec"
-export BORDER_COLOR="eeeeec"
+export FG_COLOR="eeeeec"
+export FLOAT_COLOR="555753"
+export BORDER_COLOR="555753"
+# export FG_COLOR="2e3436"
+# export FLOAT_COLOR="eeeeec"
+# export BORDER_COLOR="eeeeec"
 fi
 
 find "$TEMPLATE_DIR" -type f | while read -r src; do
