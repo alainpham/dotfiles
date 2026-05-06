@@ -30,15 +30,16 @@ export FLOAT_COLOR="555753"
 export BORDER_COLOR="555753"
 fi
 
-find "$TEMPLATE_DIR" -type f | while read -r src; do
+find -L "$TEMPLATE_DIR" -type f | while read -r src; do
+    echo " writing  : $src"
     rel="${src#$TEMPLATE_DIR/}"
     dest="$HOME/$rel"
     mkdir -p "$(dirname "$dest")"
-    rm "$dest"
+    rm -f "$dest"
     envsubst < "$src" > "$dest"
 done
 
-dconf reset -f /
+# dconf reset -f /
 
 gsettings set org.gnome.desktop.interface gtk-theme "${GTK_THEME}"
 gsettings set org.gnome.desktop.interface icon-theme "${GTK_ICON_THEME}"
