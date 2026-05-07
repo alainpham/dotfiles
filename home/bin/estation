@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TERMINAL=xdg-terminal-exec
+TERMINAL=x-terminal-emulator
 
 if [ -f /run/current-system/sw/bin/estation ]; then
 $TERMINAL -e /run/current-system/sw/bin/estation
