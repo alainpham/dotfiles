@@ -9,7 +9,7 @@ lines = 30
 
 
 [font]
-size = 14
+size = 11
 
 normal = { family = "NotoSansM Nerd Font Mono", style = "Regular" }
 bold = { family = "NotoSansM Nerd Font Mono", style = "Bold" }
