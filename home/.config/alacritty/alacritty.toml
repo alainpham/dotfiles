@@ -1,9 +1,12 @@
 [window]
+padding = { x = 16, y = 16 }
+# Optional: make padding scale with DPI
+dynamic_padding = true
+
 [window.dimensions]
 columns = 100
 lines = 80
 
-padding = { x = 16, y = 16 }
 
 [font]
 size = 14
