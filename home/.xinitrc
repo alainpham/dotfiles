@@ -38,7 +38,10 @@ while true; do
     if [ -f ~/.xdpi ]; then 
         export XDPI=$(cat ~/.xdpi)
         xrandr --dpi $XDPI
+    else
+        export XDPI=96
     fi
+    export WINIT_X11_SCALE_FACTOR=$(awk 'BEGIN { printf "%.2f\n", 72/96 }')
     export XCURSOR_THEME="Adwaita"
     export XCURSOR_SIZE=24
     [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded">>~/.xinit.log
