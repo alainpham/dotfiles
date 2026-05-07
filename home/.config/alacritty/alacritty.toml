@@ -1,3 +1,6 @@
+[env]
+TERM = "xterm-256color"
+
 [window]
 padding = { x = 16, y = 16 }
 # Optional: make padding scale with DPI
