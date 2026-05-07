@@ -1,5 +1,8 @@
 [window]
-dimensions = { column = 100, lines = 30 }
+[window.dimensions]
+columns = 100
+lines = 80
+
 padding = { x = 16, y = 16 }
 
 # Optional: make padding scale with DPI
