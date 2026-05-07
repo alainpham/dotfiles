@@ -1,0 +1,12 @@
+[window]
+padding = { x = 16, y = 16 }
+
+# Optional: make padding scale with DPI
+dynamic_padding = true
+[font]
+size = 14
+
+normal = { family = "NotoSansM Nerd Font Mono", style = "Regular" }
+bold = { family = "NotoSansM Nerd Font Mono", style = "Bold" }
+italic = { family = "NotoSansM Nerd Font Mono", style = "Italic" }
+bold_italic = { family = "NotoSansM Nerd Font Mono", style = "Bold Italic" }
