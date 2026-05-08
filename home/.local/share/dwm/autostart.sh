@@ -2,6 +2,7 @@
 
 for i in {1..5}; do
     if pactl info >/dev/null 2>&1; then
+        asnddef &
         break
     fi
     echo "Waiting for PulseAudio/PipeWire pulse server... ($i/5)"
