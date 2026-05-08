@@ -1,6 +1,19 @@
 #!/bin/bash
 
-asnddef &
+for i in {1..5}; do
+    if pactl info >/dev/null 2>&1; then
+        break
+    fi
+    echo "Waiting for PulseAudio/PipeWire pulse server... ($i/5)"
+    sleep 1
+done
+
+# Final check
+if ! pactl info >/dev/null 2>&1; then
+    echo "Pulse server not available after 5 retries"
+    exit 1
+fi
+
 mon &
 
 thunar --daemon & 
