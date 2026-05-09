@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TERMINAL=xdg-terminal-exec
+TERMINAL=x-terminal-emulator
 
 if [ -f /run/current-system/sw/bin/code ]; then
     export CODECMD=/run/current-system/sw/bin/code
