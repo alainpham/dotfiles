@@ -20,6 +20,12 @@ fi
 export internalspeakervolume="45"
 export internalmicvolume="50"
 
+export hdmispeakerid=$(pactl list short sinks | grep -E "alsa_output.pci-.*hdmi" | awk '{print $2}')
+export hdmimicid=$internalmicid
+export hdmispeakervolume="80"
+export hdmimicvolume="$internalmicvolume"
+
+
 # ensure PRODUCT_NAME is set (fallback to DMI product_name)
 if [ -z "${PRODUCT_NAME}" ]; then
     export PRODUCT_NAME=$(cat /sys/devices/virtual/dmi/id/product_name)
@@ -119,7 +125,7 @@ export h6micvolume="100"
 
 export acerusbspeakerid=$(pactl list short sinks | grep -E "alsa_output.usb-0c76_USB_Speaker-00.*" | awk '{print $2}')
 export acerusbmicid="alsa_input.dummy-source"
-export acerusbspeakervolume="45"
+export acerusbspeakervolume="25"
 export acerusbmicvolume="100"
 
 export dummyspeakerid="alsa_output.dummy-sink"
@@ -137,6 +143,9 @@ if [ -n "${internalmicid}" ]; then
     shortsoundnames[${internalmicid}]="INT"
 fi
 
+if [ -n "${hdmispeakerid}" ]; then
+    shortsoundnames[${hdmispeakerid}]="HDMI"
+fi
 
 if [ -n "${focspeakerid}" ]; then
     shortsoundnames[${focspeakerid}]="2I2"

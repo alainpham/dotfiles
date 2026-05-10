@@ -55,7 +55,10 @@ else
     first_monitor=$(echo "$monitors" | head -n1)
     laptop="$first_monitor"
     laptop_mode=$(xrandr | grep -A1 "^$laptop connected" | tail -n1 | awk '{print $1}')
-    hdmi="HDMI_NOT_FOUND"
+    hdmi=$(echo "$monitors" | grep HDMI |  head -n1)
+    if [ -z "$hdmi" ]; then 
+        hdmi="HDMI_NOT_FOUND"
+    fi
     dock_left="DOCK_LEFT_NOT_FOUND"
     dock_center="DOCK_CENTER_NOT_FOUND"
 fi

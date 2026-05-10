@@ -10,6 +10,13 @@ if [ -n "${internalmicid}" ]; then
     internalmic=$(pactl list short sources | grep "${internalmicid}" | awk '{print $2}')
 fi
 
+if [ -n "${hdmispeakerid}" ]; then
+    hdmispeaker=$(pactl list short sinks | grep "${hdmispeakerid}" | awk '{print $2}')
+fi
+
+if [ -n "${hdmimicid}" ]; then
+    hdmimic=$(pactl list short sources | grep "${hdmimicid}" | awk '{print $2}')
+fi
 
 if [ -n "${focspeakerid}" ]; then
     focspeaker=$(pactl list short sinks | grep "${focspeakerid}" | awk '{print $2}')
@@ -82,7 +89,19 @@ if [ -n "${dummymicid}" ]; then
     dummymic=$(pactl list short sources | grep "${dummymicid}" | awk '{print $2}')
 fi
 
-if [ -n "$focspeaker" ]
+if [ -f "/home/$USER/.snd" ]; then
+    # explicit default speakers
+    source /home/$USER/.snd
+    selected_output=$(pactl list short sinks | grep "${speakerid}" | awk '{print $2}')
+    selected_input=$(pactl list short sources | grep "${micid}" | awk '{print $2}')
+    selected_speaker_volume=$speakervolume
+    selected_microphone_volume=$micvolume
+fi
+
+
+if [ -n "$selected_output" ] && [ -n "$selected_input" ] && [ -n "$selected_speaker_volume" ] && [ -n "$selected_microphone_volume" ]; then 
+    echo "Using default .snd config" 
+elif [ -n "$focspeaker" ]
 then
     echo "Focusrite is present"
     selected_output=$focspeaker
@@ -163,8 +182,5 @@ else
 
     echo $selected_output $selected_output
 fi
-
-speakers=$selected_output
-mic=$selected_input
 
 asnd $selected_output $selected_input $selected_speaker_volume $selected_microphone_volume
