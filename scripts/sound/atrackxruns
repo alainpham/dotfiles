@@ -1,0 +1,39 @@
+#!/bin/bash
+# Track PipeWire xruns and log each one to stdout with the node that caused it.
+# Reads `pw-top -b` snapshots once per second and reports every increment of the
+# ERR counter per node. Ctrl+C to stop.
+
+set -u
+
+if ! command -v pw-top >/dev/null 2>&1; then
+    echo "pw-top not found. Install pipewire utilities." >&2
+    exit 1
+fi
+
+echo "Watching PipeWire xruns... (Ctrl+C to stop)"
+
+pw-top -b | awk '
+/^S[[:space:]]+ID[[:space:]]/ { next }                # column header
+NF < 10                        { next }                # blank / partial
+{
+    state=$1; id=$2; quant=$3; rate=$4
+    err=$9;   fmt=$10
+    name=""
+    for (i=11; i<=NF; i++) name = name (i==11 ? "" : " ") $i
+
+    if (id  !~ /^[0-9]+$/) next
+    if (err !~ /^[0-9]+$/) next
+
+    if (id in seen && err > last[id]) {
+        delta = err - last[id]
+        cmd = "date +\"%Y-%m-%d %H:%M:%S\""
+        cmd | getline ts
+        close(cmd)
+        printf "\033[31m[%s] XRUN\033[0m id=%s name=\"%s\" +%d (total=%d) state=%s fmt=%s quant=%s rate=%s\n",
+               ts, id, name, delta, err, state, fmt, quant, rate
+        fflush()
+    }
+    seen[id]=1
+    last[id]=err
+}
+'
