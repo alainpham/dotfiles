@@ -10,6 +10,104 @@ if ! command -v pw-top >/dev/null 2>&1; then
     exit 1
 fi
 
+if command -v pw-metadata >/dev/null 2>&1; then
+    echo "Global PipeWire clock settings:"
+    pw-metadata -n settings 2>/dev/null | awk -F"'" '
+        /key:.clock\./ {
+            key=$2; val=$4
+            printf "  %-22s = %s\n", key, val
+        }
+    '
+    echo
+fi
+
+# --- realtime readiness preflight -------------------------------------------
+ok()   { printf "  \033[32m[OK]\033[0m   %s\n" "$*"; }
+warn() { printf "  \033[33m[WARN]\033[0m %s\n" "$*"; }
+fail() { printf "  \033[31m[FAIL]\033[0m %s\n" "$*"; }
+
+echo "Realtime readiness:"
+
+# RT scheduling priority limit
+rtprio=$(ulimit -r)
+if [ "$rtprio" -ge 80 ] 2>/dev/null; then
+    ok "RT priority limit (ulimit -r): $rtprio"
+elif [ "$rtprio" -gt 0 ] 2>/dev/null; then
+    warn "RT priority limit low: $rtprio (want >=80; set in /etc/security/limits.d/)"
+else
+    fail "RT priority disabled (ulimit -r = 0). Add @audio - rtprio 95 to limits.d"
+fi
+
+# Locked memory limit (kB)
+memlock=$(ulimit -l)
+if [ "$memlock" = "unlimited" ] || [ "${memlock:-0}" -ge 262144 ] 2>/dev/null; then
+    ok "Locked memory (ulimit -l): $memlock"
+else
+    warn "Locked memory low: $memlock kB (want unlimited or >=262144)"
+fi
+
+# Audio group membership
+if id -nG | tr ' ' '\n' | grep -qE '^(audio|pipewire|realtime)$'; then
+    ok "User in audio/pipewire/realtime group"
+else
+    warn "User not in 'audio' group — RT scheduling may be denied"
+fi
+
+# rtkit-daemon
+if pgrep -x rtkit-daemon >/dev/null 2>&1; then
+    ok "rtkit-daemon running"
+else
+    warn "rtkit-daemon not running — RT priority requests will fail"
+fi
+
+# Kernel flavour
+kver=$(uname -r)
+kbuild=$(uname -v)
+case "$kver$kbuild" in
+    *PREEMPT_RT*|*-rt*)        ok "Kernel is PREEMPT_RT: $kver" ;;
+    *lowlatency*)              ok "Kernel is lowlatency: $kver" ;;
+    *PREEMPT_DYNAMIC*|*PREEMPT*) warn "Kernel is PREEMPT (not RT/lowlatency): $kver" ;;
+    *)                         warn "Kernel is generic: $kver — install -lowlatency or -rt for less jitter" ;;
+esac
+
+# CPU governor (check all cores, report worst)
+gov_bad=""
+for g in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
+    [ -r "$g" ] || continue
+    v=$(cat "$g")
+    [ "$v" != "performance" ] && gov_bad="$v"
+done
+if [ -z "$gov_bad" ] && [ -r /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ]; then
+    ok "CPU governor: performance"
+elif [ -n "$gov_bad" ]; then
+    warn "CPU governor: $gov_bad — set to 'performance' (cpupower frequency-set -g performance)"
+fi
+
+# PipeWire / WirePlumber alive
+if pgrep -x pipewire >/dev/null && pgrep -x wireplumber >/dev/null; then
+    ok "pipewire + wireplumber running"
+else
+    fail "pipewire and/or wireplumber not running"
+fi
+
+# Bluetooth audio active (a common source of jitter in the monitor path)
+if command -v pw-cli >/dev/null 2>&1 \
+   && pw-cli list-objects Node 2>/dev/null | grep -qi 'bluez\|api.bluez'; then
+    warn "Bluetooth audio nodes present — keep them out of the monitor chain"
+else
+    ok "No Bluetooth audio nodes"
+fi
+
+# Resampling check: forced rate vs device rate from pw-top header
+if command -v pw-metadata >/dev/null 2>&1; then
+    forced=$(pw-metadata -n settings 2>/dev/null | awk -F"'" '/clock.force-rate/ {print $4}')
+    target=$(pw-metadata -n settings 2>/dev/null | awk -F"'" '/clock.rate.*[^-]/ {print $4; exit}')
+    if [ "${forced:-0}" != "0" ] && [ -n "$target" ] && [ "$forced" != "$target" ]; then
+        warn "clock.force-rate ($forced) != clock.rate ($target) — resampling in path"
+    fi
+fi
+
+echo
 echo "Watching PipeWire xruns... (Ctrl+C to stop)"
 
 pw-top -b | awk '

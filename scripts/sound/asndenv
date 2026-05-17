@@ -76,16 +76,18 @@ fi
 
 CARD=$(pactl list short cards | grep alsa_card.usb-Focusrite_Scarlett_2i2_USB | awk '{print $2}')
 if [ ! -z "${CARD}" ]; then
-    directexists=$(
+    targetprofile=pro-audio
+    profileexists=$(
         pactl -f json list cards | jq -r --arg CARD "$CARD" '
         .[]
         | select(.name == $CARD)
         | .profiles
         | keys[]
-        '| grep Direct | wc -l
+        '| grep $targetprofile | wc -l
     )
-    if [ "$directexists" == "1" ]; then
-        pactl set-card-profile "$CARD" Direct
+    if [ "$profileexists" == "1" ]; then
+        pactl set-card-profile "$CARD" $targetprofile
+
     fi
 fi
 export focspeakerid=$(pactl list short sinks | grep -E "alsa_output.usb-Focusrite_Scarlett_2i2.*" | awk '{print $2}')
