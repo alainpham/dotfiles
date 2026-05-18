@@ -118,7 +118,9 @@
             "deinterlace_mode": 0,
             "deinterlace_field_order": 0,
             "monitoring_type": 0,
-            "private_settings": {}
+            "private_settings": {
+                "volume_locked": true
+            }
         },
         {
             "prev_ver": 536936448,
@@ -149,7 +151,9 @@
             "deinterlace_mode": 0,
             "deinterlace_field_order": 0,
             "monitoring_type": 0,
-            "private_settings": {}
+            "private_settings": {
+                "volume_locked": true
+            }
         },
         {
             "prev_ver": 536936448,
