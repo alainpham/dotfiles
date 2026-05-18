@@ -1,0 +1,35 @@
+#!/bin/bash
+if [ -f /run/current-system/sw/bin/reaper ]; then
+    export REAPERCMD=/run/current-system/sw/bin/reaper
+elif [ -f /usr/local/bin/reaper ]; then
+    export REAPERCMD=/usr/local/bin/reaper
+else
+    echo "reaper not found" >&2
+    exit 1
+fi
+
+link_ports() {
+    # Wait up to ~10s for the OBS JACK nodes to register their ports.
+    for _ in $(seq 1 50); do
+        if pw-link -i 2>/dev/null | grep -q "REAPER:in1"; then
+            break
+        fi
+        sleep 0.2
+    done
+
+    pw-link "mic01-processed:capture_MONO" "REAPER:in1" 2>/dev/null
+    pw-link "mic02-processed:capture_MONO" "REAPER:in2" 2>/dev/null
+
+    pw-link "from-desktop:monitor_FL" "REAPER:in3" 2>/dev/null
+    pw-link "from-desktop:monitor_FR" "REAPER:in4" 2>/dev/null
+
+    pw-link "from-caller:monitor_FL"  "REAPER:in5"  2>/dev/null
+    pw-link "from-caller:monitor_FR"  "REAPER:in6"  2>/dev/null
+}
+
+if command -v pw-jack &> /dev/null ; then
+    link_ports &
+    pw-jack $REAPERCMD
+else
+    $REAPERCMD
+fi

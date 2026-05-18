@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ -f /run/current-system/sw/bin/obs ]; then
     export OBSCMD=/run/current-system/sw/bin/obs
-elif [ -f /usr/bin/code ]; then
+elif [ -f /usr/bin/obs ]; then
     export OBSCMD=/usr/bin/obs
 else
     echo "obs not found" >&2
