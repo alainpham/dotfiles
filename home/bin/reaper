@@ -29,8 +29,11 @@ link_ports() {
     pw-link REAPER to-caller
 }
 
-if command -v pw-jack &> /dev/null ; then
+if command -v pw-link &> /dev/null ; then
     link_ports &
+fi
+
+if command -v pw-jack &> /dev/null ; then
     pw-jack $REAPERCMD
 else
     $REAPERCMD
