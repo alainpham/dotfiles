@@ -1,0 +1,15 @@
+#!/bin/bash
+if [ -f /run/current-system/sw/bin/obs ]; then
+    export OBSCMD=/run/current-system/sw/bin/obs
+elif [ -f /usr/bin/code ]; then
+    export OBSCMD=/usr/bin/obs
+else
+    echo "obs not found" >&2
+    exit 1
+fi
+
+if command -v pw-jack &> /dev/null ; then
+pw-jack $OBSCMD
+else
+$OBSCMD
+fi
