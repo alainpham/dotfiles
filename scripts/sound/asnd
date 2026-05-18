@@ -104,8 +104,8 @@ else
         pw-link from-desktop:monitor_FR $(pw-link -i | grep "^${speakers}" | awk 'NR==1')
     fi
 
-    pw-link from-desktop:monitor_FL to-caller:input_FL
-    pw-link from-desktop:monitor_FR to-caller:input_FR
+    # pw-link from-desktop:monitor_FL to-caller:input_FL
+    # pw-link from-desktop:monitor_FR to-caller:input_FR
 fi
 
 echo "hookup from-caller to physical speakers"
@@ -157,8 +157,8 @@ if [ "$svr" == "pa" ]; then
 else
     disconnect_node_input mic01-processed
     pw-link -d mic01-processed to-caller
-    pw-link mic01-processed:capture_MONO to-caller:input_FL
-    pw-link mic01-processed:capture_MONO to-caller:input_FR
+    # pw-link mic01-processed:capture_MONO to-caller:input_FL
+    # pw-link mic01-processed:capture_MONO to-caller:input_FR
     pw-link $(pw-link -o | grep "^${mic}" | awk 'NR==1') mic01-processed:input_MONO
 
 fi
@@ -173,8 +173,8 @@ else
     pw-link -d mic02-processed to-caller
     nb_mic_channels=$(pw-link -o | grep "^${mic}" | wc -l)
     if [ "$nb_mic_channels" -eq 2 ]; then 
-        pw-link mic02-processed:capture_MONO to-caller:input_FL
-        pw-link mic02-processed:capture_MONO to-caller:input_FR
+        # pw-link mic02-processed:capture_MONO to-caller:input_FL
+        # pw-link mic02-processed:capture_MONO to-caller:input_FR
         pw-link $(pw-link -o | grep "^${mic}" | awk 'NR==2') mic02-processed:input_MONO
     fi
 fi
