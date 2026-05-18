@@ -17,10 +17,10 @@ link_obs_ports() {
         sleep 0.2
     done
 
-    pw-link "from-desktop:monitor_FL" "OBS Studio: 01-02-dtop:in_1" 2>/dev/null
-    pw-link "from-desktop:monitor_FR" "OBS Studio: 01-02-dtop:in_2" 2>/dev/null
-    pw-link "from-caller:monitor_FL"  "OBS Studio: 01-03-clr:in_1"  2>/dev/null
-    pw-link "from-caller:monitor_FR"  "OBS Studio: 01-03-clr:in_2"  2>/dev/null
+    pw-link "from-desktop" "OBS Studio: 01-02-dtop" 2>/dev/null
+    pw-link "from-caller"  "OBS Studio: 01-03-clr"  2>/dev/null
+    pw-link "mic01-processed" "OBS Studio: 01-04-mic01" 2>/dev/null
+    pw-link "mic02-processed" "OBS Studio: 01-05-mic02" 2>/dev/null
 }
 
 if command -v pw-jack &> /dev/null ; then
