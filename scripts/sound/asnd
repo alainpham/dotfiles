@@ -97,11 +97,11 @@ else
 
     nb_spk_channels=$(pw-link -i | grep "^${speakers}" | wc -l)
     if [ "$nb_spk_channels" -eq 2 ]; then 
-        pw-link from-desktop:monitor_FL $(pw-link -i | grep "^${speakers}" | head -n 1)
-        pw-link from-desktop:monitor_FR $(pw-link -i | grep "^${speakers}" | head -n 2)
+        pw-link from-desktop:monitor_FL $(pw-link -i | grep "^${speakers}" | awk 'NR==1')
+        pw-link from-desktop:monitor_FR $(pw-link -i | grep "^${speakers}" | awk 'NR==2')
     else
-        pw-link from-desktop:monitor_FL $(pw-link -i | grep "^${speakers}" | head -n 1)
-        pw-link from-desktop:monitor_FR $(pw-link -i | grep "^${speakers}" | head -n 1)
+        pw-link from-desktop:monitor_FL $(pw-link -i | grep "^${speakers}" | awk 'NR==1')
+        pw-link from-desktop:monitor_FR $(pw-link -i | grep "^${speakers}" | awk 'NR==1')
     fi
 
     pw-link from-desktop:monitor_FL to-caller:input_FL
@@ -117,11 +117,11 @@ else
     disconnect_node_output from-caller
     nb_spk_channels=$(pw-link -i | grep "^${speakers}" | wc -l)
     if [ "$nb_spk_channels" -eq 2 ]; then 
-        pw-link from-caller:monitor_FL $(pw-link -i | grep "^${speakers}" | head -n 1)
-        pw-link from-caller:monitor_FR $(pw-link -i | grep "^${speakers}" | head -n 2)
+        pw-link from-caller:monitor_FL $(pw-link -i | grep "^${speakers}" | awk 'NR==1')
+        pw-link from-caller:monitor_FR $(pw-link -i | grep "^${speakers}" | awk 'NR==2')
     else
-        pw-link from-caller:monitor_FL $(pw-link -i | grep "^${speakers}" | head -n 1)
-        pw-link from-caller:monitor_FR $(pw-link -i | grep "^${speakers}" | head -n 1)
+        pw-link from-caller:monitor_FL $(pw-link -i | grep "^${speakers}" | awk 'NR==1')
+        pw-link from-caller:monitor_FR $(pw-link -i | grep "^${speakers}" | awk 'NR==1')
     fi
 fi
 # echo "hookup mics_raw to physical mic"
@@ -156,9 +156,10 @@ if [ "$svr" == "pa" ]; then
     pacmd move-source-output $mic01_source_output_id $mic
 else
     disconnect_node_input mic01-processed
+    pw-link -d mic01-processed to-caller
     pw-link mic01-processed:capture_MONO to-caller:input_FL
     pw-link mic01-processed:capture_MONO to-caller:input_FR
-    pw-link $(pw-link -o | grep "^${mic}" | head -n 1) mic01-processed:input_MONO
+    pw-link $(pw-link -o | grep "^${mic}" | awk 'NR==1') mic01-processed:input_MONO
 
 fi
 
@@ -169,11 +170,12 @@ if [ "$svr" == "pa" ]; then
     pacmd move-source-output $mic02_source_output_id $mic
 else
     disconnect_node_input mic02-processed
+    pw-link -d mic02-processed to-caller
     nb_mic_channels=$(pw-link -o | grep "^${mic}" | wc -l)
     if [ "$nb_mic_channels" -eq 2 ]; then 
         pw-link mic02-processed:capture_MONO to-caller:input_FL
         pw-link mic02-processed:capture_MONO to-caller:input_FR
-        pw-link $(pw-link -o | grep "^${mic}" | head -n 2) mic02-processed:input_MONO
+        pw-link $(pw-link -o | grep "^${mic}" | awk 'NR==2') mic02-processed:input_MONO
     fi
 fi
 
