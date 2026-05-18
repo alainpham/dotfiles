@@ -25,6 +25,8 @@ link_ports() {
 
     pw-link "from-caller:monitor_FL"  "REAPER:in5"  2>/dev/null
     pw-link "from-caller:monitor_FR"  "REAPER:in6"  2>/dev/null
+
+    pw-link REAPER to-caller
 }
 
 if command -v pw-jack &> /dev/null ; then
