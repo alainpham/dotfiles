@@ -8,8 +8,24 @@ else
     exit 1
 fi
 
+link_obs_ports() {
+    # Wait up to ~10s for the OBS JACK nodes to register their ports.
+    for _ in $(seq 1 50); do
+        if pw-link -i 2>/dev/null | grep -q "OBS Studio: 01-03-clr:in_1"; then
+            break
+        fi
+        sleep 0.2
+    done
+
+    pw-link "from-desktop:monitor_FL" "OBS Studio: 01-02-dtop:in_1" 2>/dev/null
+    pw-link "from-desktop:monitor_FR" "OBS Studio: 01-02-dtop:in_2" 2>/dev/null
+    pw-link "from-caller:monitor_FL"  "OBS Studio: 01-03-clr:in_1"  2>/dev/null
+    pw-link "from-caller:monitor_FR"  "OBS Studio: 01-03-clr:in_2"  2>/dev/null
+}
+
 if command -v pw-jack &> /dev/null ; then
-pw-jack $OBSCMD
+    link_obs_ports &
+    pw-jack $OBSCMD
 else
-$OBSCMD
+    $OBSCMD
 fi
