@@ -26,8 +26,8 @@ disconnect_node_output() {
     /^\s+\|->/ {
       target = $2
 
-      # only disconnect OUTGOING links from node
-      if (current ~ "^" node ":") {
+      # only disconnect OUTGOING links from node, skip REAPER.* targets
+      if (current ~ "^" node ":" && target !~ /^REAPER\./) {
         print current " " target
       }
     }
@@ -156,7 +156,7 @@ if [ "$svr" == "pa" ]; then
     pacmd move-source-output $mic01_source_output_id $mic
 else
     disconnect_node_input mic01-processed
-    pw-link -d mic01-processed to-caller
+    # pw-link -d mic01-processed to-caller
     # pw-link mic01-processed:capture_MONO to-caller:input_FL
     # pw-link mic01-processed:capture_MONO to-caller:input_FR
     pw-link $(pw-link -o | grep "^${mic}" | awk 'NR==1') mic01-processed:input_MONO
@@ -170,7 +170,7 @@ if [ "$svr" == "pa" ]; then
     pacmd move-source-output $mic02_source_output_id $mic
 else
     disconnect_node_input mic02-processed
-    pw-link -d mic02-processed to-caller
+    # pw-link -d mic02-processed to-caller
     nb_mic_channels=$(pw-link -o | grep "^${mic}" | wc -l)
     if [ "$nb_mic_channels" -eq 2 ]; then 
         # pw-link mic02-processed:capture_MONO to-caller:input_FL
