@@ -26,8 +26,8 @@ disconnect_node_output() {
     /^\s+\|->/ {
       target = $2
 
-      # only disconnect OUTGOING links from node, skip REAPER.* targets
-      if (current ~ "^" node ":" && target !~ /^REAPER\./) {
+      # only disconnect OUTGOING links from node, skip REAPER* targets
+      if (current ~ "^" node ":" && target !~ /^REAPER/) {
         print current " " target
       }
     }
