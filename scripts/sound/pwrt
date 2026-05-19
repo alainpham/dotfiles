@@ -1,8 +1,9 @@
 #!/bin/bash
 
+quantum=${1:-64}
 current=$(pw-metadata -n settings 0 clock.force-quantum 2>/dev/null | grep -oP "value:'\K[0-9]+")
-if [ "$current" = "64" ]; then
+if [ "$current" = "$quantum" ]; then
     pw-metadata -n settings 0 clock.force-quantum 0
 else
-    pw-metadata -n settings 0 clock.force-quantum 64
+    pw-metadata -n settings 0 clock.force-quantum "$quantum"
 fi
