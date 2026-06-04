@@ -24,3 +24,6 @@ select file in ../hw/*.sh; do
         echo "No hardware selected. Please try again."
     fi
 done
+
+echo "installing common.sh"
+bash modules/common.sh
