@@ -1,4 +1,4 @@
-export HOSTNAME="fdvm"
+export HOSTNAME="ostw"
 export TARGET_USERNAME="user"
 export TARGET_USEREMAIL="user@localhost"
 export KEYBOARD_LAYOUT="fr"
