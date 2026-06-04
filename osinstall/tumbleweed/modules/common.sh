@@ -11,3 +11,4 @@ cp /home/$TARGET_USERNAME/dotfiles/scripts/os/* /usr/local/bin/
 
 # fastboot
 echo setup fastboot
+lineinfile /boot/efi/loader/loader.conf ".*timeout.*" "timeout 1"
