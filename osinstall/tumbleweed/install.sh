@@ -1,11 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-select file in ../vars/*.sh; do
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo script directory : $SCRIPT_DIR
+select file in "$SCRIPT_DIR/../vars/"*.sh; do
     if [[ -n "$file" ]]; then
         echo "You selected: $file"
         export TARGETVARS=$file
-        source $TARGETVARS
         cat $TARGETVARS
         break
     else
@@ -13,11 +14,10 @@ select file in ../vars/*.sh; do
     fi
 done
 
-select file in ../hw/*.sh; do
+select file in "$SCRIPT_DIR/../hw/"*.sh; do
     if [[ -n $file ]]; then
         echo "You selected: $file"
         export TARGETHW="$file"
-        source $TARGETHW
         cat $TARGETHW
         break
     else
@@ -25,5 +25,5 @@ select file in ../hw/*.sh; do
     fi
 done
 
-echo "installing common.sh"
-bash modules/common.sh
+echo "running common.sh"
+bash "$SCRIPT_DIR/modules/common.sh"
