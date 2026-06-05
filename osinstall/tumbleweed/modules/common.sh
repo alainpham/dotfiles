@@ -10,5 +10,8 @@ echo install os scripts
 cp /home/$TARGET_USERNAME/dotfiles/scripts/os/* /usr/local/bin/
 
 # fastboot
-echo setup fastboot
-lineinfile /boot/efi/loader/loader.conf ".*timeout.*" "timeout 1"
+echo setup fastboot in /boot/efi/loader/loader.conf
+bootctl set-timeout 1
+
+echo setup small log usage
+cp /home/$TARGET_USERNAME/dotfiles/etc/systemd/journald.conf.d/limits.conf /etc/systemd/journald.conf.d
