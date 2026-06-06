@@ -14,6 +14,11 @@ cp $TARGETVARS /etc/profile.d/vars.sh
 chmod 644 /etc/profile.d/vars.sh
 source $TARGETVARS
 
+echo copy sources.sh file
+cp $SCRIPT_DIR/../../sources.sh /etc/profile.d/sources.sh
+chmod 644 /etc/profile.d/sources.sh
+source /etc/profile.d/sources.sh
+
 #####################
 echo install os scripts
 cp /home/$TARGET_USERNAME/dotfiles/scripts/os/* /usr/local/bin/
