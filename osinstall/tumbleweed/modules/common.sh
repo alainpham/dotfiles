@@ -35,4 +35,4 @@ zypper in -y tmux micro-editor ncdu bmon htop btop nvtop virt-what wireguard-too
 zypper in -y iperf 
 zypper in -y growpart
 
-bash $SCRIPT_DIR/../../derivations/sppedtest.sh
+bash $SCRIPT_DIR/../../derivations/speedtest.sh
