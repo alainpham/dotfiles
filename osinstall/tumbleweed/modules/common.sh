@@ -37,7 +37,18 @@ echo install essentials
 zypper in terminfo
 
 zypper in -y tmux micro-editor ncdu bmon htop btop nvtop virt-what wireguard-tools jc iotop wol stow tini
+zypper in -y zip unzip 7zip sshfs lshw libva-utils bchunk
 zypper in -y iperf 
 zypper in -y growpart
 
 bash $SCRIPT_DIR/../../derivations/speedtest.sh
+
+#####################
+echo setup stow dotfiles
+cd /home/$TARGET_USERNAME/dotfiles
+sudo -u $TARGET_USERNAME stow --no-folding --target=/home/$TARGET_USERNAME --adopt home
+sudo -u $TARGET_USERNAME git restore .
+
+#####################
+echo network config dnsmasq and powersave
+cp /home/$TARGET_USERNAME/dotfiles/etc/NetworkManager/conf.d/* /etc/NetworkManager/conf.d/
