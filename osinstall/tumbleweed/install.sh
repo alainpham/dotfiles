@@ -27,3 +27,11 @@ done
 
 echo "running common.sh"
 bash "$SCRIPT_DIR/modules/common.sh"
+
+if [ "$ENABLE_DEV" == "true" ]; then
+bash "$SCRIPT_DIR/modules/dev.sh"
+fi
+
+if [ "$ENABLE_CONTAINERS" == "true" ]; then
+bash "$SCRIPT_DIR/modules/containers.sh"
+fi
