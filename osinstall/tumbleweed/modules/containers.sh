@@ -19,4 +19,4 @@ cp /home/$TARGET_USERNAME/dotfiles/scripts/docker/* /usr/local/bin/
 
 bash $SCRIPT_DIR/../../derivations/kube.sh
 
-cp -R /home/$TARGET_USERNAME/dotfiles/scripts/kube/* ${ROOTFS}/usr/local/bin/
+cp -R /home/$TARGET_USERNAME/dotfiles/scripts/kube/* /usr/local/bin/

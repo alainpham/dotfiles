@@ -17,7 +17,7 @@ export MAJOR_KUBE_VERSION=v1.35
 export K3S_VERSION="v1.35.5+k3s1"
 
 # https://github.com/derailed/k9s/releases
-export K9S_VERSION=v0.50.18
+export K9S_VERSION=v0.51.0
 
 # https://maven.apache.org/download.cgi
 export MVN_VERSION=3.9.16
