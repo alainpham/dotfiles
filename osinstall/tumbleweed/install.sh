@@ -29,9 +29,11 @@ echo "running common.sh"
 bash "$SCRIPT_DIR/modules/common.sh"
 
 if [ "$ENABLE_DEV" == "true" ]; then
+echo "running dev.sh"
 bash "$SCRIPT_DIR/modules/dev.sh"
 fi
 
 if [ "$ENABLE_CONTAINERS" == "true" ]; then
+echo "running containers.sh"
 bash "$SCRIPT_DIR/modules/containers.sh"
 fi
