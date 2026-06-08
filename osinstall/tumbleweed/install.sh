@@ -7,6 +7,7 @@ select file in "$SCRIPT_DIR/../vars/"*.sh; do
     if [[ -n "$file" ]]; then
         echo "You selected: $file"
         export TARGETVARS=$file
+        source $TARGETVARS
         cat $TARGETVARS
         break
     else
