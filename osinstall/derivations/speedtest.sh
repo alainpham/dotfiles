@@ -1,3 +1,5 @@
+#!/bin/bash
+set -euo pipefail
 
 echo downloading https://install.speedtest.net/app/cli/ookla-speedtest-$SPEEDTEST_VERSION-linux-x86_64.tgz
 mkdir -p /tmp/sptest
