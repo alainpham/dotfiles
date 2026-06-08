@@ -14,3 +14,9 @@ mkdir -p /etc/docker
 
 cp /home/$TARGET_USERNAME/dotfiles/etc/docker/* /etc/docker/
 echo "docker logs configured"
+
+cp /home/$TARGET_USERNAME/dotfiles/scripts/docker/* /usr/local/bin/
+
+bash $SCRIPT_DIR/../../derivations/kube.sh
+
+cp -R /home/$TARGET_USERNAME/dotfiles/scripts/kube/* ${ROOTFS}/usr/local/bin/
