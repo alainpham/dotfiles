@@ -52,3 +52,43 @@ sudo -u $TARGET_USERNAME git restore .
 #####################
 echo network config dnsmasq and powersave
 cp /home/$TARGET_USERNAME/dotfiles/etc/NetworkManager/conf.d/* /etc/NetworkManager/conf.d/
+
+mkdir -p /etc/NetworkManager/dnsmasq.d
+cat << EOF | tee /etc/NetworkManager/dnsmasq.d/dev.conf
+#/etc/NetworkManager/dnsmasq.d/dev.conf
+local=/${WILDCARD_DOMAIN}/
+address=/${WILDCARD_DOMAIN}/172.18.0.1
+local=/${K3S_WILDCARD_DOMAIN}/
+address=/${K3S_WILDCARD_DOMAIN}/172.18.0.1
+EOF
+
+# allow nmcli reload
+cat << EOF | tee /etc/polkit-1/rules.d/49-nmcli-reload.rules
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.NetworkManager.reload" &&
+        subject.isInGroup("${TARGET_USERNAME}")) {
+        return polkit.Result.YES;
+    }
+});
+EOF
+
+mkdir -p /home/$TARGET_USERNAME/virt/runtime
+touch /etc/NetworkManager/dnsmasq.d/vms
+chown $TARGET_USERNAME:$TARGET_USERNAME /etc/NetworkManager/dnsmasq.d/vms
+ln -sf /etc/NetworkManager/dnsmasq.d/vms /home/$TARGET_USERNAME/virt/runtime/vms
+chown -R $TARGET_USERNAME:$TARGET_USERNAME /home/$TARGET_USERNAME/virt/runtime
+
+#####################
+echo passwwordless sudo
+if [ "$AUTOMATIC_LOGIN" == "true" ]; then
+    echo "${TARGET_USERNAME} ALL=(ALL) NOPASSWD:ALL" | EDITOR='tee' visudo -f /etc/sudoers.d/nopwd
+fi
+
+# To be put in GUI later
+#####################
+echo setup keyboard
+localectl set-x11-keymap "${KEYBOARD_LAYOUT}" "${KEYBOARD_MODEL}" "${KEYBOARD_VARIANT}" ""
+
+#####################
+echo setup touchpad
+cp /home/$TARGET_USERNAME/dotfiles/etc/X11/xorg.conf.d/* /etc/X11/xorg.conf.d/
