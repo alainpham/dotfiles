@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/${K3S_VERSION}/k3s
+curl -Lo /tmp/k3s https://github.com/k3s-io/k3s/releases/download/${K3S_VERSION}/k3s
+mv /tmp/k3s /usr/local/bin/k3s
 
 chmod 755 /usr/local/bin/k3s
 
