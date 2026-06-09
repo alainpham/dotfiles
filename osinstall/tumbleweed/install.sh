@@ -38,3 +38,8 @@ if [ "$ENABLE_CONTAINERS" == "true" ]; then
 echo "running containers.sh"
 bash "$SCRIPT_DIR/modules/containers.sh"
 fi
+
+if [ "$ENABLE_DWM" == "true" ]; then
+echo "running dwm.sh"
+bash "$SCRIPT_DIR/modules/dwm.sh"
+fi

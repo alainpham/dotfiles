@@ -84,11 +84,3 @@ if [ "$AUTOMATIC_LOGIN" == "true" ]; then
     echo "${TARGET_USERNAME} ALL=(ALL) NOPASSWD:ALL" | EDITOR='tee' visudo -f /etc/sudoers.d/nopwd
 fi
 
-# To be put in GUI later
-#####################
-echo setup keyboard
-localectl set-x11-keymap "${KEYBOARD_LAYOUT}" "${KEYBOARD_MODEL}" "${KEYBOARD_VARIANT}" ""
-
-#####################
-echo setup touchpad
-cp /home/$TARGET_USERNAME/dotfiles/etc/X11/xorg.conf.d/* /etc/X11/xorg.conf.d/
