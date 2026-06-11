@@ -1,4 +1,5 @@
 #!/bin/bash
+# installing dwm with x11
 set -euo pipefail
 
 #####################
