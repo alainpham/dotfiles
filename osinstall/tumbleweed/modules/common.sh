@@ -34,7 +34,7 @@ cp /home/$TARGET_USERNAME/dotfiles/etc/systemd/journald.conf.d/limits.conf /etc/
 #####################
 echo install essentials
 
-zypper in terminfo
+zypper in -y terminfo
 
 zypper in -y tmux micro-editor ncdu bmon htop btop nvtop virt-what wireguard-tools jc iotop wol stow tini
 zypper in -y zip unzip 7zip sshfs lshw libva-utils bchunk

@@ -928,7 +928,6 @@ for font in ${NERDFONTS} ; do
  unzip -o /tmp/${font}.zip -d ${ROOTFS}/usr/share/fonts/nerd-fonts/
  rm -f /tmp/${font}.zip
  echo "installed $font"
-
 done
 fi
 
