@@ -25,15 +25,19 @@ zypper in -y \
 zypper in -y xorg-x11-server xinit numlockx usbutils
 
 zypper in -y thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin
+zypper in -y dunst dunst-bash-completion arandr picom jgmenu xsane flameshot maim xclip xdotool xev libnotify-tools
 
 bash $SCRIPT_DIR/../../derivations/x11dwm.sh
+bash $SCRIPT_DIR/../../derivations/gestures.sh
 
 if [ "$ENABLE_STARTX" == "true" ]; then
-  touch ${ROOTFS}/home/$TARGET_USERNAME/.startxon
+  touch /home/$TARGET_USERNAME/.startxon
+  chown $TARGET_USERNAME:$TARGET_USERNAME /home/$TARGET_USERNAME/.startxon
 fi
 
 if [ "$ENABLE_PICOM" == "true" ]; then
   echo picom enabled
 else
-  touch "$HOME/.nopicom"
+  touch "/home/$TARGET_USERNAME/.nopicom"
+  chown $TARGET_USERNAME:$TARGET_USERNAME /home/$TARGET_USERNAME/.nopicom
 fi

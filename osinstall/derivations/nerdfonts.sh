@@ -10,4 +10,3 @@ for font in ${NERDFONTS} ; do
  rm -f /tmp/${font}.zip
  echo "installed $font"
 done
-fi
