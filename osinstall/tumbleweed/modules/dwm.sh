@@ -24,8 +24,27 @@ zypper in -y \
 
 zypper in -y xorg-x11-server xinit numlockx usbutils
 
-zypper in -y thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin
-zypper in -y dunst dunst-bash-completion arandr picom jgmenu xsane flameshot maim xclip xdotool xev libnotify-tools
+zypper in -y thunar \
+  thunar-archive-plugin \
+  thunar-volman \
+  thunar-media-tags-plugin
+  
+zypper in -y dunst \
+  dunst-bash-completion \
+  arandr \
+  picom \
+  jgmenu \
+  xsane \
+  flameshot \
+  maim \
+  xclip \
+  xdotool \
+  xev \
+  libnotify-tools \
+  libinput-tools \
+  wmctrl
+
+zypper in -y rofi
 
 bash $SCRIPT_DIR/../../derivations/x11dwm.sh
 bash $SCRIPT_DIR/../../derivations/gestures.sh

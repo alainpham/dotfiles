@@ -8,3 +8,4 @@ git clone https://github.com/bulletmark/libinput-gestures.git
 cd libinput-gestures
 ./libinput-gestures-setup install
 cd $previousfld
+
