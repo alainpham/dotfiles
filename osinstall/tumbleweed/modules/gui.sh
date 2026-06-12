@@ -68,7 +68,7 @@ bash $SCRIPT_DIR/../../derivations/yt.sh
 
 # chrome
 bash $SCRIPT_DIR/../../derivations/chrome.sh
-cp -R /home/$TARGET_USERNAME/dotfiles/etc/opt /etc
+cp -R /home/$TARGET_USERNAME/dotfiles/etc/opt /etc/
 
 cp -R /home/$TARGET_USERNAME/dotfiles/scripts/av/* ${ROOTFS}/usr/local/bin/
 cp -R /home/$TARGET_USERNAME/dotfiles/scripts/desktop/* ${ROOTFS}/usr/local/bin/
