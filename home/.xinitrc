@@ -28,7 +28,6 @@ if [ ! -f ~/.nonumlock ]; then
     numlockx
 fi
 
-dunst > ~/.dunst.log &
 echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
 # running theme if first time booted
@@ -47,13 +46,6 @@ while true; do
     export XCURSOR_THEME="Adwaita"
     export XCURSOR_SIZE=24
     [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded">>~/.xinit.log
-
-    piddunst=$(pgrep dunst)
-    if [ ! -z "$piddunst" ]; then
-        kill -9 $piddunst
-        echo dunst restarted>>~/.xinit.log
-    fi
-    dunst > ~/.dunst.log &
 
     piddwmblocks=$(pgrep dwmblocks)
     if [ ! -z "$piddwmblocks" ]; then
