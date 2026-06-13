@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo lpadmin -p $1 -E -v ipp://$2/ipp/print -m everywhere

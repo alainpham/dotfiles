@@ -69,6 +69,8 @@ zypper in -y tmux \
     iotop \
     wol \
     stow \
+    nmap \
+    telnet \
     tini
 
 zypper in -y zip unzip 7zip sshfs lshw libva-utils bchunk
