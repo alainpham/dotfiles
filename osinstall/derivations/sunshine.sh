@@ -2,6 +2,7 @@
 set -euo pipefail
 
 if [ ! -f /opt/appimages/sunshine.AppImage ] || [ "$(cat /opt/appimages/sunshine.version 2>/dev/null)" != "${SUNSHINE_VERSION}" ]; then
+    mkdir -p /opt/appimages 
     wget -O /opt/appimages/sunshine.AppImage https://github.com/LizardByte/Sunshine/releases/download/v$SUNSHINE_VERSION/sunshine.AppImage
     chmod 755 /opt/appimages/sunshine.AppImage
     echo "${SUNSHINE_VERSION}" > /opt/appimages/sunshine.version
