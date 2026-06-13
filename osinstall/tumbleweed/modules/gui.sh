@@ -99,6 +99,6 @@ mkdir -p /etc/systemd/system/getty@tty1.service.d/
 cat << EOF | tee /etc/systemd/system/getty@tty1.service.d/override.conf
 [Service]
 ExecStart=
-ExecStart=-/sbin/getty --autologin ${TARGET_USERNAME} --noclear %I \$TERM
+ExecStart=-/usr/sbin/agetty --autologin ${TARGET_USERNAME} --noclear %I \$TERM
 EOF
 fi
