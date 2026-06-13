@@ -1,2 +1,11 @@
 #!/bin/bash
-sudo lpadmin -p $1 -E -v ipp://$2/ipp/print -m everywhere
+# Usage: printer <printer-name> <printer-host>
+#   $1 - printer name
+#   $2 - printer host or IP address
+if [ "$#" -ne 2 ]; then
+  echo "Usage: printer <printer-name> <printer-host>"
+  echo "  <printer-name>   printer name"
+  echo "  <printer-host>   printer host or IP address"
+  exit 1
+fi
+sudo lpadmin -p "$1" -E -v "ipp://$2/ipp/print" -m everywhere
