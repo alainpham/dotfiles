@@ -81,7 +81,7 @@ fi
 zypper install -y /opt/rpms/vscode.rpm
 
 # hypervisor
-export hypervisor=$(echo "virt-what" | chroot ${ROOTFS} ${CHROOT_BASH})
+export hypervisor=$(virt-what)
 if [ "$hypervisor" = "hyperv" ] || [ "$hypervisor" = "kvm" ]; then
     zypper in -y spice-vdagent
 fi
