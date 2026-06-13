@@ -39,8 +39,6 @@ bootctl set-timeout 1
 echo copy whole etc folder
 echo network config dnsmasq and powersave
 cp -R /home/$TARGET_USERNAME/dotfiles/etc/* /etc/
-chown $TARGET_USERNAME:$TARGET_USERNAME /etc/NetworkManager/dnsmasq.d/vms
-
 
 #####################
 echo install essentials
