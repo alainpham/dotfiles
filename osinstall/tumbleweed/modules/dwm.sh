@@ -27,8 +27,9 @@ zypper in -y xorg-x11-server xinit numlockx usbutils
 zypper in -y thunar \
   thunar-archive-plugin \
   thunar-volman \
-  thunar-media-tags-plugin
-  
+  thunar-media-tags-plugin \
+
+
 zypper in -y dunst \
   dunst-bash-completion \
   arandr \
@@ -42,6 +43,7 @@ zypper in -y dunst \
   xev \
   libnotify-tools \
   libinput-tools \
+  dbus-1-daemon \
   wmctrl
 
 zypper in -y rofi

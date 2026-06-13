@@ -30,7 +30,7 @@ dunst > ~/.dunst.log &
 echo 1 | tee ~/.rebootdwm
 export rebootdwm=$(cat ~/.rebootdwm)
 # running theme if first time booted
-if [ ! -f "~/.gtkrc-2.0" ]; then 
+if [ ! -f ~/.gtkrc-2.0 ]; then 
 theme
 fi
 while true; do
