@@ -1,0 +1,10 @@
+[Unit]
+Description=nlock
+
+[Service]
+ExecStart=/usr/local/bin/nlock
+StandardInput=tty
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
