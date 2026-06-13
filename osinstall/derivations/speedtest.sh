@@ -9,9 +9,5 @@ cp /tmp/sptest/speedtest /usr/local/bin/speedtest
 chmod 755 /usr/local/bin/speedtest
 rm -f /tmp/sptest.tgz
 
-if [ ! -e /etc/ssl/cert.pem ]; then
-  echo creating symlink of pem file
-  ln -s /etc/ssl/ca-bundle.pem /etc/ssl/cert.pem
-else
-  echo "cert.pem exists"
-fi
+echo creating symlink of pem file
+ln -sf /etc/ssl/ca-bundle.pem /etc/ssl/cert.pem
