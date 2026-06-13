@@ -95,10 +95,10 @@ else
 fi
 
 if [ "$AUTOMATIC_LOGIN" == "true" ]; then
-    mkdir -p /etc/systemd/system/getty@tty1.service.d/
-    cat << EOF | tee /etc/systemd/system/getty@tty1.service.d/override.conf
-    [Service]
-    ExecStart=
-    ExecStart=-/sbin/getty --autologin ${TARGET_USERNAME} --noclear %I \$TERM
-    EOF
+mkdir -p /etc/systemd/system/getty@tty1.service.d/
+cat << EOF | tee /etc/systemd/system/getty@tty1.service.d/override.conf
+[Service]
+ExecStart=
+ExecStart=-/sbin/getty --autologin ${TARGET_USERNAME} --noclear %I \$TERM
+EOF
 fi

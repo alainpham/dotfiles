@@ -19,4 +19,3 @@ if [ ! -f /usr/local/bin/k3s ]; then
     bash $SCRIPT_DIR/../../derivations/kube.sh
 fi
 
-cp -R /home/$TARGET_USERNAME/dotfiles/scripts/kube/* /usr/local/bin/
