@@ -8,8 +8,6 @@ zypper in -y docker-bash-completion
 
 systemctl enable --now docker
 
-usermod -aG docker $TARGET_USERNAME
-
 mkdir -p /etc/docker
 
 cp /home/$TARGET_USERNAME/dotfiles/etc/docker/* /etc/docker/

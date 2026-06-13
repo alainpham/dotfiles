@@ -32,13 +32,20 @@ for dir in "/home/$TARGET_USERNAME/dotfiles/scripts/"*; do
 done
 
 #####################
-echo setup fastboot in /boot/efi/loader/loader.conf
-bootctl set-timeout 1
-
-#####################
 echo copy whole etc folder
 echo network config dnsmasq and powersave
 cp -R /home/$TARGET_USERNAME/dotfiles/etc/* /etc/
+
+#####################
+echo setting user groups
+groupadd -f docker
+groupadd -f input
+usermod -aG docker "$TARGET_USERNAME"
+usermod -aG input "$TARGET_USERNAME"
+
+#####################
+echo setup fastboot in /boot/efi/loader/loader.conf
+bootctl set-timeout 1
 
 #####################
 echo install essentials
