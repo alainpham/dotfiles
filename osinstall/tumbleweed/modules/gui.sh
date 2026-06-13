@@ -77,7 +77,7 @@ if [ ! -f /opt/rpms/vscode.rpm ]; then
     mkdir -p /opt/rpms/
     wget -O /opt/rpms/vscode.rpm "https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64"
 fi
-zypper install -y /opt/debs/vscode.rpm
+zypper install -y /opt/rpms/vscode.rpm
 
 # hypervisor
 export hypervisor=$(echo "virt-what" | chroot ${ROOTFS} ${CHROOT_BASH})
