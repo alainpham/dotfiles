@@ -2,7 +2,11 @@
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-bash $SCRIPT_DIR/../../derivations/nerdfonts.sh
+fontscnt=$(ls /usr/share/fonts/nerd-fonts | wc -l)
+
+if [ "$fontscnt" == "0" ];then
+    bash $SCRIPT_DIR/../../derivations/nerdfonts.sh
+fi
 
 zypper in -y \
     google-noto-fonts \
@@ -51,8 +55,6 @@ zypper in -y \
     gparted \
     vulkan-tools \
     mozilla-nss-tools
-
-zypper in -y 
 
 zypper in -y flatpak
 
