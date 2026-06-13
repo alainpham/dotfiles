@@ -80,6 +80,8 @@ if [ ! -f /opt/rpms/vscode.rpm ]; then
 fi
 zypper install -y /opt/rpms/vscode.rpm
 
+
+
 # hypervisor
 export hypervisor=$(virt-what)
 if [ "$hypervisor" = "hyperv" ] || [ "$hypervisor" = "kvm" ]; then
@@ -90,8 +92,8 @@ if [ "$NUMLOCK_ON_BOOT" == "true" ]; then
     systemctl enable nlock
 else
     systemctl disable nlock
-    touch ${ROOTFS}/home/${TARGET_USERNAME}/.nonumlock
-    chown ${TARGET_USERNAME}:${TARGET_USERNAME} ${ROOTFS}/home/${TARGET_USERNAME}/.nonumlock
+    touch /home/${TARGET_USERNAME}/.nonumlock
+    chown ${TARGET_USERNAME}:${TARGET_USERNAME} /home/${TARGET_USERNAME}/.nonumlock
 fi
 
 if [ "$AUTOMATIC_LOGIN" == "true" ]; then
@@ -101,4 +103,9 @@ cat << EOF | tee /etc/systemd/system/getty@tty1.service.d/override.conf
 ExecStart=
 ExecStart=-/usr/sbin/agetty --autologin ${TARGET_USERNAME} --noclear %I \$TERM
 EOF
+fi
+
+bash $SCRIPT_DIR/../../derivations/sunshine.sh
+if [ "$SUNSHINE_ON_BOOT" == "true" ]; then
+    touch /home/${TARGET_USERNAME}/.sunshineonboot
 fi

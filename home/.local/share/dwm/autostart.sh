@@ -26,7 +26,7 @@ else
 fi
 
 if command -v sunshine >/dev/null 2>&1; then
-    if [ -f "$HOME/.shunshineonboot" ]; then
+    if [ -f "$HOME/.sunshineonboot" ]; then
         pkill sunshine ; sunshine &
     fi
 fi
