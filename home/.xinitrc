@@ -1,6 +1,8 @@
 #!/bin/sh
 echo starting X>~/.xinit.log
 
+export XDG_CURRENT_DESKTOP=dwm
+
 if [ -z "$DBUS_SESSION_BUS_ADDRESS" ] && [ -n "$XDG_RUNTIME_DIR" ] && \
     [ "$XDG_RUNTIME_DIR" = "/run/user/`id -u`" ] && \
     [ -S "$XDG_RUNTIME_DIR/bus" ]; then
