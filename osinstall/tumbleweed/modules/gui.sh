@@ -75,6 +75,7 @@ zypper install -y /opt/rpms/google-chrome-stable_current_x86_64.rpm
 
 if [ ! -f /opt/rpms/vscode.rpm ]; then
     mkdir -p /opt/rpms/
+    rpm --import https://packages.microsoft.com/keys/microsoft.asc
     wget -O /opt/rpms/vscode.rpm "https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64"
 fi
 zypper install -y /opt/rpms/vscode.rpm
