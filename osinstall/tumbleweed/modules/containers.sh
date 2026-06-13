@@ -15,6 +15,8 @@ echo "docker logs configured"
 
 cp /home/$TARGET_USERNAME/dotfiles/scripts/docker/* /usr/local/bin/
 
-bash $SCRIPT_DIR/../../derivations/kube.sh
+if [ ! -f /usr/local/bin/k3s ]; then
+    bash $SCRIPT_DIR/../../derivations/kube.sh
+fi
 
 cp -R /home/$TARGET_USERNAME/dotfiles/scripts/kube/* /usr/local/bin/
