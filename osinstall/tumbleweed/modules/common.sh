@@ -50,33 +50,10 @@ sudo -u $TARGET_USERNAME stow --no-folding --target=/home/$TARGET_USERNAME --ado
 sudo -u $TARGET_USERNAME git restore .
 
 #####################
+echo copy whole etc folder
 echo network config dnsmasq and powersave
-cp /home/$TARGET_USERNAME/dotfiles/etc/NetworkManager/conf.d/* /etc/NetworkManager/conf.d/
-
-mkdir -p /etc/NetworkManager/dnsmasq.d
-cat << EOF | tee /etc/NetworkManager/dnsmasq.d/dev.conf
-#/etc/NetworkManager/dnsmasq.d/dev.conf
-local=/${WILDCARD_DOMAIN}/
-address=/${WILDCARD_DOMAIN}/172.18.0.1
-local=/${K3S_WILDCARD_DOMAIN}/
-address=/${K3S_WILDCARD_DOMAIN}/172.18.0.1
-EOF
-
-# allow nmcli reload
-cat << EOF | tee /etc/polkit-1/rules.d/49-nmcli-reload.rules
-polkit.addRule(function(action, subject) {
-    if (action.id == "org.freedesktop.NetworkManager.reload" &&
-        subject.isInGroup("${TARGET_USERNAME}")) {
-        return polkit.Result.YES;
-    }
-});
-EOF
-
-mkdir -p /home/$TARGET_USERNAME/virt/runtime
-touch /etc/NetworkManager/dnsmasq.d/vms
+cp -R /home/$TARGET_USERNAME/dotfiles/etc/* /etc/
 chown $TARGET_USERNAME:$TARGET_USERNAME /etc/NetworkManager/dnsmasq.d/vms
-ln -sf /etc/NetworkManager/dnsmasq.d/vms /home/$TARGET_USERNAME/virt/runtime/vms
-chown -R $TARGET_USERNAME:$TARGET_USERNAME /home/$TARGET_USERNAME/virt/runtime
 
 #####################
 echo passwwordless sudo
