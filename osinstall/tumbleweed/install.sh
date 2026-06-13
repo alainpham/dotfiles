@@ -43,3 +43,7 @@ if [ "$ENABLE_DWM" == "true" ]; then
 echo "running dwm.sh"
 bash "$SCRIPT_DIR/modules/dwm.sh"
 fi
+if [ "$ENABLE_GUI" == "true" ]; then
+echo "running gui.sh"
+bash "$SCRIPT_DIR/modules/gui.sh"
+fi
