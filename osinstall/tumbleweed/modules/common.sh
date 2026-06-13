@@ -20,23 +20,48 @@ chmod 644 /etc/profile.d/sources.sh
 source /etc/profile.d/sources.sh
 
 #####################
-echo install os scripts
-cp /home/$TARGET_USERNAME/dotfiles/scripts/os/* /usr/local/bin/
+echo install all custom scripts
+for dir in "/home/$TARGET_USERNAME/dotfiles/scripts/"*; do
+    if [ -d "$dir" ]; then
+        for file in "$dir"/*; do
+            [ -e "$file" ] || continue
+            cp "$file" /usr/local/bin/
+            echo copied file $file
+        done
+    fi
+done
 
 #####################
 echo setup fastboot in /boot/efi/loader/loader.conf
 bootctl set-timeout 1
 
 #####################
-echo setup small log usage
-cp /home/$TARGET_USERNAME/dotfiles/etc/systemd/journald.conf.d/limits.conf /etc/systemd/journald.conf.d
+echo copy whole etc folder
+echo network config dnsmasq and powersave
+cp -R /home/$TARGET_USERNAME/dotfiles/etc/* /etc/
+chown $TARGET_USERNAME:$TARGET_USERNAME /etc/NetworkManager/dnsmasq.d/vms
+
 
 #####################
 echo install essentials
 
 zypper in -y terminfo
 
-zypper in -y tmux micro-editor ncdu bmon htop btop nvtop virt-what wireguard-tools jc iotop wol stow tini
+zypper in -y tmux \
+    micro-editor \
+    ncdu \
+    bmon \
+    htop \
+    btop \
+    nvtop \
+    virt-what \
+    wireguard-tools \
+    jc \
+    iotop \
+    wol \
+    stow \
+    tini
+
 zypper in -y zip unzip 7zip sshfs lshw libva-utils bchunk
 zypper in -y iperf 
 zypper in -y growpart
@@ -48,12 +73,6 @@ echo setup stow dotfiles
 cd /home/$TARGET_USERNAME/dotfiles
 sudo -u $TARGET_USERNAME stow --no-folding --target=/home/$TARGET_USERNAME --adopt home
 sudo -u $TARGET_USERNAME git restore .
-
-#####################
-echo copy whole etc folder
-echo network config dnsmasq and powersave
-cp -R /home/$TARGET_USERNAME/dotfiles/etc/* /etc/
-chown $TARGET_USERNAME:$TARGET_USERNAME /etc/NetworkManager/dnsmasq.d/vms
 
 #####################
 echo passwwordless sudo
