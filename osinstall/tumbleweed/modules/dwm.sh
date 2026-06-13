@@ -45,7 +45,8 @@ zypper in -y dunst \
   libnotify-tools \
   libinput-tools \
   dbus-1-daemon \
-  wmctrl
+  wmctrl \
+  at-spi2-core
 
 zypper in -y rofi
 
