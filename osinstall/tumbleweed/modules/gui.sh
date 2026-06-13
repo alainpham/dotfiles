@@ -54,7 +54,8 @@ zypper in -y \
     linuxconsoletools \
     gparted \
     vulkan-tools \
-    mozilla-nss-tools
+    mozilla-nss-tools \
+    v4l2loopback-utils
 
 zypper in -y flatpak
 
@@ -70,6 +71,17 @@ if [ ! -f /opt/rpms/google-chrome-stable_current_x86_64.rpm ];then
     rpm --import https://dl.google.com/linux/linux_signing_key.pub
     wget -O /opt/rpms/google-chrome-stable_current_x86_64.rpm https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
 fi
-
 zypper install -y /opt/rpms/google-chrome-stable_current_x86_64.rpm
+
+if [ ! -f /opt/rpms/vscode.rpm ]; then
+    mkdir -p /opt/rpms/
+    wget -O /opt/rpms/vscode.rpm "https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64"
+fi
+zypper install -y /opt/debs/vscode.rpm
+
+# hypervisor
+export hypervisor=$(echo "virt-what" | chroot ${ROOTFS} ${CHROOT_BASH})
+if [ "$hypervisor" = "hyperv" ] || [ "$hypervisor" = "kvm" ]; then
+    zypper in -y spice-vdagent
+fi
 

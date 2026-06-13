@@ -39,9 +39,13 @@ cp -R /home/$TARGET_USERNAME/dotfiles/etc/* /etc/
 #####################
 echo setting user groups
 groupadd -f docker
-groupadd -f input
 usermod -aG docker "$TARGET_USERNAME"
+
+groupadd -f input
 usermod -aG input "$TARGET_USERNAME"
+
+groupadd -f pipewire
+usermod -aG pipewire "$TARGET_USERNAME"
 
 #####################
 echo setup fastboot in /boot/efi/loader/loader.conf

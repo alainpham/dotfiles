@@ -29,6 +29,8 @@ zypper in -y thunar \
   thunar-archive-plugin \
   thunar-volman \
   thunar-media-tags-plugin \
+  at-spi2-core
+
 
 
 zypper in -y dunst \
@@ -45,8 +47,7 @@ zypper in -y dunst \
   libnotify-tools \
   libinput-tools \
   dbus-1-daemon \
-  wmctrl \
-  at-spi2-core
+  wmctrl
 
 zypper in -y rofi
 
