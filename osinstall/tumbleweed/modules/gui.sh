@@ -26,7 +26,7 @@ zypper in -y pipewire \
     pavucontrol-qt \
     bluetui
 
-zypper install --replacefiles pipewire-jack
+zypper install --force-resolution -y pipewire-jack
 
 zypper in -y \
     ntfs-3g \
