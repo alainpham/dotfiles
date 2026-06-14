@@ -12,7 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo copy vars.sh file
 cp $TARGETVARS /etc/profile.d/vars.sh
 chmod 644 /etc/profile.d/vars.sh
-source $TARGETVARS
+source /etc/profile.d/vars.sh
 
 echo copy sources.sh file
 cp /home/$TARGET_USERNAME/dotfiles/osinstall/sources.sh /etc/profile.d/sources.sh
