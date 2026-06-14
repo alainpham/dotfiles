@@ -2,6 +2,7 @@
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+mkdir -p /usr/share/fonts/nerd-fonts
 fontscnt=$(ls /usr/share/fonts/nerd-fonts | wc -l)
 
 if [ "$fontscnt" == "0" ];then
