@@ -15,16 +15,18 @@ zypper in -y \
     brightnessctl \
     upower
 
+
 # snd
 zypper in -y pipewire \
     pipewire-pulseaudio \
     pipewire-alsa \
     pipewire-alsa-32bit \
-    pipewire-jack \
     wireplumber \
     qpwgraph \
     pavucontrol-qt \
     bluetui
+
+zypper install --replacefiles pipewire-jack
 
 zypper in -y \
     ntfs-3g \

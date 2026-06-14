@@ -28,6 +28,8 @@ done
 
 echo "running common.sh"
 bash "$SCRIPT_DIR/modules/common.sh"
+source /etc/profile.d/vars.sh
+source /etc/profile.d/sources.sh
 
 if [ "$ENABLE_DEV" == "true" ]; then
 echo "running dev.sh"
