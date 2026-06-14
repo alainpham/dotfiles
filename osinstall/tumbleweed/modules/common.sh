@@ -40,6 +40,8 @@ echo copy whole etc folder
 echo network config dnsmasq and powersave
 cp -R /home/$TARGET_USERNAME/dotfiles/etc/* /etc/
 
+hostnamectl hostname $HOSTNAME
+
 #####################
 echo setting user groups
 groupadd -f docker
