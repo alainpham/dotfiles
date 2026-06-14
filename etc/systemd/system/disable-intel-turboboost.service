@@ -1,0 +1,8 @@
+[Unit]
+Description=Disable Intel Turbo Boost using pstate driver 
+[Service]
+ExecStart=/bin/sh -c "/usr/local/bin/turboboost no"
+ExecStop=/bin/sh -c "/usr/local/bin/turboboost yes"
+RemainAfterExit=yes
+[Install]
+WantedBy=sysinit.target

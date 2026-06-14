@@ -58,7 +58,8 @@ zypper in -y \
     gparted \
     vulkan-tools \
     mozilla-nss-tools \
-    v4l2loopback-utils
+    v4l2loopback-utils \
+    firefox
 
 zypper in -y flatpak
 
@@ -66,7 +67,15 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 flatpak install -y flathub com.github.tchx84.Flatseal
 
 #ytdlp
-bash $SCRIPT_DIR/../../derivations/yt.sh
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh
+
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/sunshine.sh
+if [ "$SUNSHINE_ON_BOOT" == "true" ]; then
+    touch /home/${TARGET_USERNAME}/.sunshineonboot
+fi
+
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/moonlight.sh
+
 
 # chrome
 if [ ! -f /opt/rpms/google-chrome-stable_current_x86_64.rpm ];then
@@ -106,11 +115,6 @@ cat << EOF | tee /etc/systemd/system/getty@tty1.service.d/override.conf
 ExecStart=
 ExecStart=-/usr/sbin/agetty --autologin ${TARGET_USERNAME} --noclear %I \$TERM
 EOF
-fi
-
-bash $SCRIPT_DIR/../../derivations/sunshine.sh
-if [ "$SUNSHINE_ON_BOOT" == "true" ]; then
-    touch /home/${TARGET_USERNAME}/.sunshineonboot
 fi
 
 

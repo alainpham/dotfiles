@@ -104,3 +104,9 @@ if [ "$AUTOMATIC_LOGIN" == "true" ]; then
     echo "${TARGET_USERNAME} ALL=(ALL) NOPASSWD:ALL" | EDITOR='tee' visudo -f /etc/sudoers.d/nopwd
 fi
 
+
+if [ "$DISABLE_TURBO_BOOST" == "true" ]; then
+    systemctl enable disable-intel-turboboost.service
+else
+    systemctl disable disable-intel-turboboost.service
+fi
