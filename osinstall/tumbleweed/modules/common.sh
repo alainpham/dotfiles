@@ -90,9 +90,11 @@ bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/speedtest.sh
 
 #####################
 echo setup stow dotfiles
+prevfld=$(pwd)
 cd /home/$TARGET_USERNAME/dotfiles
 sudo -u $TARGET_USERNAME stow --no-folding --target=/home/$TARGET_USERNAME --adopt home
 sudo -u $TARGET_USERNAME git restore .
+cd $prevfld
 
 #####################
 echo passwwordless sudo
