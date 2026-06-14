@@ -15,7 +15,7 @@ chmod 644 /etc/profile.d/vars.sh
 source $TARGETVARS
 
 echo copy sources.sh file
-cp $SCRIPT_DIR/../../sources.sh /etc/profile.d/sources.sh
+cp /home/$TARGET_USERNAME/dotfiles/osinstall/sources.sh /etc/profile.d/sources.sh
 chmod 644 /etc/profile.d/sources.sh
 source /etc/profile.d/sources.sh
 
@@ -58,9 +58,8 @@ bootctl set-timeout 1
 #####################
 echo install essentials
 
-zypper in -y terminfo
-
-zypper in -y tmux \
+zypper in -y terminfo \
+    tmux \
     micro-editor \
     ncdu \
     bmon \
@@ -75,13 +74,19 @@ zypper in -y tmux \
     stow \
     nmap \
     telnet \
-    tini
+    tini \
+    zip \
+    unzip \
+    7zip \
+    sshfs \
+    lshw \
+    libva-utils \
+    bchunk \
+    iperf \
+    growpart
 
-zypper in -y zip unzip 7zip sshfs lshw libva-utils bchunk
-zypper in -y iperf 
-zypper in -y growpart
 
-bash $SCRIPT_DIR/../../derivations/speedtest.sh
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/speedtest.sh
 
 #####################
 echo setup stow dotfiles
