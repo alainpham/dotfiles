@@ -3,19 +3,11 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-zypper in -y docker docker-compose skopeo skopeo-bash-completion docker-buildx
-zypper in -y docker-bash-completion
+zypper in -y docker docker-compose skopeo skopeo-bash-completion docker-buildx docker-bash-completion
 
 systemctl enable --now docker
 
-mkdir -p /etc/docker
-
-cp /home/$TARGET_USERNAME/dotfiles/etc/docker/* /etc/docker/
-echo "docker logs configured"
-
-cp /home/$TARGET_USERNAME/dotfiles/scripts/docker/* /usr/local/bin/
-
 if [ ! -f /usr/local/bin/k3s ]; then
-    bash $SCRIPT_DIR/../../derivations/kube.sh
+    bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/kube.sh
 fi
 
