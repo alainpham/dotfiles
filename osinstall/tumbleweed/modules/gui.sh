@@ -109,3 +109,11 @@ bash $SCRIPT_DIR/../../derivations/sunshine.sh
 if [ "$SUNSHINE_ON_BOOT" == "true" ]; then
     touch /home/${TARGET_USERNAME}/.sunshineonboot
 fi
+
+
+echo webapps
+
+export APPDIR=/usr/local/bin
+export SHORTCUTDIR=/usr/local/share/applications
+
+bash /home/${TARGET_USERNAME}/dotfiles/webapps/genapps

@@ -31,6 +31,10 @@ for dir in "/home/$TARGET_USERNAME/dotfiles/scripts/"*; do
     fi
 done
 
+mkdir -p /usr/local/share/icons
+cp -r /home/$TARGET_USERNAME/dotfiles/icons/* /usr/local/share/icons
+
+
 #####################
 echo copy whole etc folder
 echo network config dnsmasq and powersave
