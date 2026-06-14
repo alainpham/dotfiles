@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fontscnt=$(ls /usr/share/fonts/nerd-fonts | wc -l)
 
 if [ "$fontscnt" == "0" ];then
-    bash $SCRIPT_DIR/../../derivations/nerdfonts.sh
+    bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/nerdfonts.sh
 fi
 
 zypper in -y \

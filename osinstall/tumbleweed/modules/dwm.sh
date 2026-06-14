@@ -5,11 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 #####################
 echo setup keyboard
-localectl set-x11-keymap "${KEYBOARD_LAYOUT}" "${KEYBOARD_MODEL}" "${KEYBOARD_VARIANT}" ""
-
-#####################
-echo setup touchpad
-cp /home/$TARGET_USERNAME/dotfiles/etc/X11/xorg.conf.d/* /etc/X11/xorg.conf.d/
+localectl set-x11-keymap "${KEYBOARD_LAYOUT}" "${KEYBOARD_MODEL}" "${KEYBOARD_VARIANT}" "terminate:ctrl_alt_bksp"
 
 ####################
 # compile all dwm stuff
@@ -32,7 +28,6 @@ zypper in -y thunar \
   at-spi2-core
 
 
-
 zypper in -y dunst \
   dunst-bash-completion \
   arandr \
@@ -47,12 +42,11 @@ zypper in -y dunst \
   libnotify-tools \
   libinput-tools \
   dbus-1-daemon \
-  wmctrl
+  wmctrl \
+  rofi
 
-zypper in -y rofi
-
-bash $SCRIPT_DIR/../../derivations/x11dwm.sh
-bash $SCRIPT_DIR/../../derivations/gestures.sh
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/x11dwm.sh
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/gestures.sh
 
 if [ "$ENABLE_STARTX" == "true" ]; then
   touch /home/$TARGET_USERNAME/.startxon
