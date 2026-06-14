@@ -118,5 +118,5 @@ echo webapps
 
 export APPDIR=/usr/local/bin
 export SHORTCUTDIR=/usr/local/share/applications
-
+mkdir -p /usr/local/share/applications
 bash /home/${TARGET_USERNAME}/dotfiles/webapps/genapps
