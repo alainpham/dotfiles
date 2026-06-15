@@ -22,7 +22,6 @@ zypper in -y xorg-x11-server xinit numlockx usbutils
 
 zypper in -y thunar \
   thunar-archive-plugin \
-  thunar-volman \
   thunar-media-tags-plugin \
   at-spi2-core
 

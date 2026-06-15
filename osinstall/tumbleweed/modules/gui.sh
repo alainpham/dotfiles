@@ -58,6 +58,7 @@ zypper in -y \
     gparted \
     vulkan-tools \
     mozilla-nss-tools \
+    v4l2loopback-autoload \
     v4l2loopback-utils \
     SDL2 \
     rofi
