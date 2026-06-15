@@ -102,21 +102,32 @@ if [ "$hypervisor" = "hyperv" ] || [ "$hypervisor" = "kvm" ]; then
 fi
 
 if [ "$NUMLOCK_ON_BOOT" == "true" ]; then
-    systemctl enable nlock
+systemctl enable nlock
+
+cat << EOF | tee /etc/lightdm/lightdm.conf
+[Seat:*]
+greeter-setup-script=/usr/bin/numlockx on
+EOF
+
 else
     systemctl disable nlock
     touch /home/${TARGET_USERNAME}/.nonumlock
     chown ${TARGET_USERNAME}:${TARGET_USERNAME} /home/${TARGET_USERNAME}/.nonumlock
+cat << EOF | tee /etc/lightdm/lightdm.conf
+[Seat:*]
+greeter-setup-script=/usr/bin/numlockx off
+EOF
+
 fi
 
-if [ "$AUTOMATIC_LOGIN" == "true" ]; then
-mkdir -p /etc/systemd/system/getty@tty1.service.d/
-cat << EOF | tee /etc/systemd/system/getty@tty1.service.d/override.conf
-[Service]
-ExecStart=
-ExecStart=-/usr/sbin/agetty --autologin ${TARGET_USERNAME} --noclear %I \$TERM
-EOF
-fi
+# if [ "$AUTOMATIC_LOGIN" == "true" ]; then
+# mkdir -p /etc/systemd/system/getty@tty1.service.d/
+# cat << EOF | tee /etc/systemd/system/getty@tty1.service.d/override.conf
+# [Service]
+# ExecStart=
+# ExecStart=-/usr/sbin/agetty --autologin ${TARGET_USERNAME} --noclear %I \$TERM
+# EOF
+# fi
 
 
 echo webapps
