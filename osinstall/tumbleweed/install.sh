@@ -33,7 +33,7 @@ source /etc/profile.d/sources.sh
 
 if [ "$ENABLE_DEV" == "true" ]; then
 echo "running dev.sh"
-bash "$SCRIPT_DIR/modules/dev.sh"
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/dev.sh"
 fi
 
 if [ "$ENABLE_CONTAINERS" == "true" ]; then
