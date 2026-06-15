@@ -14,6 +14,10 @@ else
     export XDPI=96
 fi
 
+if command -v xrandr >/dev/null 2>&1 && [ "$DISPLAY" = ":0" ]; then
+    xrandr --dpi "$XDPI"
+fi
+
 export WINIT_X11_SCALE_FACTOR=$(awk -v xdpi="$XDPI" 'BEGIN { printf "%.2f\n", xdpi/96 }')
 export XCURSOR_THEME="Adwaita"
 export XCURSOR_SIZE=24
