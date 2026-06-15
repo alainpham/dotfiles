@@ -27,7 +27,7 @@ select file in "$SCRIPT_DIR/../hw/"*.sh; do
 done
 
 echo "running common.sh"
-bash "$SCRIPT_DIR/modules/common.sh"
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/common.sh"
 source /etc/profile.d/vars.sh
 source /etc/profile.d/sources.sh
 
@@ -38,14 +38,14 @@ fi
 
 if [ "$ENABLE_CONTAINERS" == "true" ]; then
 echo "running containers.sh"
-bash "$SCRIPT_DIR/modules/containers.sh"
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/containers.sh"
 fi
 
 if [ "$ENABLE_DWM" == "true" ]; then
 echo "running dwm.sh"
-bash "$SCRIPT_DIR/modules/dwm.sh"
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/dwm.sh"
 fi
 if [ "$ENABLE_GUI" == "true" ]; then
 echo "running gui.sh"
-bash "$SCRIPT_DIR/modules/gui.sh"
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/gui.sh"
 fi

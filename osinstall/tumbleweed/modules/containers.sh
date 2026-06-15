@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 zypper in -y docker docker-compose skopeo skopeo-bash-completion docker-buildx docker-bash-completion
 
 systemctl enable --now docker
