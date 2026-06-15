@@ -933,7 +933,7 @@ fi
 
 echo "additional gui packages"
 cat << EOF | chroot ${ROOTFS} ${CHROOT_BASH}
-    apt install -y ntfs-3g ifuse libfuse2 rofi mousepad mpv haruna qml6-module-org-kde-desktop vlc cmatrix nmon mesa-utils fastfetch feh qimgv nomacs kimageformat-plugins  acpitool lm-sensors fonts-noto libnotify-bin dunst mkvtoolnix-gui python3-mutagen imagemagick mediainfo-gui mediainfo arandr picom jgmenu brightnessctl cups xsane sane-utils filezilla speedcrunch fonts-font-awesome lxappearance nwg-look breeze breeze-gtk-theme breeze-icon-theme joystick gparted vulkan-tools flatpak dconf-cli libnss3-tools bluetooth
+    apt install -y ntfs-3g ifuse libfuse2 rofi mousepad mpv haruna qml6-module-org-kde-desktop vlc cmatrix nmon mesa-utils fastfetch feh qimgv nomacs kimageformat-plugins  acpitool lm-sensors fonts-noto libnotify-bin dunst mkvtoolnix-gui python3-mutagen imagemagick mediainfo-gui mediainfo arandr picom jgmenu brightnessctl cups xsane sane-utils filezilla speedcrunch fonts-font-awesome lxappearance nwg-look breeze breeze-gtk-theme breeze-icon-theme joystick gparted vulkan-tools flatpak dconf-cli libnss3-tools bluetooth vainfo
     apt install -y ffmpeg libfdk-aac2 libnppig12 libnppicc12 libnppidei12 libnppif12 libminiupnpc-dev
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
     flatpak install -y flathub com.github.tchx84.Flatseal

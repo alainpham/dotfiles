@@ -32,7 +32,6 @@ zypper in -y \
     ntfs-3g \
     ifuse \
     mpv \
-    haruna \
     vlc \
     cmatrix \
     nmon \
@@ -51,31 +50,27 @@ zypper in -y \
     speedcrunch \
     fontawesome-fonts \
     fontawesome-fonts-web \
-    lxappearance \
     nwg-look \
     breeze6 \
     linuxconsoletools \
     gparted \
     vulkan-tools \
     mozilla-nss-tools \
-    v4l2loopback-utils \
-    firefox
+    v4l2loopback-utils
 
 zypper in -y flatpak
 
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 flatpak install -y flathub com.github.tchx84.Flatseal
-
+flatpak install -y flathub org.kde.haruna
+flatpak install -y flathub dev.lizardbyte.app.Sunshine
+flatpak install -y flathub com.moonlight_stream.Moonlight
 #ytdlp
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh
 
-bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/sunshine.sh
 if [ "$SUNSHINE_ON_BOOT" == "true" ]; then
     touch /home/${TARGET_USERNAME}/.sunshineonboot
 fi
-
-bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/moonlight.sh
-
 
 # chrome
 if [ ! -f /opt/rpms/google-chrome-stable_current_x86_64.rpm ];then
