@@ -21,6 +21,8 @@ fi
 
 mon &
 
+xrandr --dpi $XDPI
+
 thunar --daemon & 
 
 if grep -qi hypervisor /proc/cpuinfo; then
