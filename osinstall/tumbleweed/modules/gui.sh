@@ -23,7 +23,8 @@ zypper in -y pipewire \
     pipewire-alsa-32bit \
     wireplumber \
     qpwgraph \
-    pavucontrol-qt \
+    pavucontrol \
+    alsa-utils \
     bluetui
 
 zypper install --force-resolution -y pipewire-jack
@@ -47,6 +48,7 @@ zypper in -y \
     cups \
     xsane \
     filezilla \
+    MozillaFirefox \
     speedcrunch \
     fontawesome-fonts \
     fontawesome-fonts-web \
@@ -56,7 +58,10 @@ zypper in -y \
     gparted \
     vulkan-tools \
     mozilla-nss-tools \
-    v4l2loopback-utils
+    v4l2loopback-utils \
+    SDL2 \
+    rofi
+
 
 zypper in -y flatpak
 
@@ -65,6 +70,7 @@ flatpak install -y flathub com.github.tchx84.Flatseal
 flatpak install -y flathub org.kde.haruna
 flatpak install -y flathub dev.lizardbyte.app.Sunshine
 flatpak install -y flathub com.moonlight_stream.Moonlight
+
 #ytdlp
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh
 

@@ -42,8 +42,7 @@ zypper in -y dunst \
   libnotify-tools \
   libinput-tools \
   dbus-1-daemon \
-  wmctrl \
-  rofi
+  wmctrl
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/x11dwm.sh
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/gestures.sh
