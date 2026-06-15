@@ -78,7 +78,7 @@ if [ "$SUNSHINE_ON_BOOT" == "true" ]; then
     touch /home/${TARGET_USERNAME}/.sunshineonboot
 fi
 
-chrome
+# chrome
 if [ ! -f /opt/rpms/google-chrome-stable_current_x86_64.rpm ];then
     mkdir -p /opt/rpms/
     rpm --import https://dl.google.com/linux/linux_signing_key.pub
