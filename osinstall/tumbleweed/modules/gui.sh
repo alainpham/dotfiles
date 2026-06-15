@@ -40,6 +40,7 @@ zypper in -y \
     fastfetch \
     feh \
     qimgv \
+    kf6-kimageformats \
     acpi \
     mkvtoolnix-gui \
     ImageMagick \
@@ -70,7 +71,8 @@ flatpak install -y flathub com.github.tchx84.Flatseal
 flatpak install -y flathub org.kde.haruna
 flatpak install -y flathub dev.lizardbyte.app.Sunshine
 flatpak install -y flathub com.moonlight_stream.Moonlight
-
+flatpak install -y flathub com.google.Chrome
+flatpak install -y flathub org.mozilla.firefox
 #ytdlp
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh
 
@@ -79,12 +81,12 @@ if [ "$SUNSHINE_ON_BOOT" == "true" ]; then
 fi
 
 # chrome
-if [ ! -f /opt/rpms/google-chrome-stable_current_x86_64.rpm ];then
-    mkdir -p /opt/rpms/
-    rpm --import https://dl.google.com/linux/linux_signing_key.pub
-    wget -O /opt/rpms/google-chrome-stable_current_x86_64.rpm https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-fi
-zypper install -y /opt/rpms/google-chrome-stable_current_x86_64.rpm
+# if [ ! -f /opt/rpms/google-chrome-stable_current_x86_64.rpm ];then
+#     mkdir -p /opt/rpms/
+#     rpm --import https://dl.google.com/linux/linux_signing_key.pub
+#     wget -O /opt/rpms/google-chrome-stable_current_x86_64.rpm https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+# fi
+# zypper install -y /opt/rpms/google-chrome-stable_current_x86_64.rpm
 
 if [ ! -f /opt/rpms/vscode.rpm ]; then
     mkdir -p /opt/rpms/
