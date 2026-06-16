@@ -12,11 +12,13 @@ elif [ -f /var/lib/flatpak/exports/share/applications/com.obsproject.Studio.desk
     ln -sf "$HOME/.config/obs-studio" \
       "$HOME/.var/app/com.obsproject.Studio/config/obs-studio"
     export OBSCMD="/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obs com.obsproject.Studio"
-    
+
 else
     echo "obs not found" >&2
     exit 1
 fi
+
+mkdir -p $HOME/recordings
 
 link_obs_ports() {
     # Wait up to ~10s for the OBS JACK nodes to register their ports.
