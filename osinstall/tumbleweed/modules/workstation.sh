@@ -3,16 +3,17 @@ set -euo pipefail
 
 
 zypper in -y \
-    gimp \
-    rawtherapee \
-    krita \
-    mypaint \
-    pinta \
-    inkscape \
     blender \
-    godot \
-    easytag \
-    audacity
+    godot
+
+flatpak install -y flathub org.gimp.GIMP
+flatpak install -y flathub com.rawtherapee.RawTherapee
+flatpak install -y flathub org.kde.krita
+flatpak install -y flathub org.mypaint.MyPaint
+flatpak install -y flathub com.github.PintaProject.Pinta
+flatpak install -y flathub org.inkscape.Inkscape
+flatpak install -y flathub org.audacityteam.Audacity
+flatpak install -y flathub org.gnome.EasyTAG
 
 flatpak install -y flathub fr.handbrake.ghb
 flatpak install -y flathub com.obsproject.Studio

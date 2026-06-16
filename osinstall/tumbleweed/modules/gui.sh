@@ -36,8 +36,6 @@ zypper in -y \
     Mesa-demo-x \
     fastfetch \
     feh \
-    qimgv \
-    kf6-kimageformats \
     acpi \
     mkvtoolnix-gui \
     ImageMagick \
