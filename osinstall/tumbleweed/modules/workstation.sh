@@ -16,6 +16,8 @@ flatpak install -y flathub org.audacityteam.Audacity
 flatpak install -y flathub org.gnome.EasyTAG
 
 flatpak install -y flathub fr.handbrake.ghb
+flatpak install -y flathub fr.handbrake.ghb.Plugin.dvdcss
+
 flatpak install -y flathub com.obsproject.Studio
 
 flatpak install -y flathub io.dbeaver.DBeaverCommunity

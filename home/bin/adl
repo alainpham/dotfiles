@@ -1,1 +1,2 @@
+#!/bin/bash
 yt-dlp -f "bestaudio[ext=m4a]" "$@"
