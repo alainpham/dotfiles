@@ -49,3 +49,7 @@ if [ "$ENABLE_GUI" == "true" ]; then
 echo "running gui.sh"
 bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/gui.sh"
 fi
+if [ "$ENABLE_WORKSTATION" == "true" ]; then
+echo "running workstation.sh"
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/workstation.sh"
+fi
