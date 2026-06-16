@@ -62,6 +62,7 @@ zypper in -y \
 zypper in -y flatpak
 
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+sudo -u $TARGET_USERNAME flatpak override --user --filesystem=home
 flatpak install -y flathub com.github.tchx84.Flatseal
 flatpak install -y flathub org.gnome.Loupe
 flatpak install -y flathub org.kde.haruna
