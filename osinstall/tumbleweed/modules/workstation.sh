@@ -12,8 +12,7 @@ zypper in -y \
     blender \
     godot \
     easytag \
-    audacity \
-    drawio
+    audacity
 
 
 flatpak install flathub fr.handbrake.ghb
