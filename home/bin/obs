@@ -3,6 +3,8 @@ if [ -f /run/current-system/sw/bin/obs ]; then
     export OBSCMD=/run/current-system/sw/bin/obs
 elif [ -f /usr/bin/obs ]; then
     export OBSCMD=/usr/bin/obs
+elif [ -f /var/lib/flatpak/exports/share/applications/com.obsproject.Studio.desktop ]; then
+    export OBSCMD="/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obs com.obsproject.Studio"
 else
     echo "obs not found" >&2
     exit 1
