@@ -87,6 +87,5 @@ if [ ! -f ~/.nopicom ]; then
             sleep 1
         done
     fi
-
     picom -b --config ~/.config/picom/picom.conf
 fi
