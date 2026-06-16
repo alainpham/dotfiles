@@ -1,4 +1,4 @@
-export HOSTNAME="ostw"
+export HOSTNAME="hpkw"
 export TARGET_USERNAME="user"
 export TARGET_USEREMAIL="user@localhost"
 export KEYBOARD_LAYOUT="fr"
