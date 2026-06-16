@@ -2,10 +2,8 @@
 set -euo pipefail
 
 
-zypper in -y \
-    blender \
-    godot
 
+flatpak install -y flathub org.blender.Blender
 flatpak install -y flathub org.gimp.GIMP
 flatpak install -y flathub com.rawtherapee.RawTherapee
 flatpak install -y flathub org.kde.krita
@@ -32,8 +30,11 @@ flatpak install -y flathub com.getpostman.Postman
 flatpak install -y flathub io.github.antimicrox.antimicrox
 
 flatpak install -y flathub com.viber.Viber
-# flatpak install -y flathub us.zoom.Zoom
-# flatpak install -y flathub com.slack.Slack
+flatpak install -y flathub us.zoom.Zoom
+flatpak install -y flathub com.slack.Slack
+
+flatpak install -y flathub org.godotengine.Godot
+flatpak install -y flathub fm.reaper.Reaper
 
 # TODO REAPER
 # TODO MLVAPP
