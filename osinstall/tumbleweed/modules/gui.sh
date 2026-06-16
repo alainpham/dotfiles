@@ -31,8 +31,6 @@ zypper install --force-resolution -y pipewire-jack
 zypper in -y \
     ntfs-3g \
     ifuse \
-    mpv \
-    vlc \
     cmatrix \
     nmon \
     Mesa-demo-x \
@@ -48,7 +46,6 @@ zypper in -y \
     cups \
     xsane \
     filezilla \
-    MozillaFirefox \
     speedcrunch \
     fontawesome-fonts \
     fontawesome-fonts-web \
@@ -68,9 +65,13 @@ zypper in -y flatpak
 
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 flatpak install -y flathub com.github.tchx84.Flatseal
+flatpak install -y flathub org.gnome.Loupe
 flatpak install -y flathub org.kde.haruna
+flatpak install -y flathub io.mpv.Mpv
+flatpak install -y flathub org.videolan.VLC
 flatpak install -y flathub dev.lizardbyte.app.Sunshine
 flatpak install -y flathub com.moonlight_stream.Moonlight
+flatpak install -y flathub org.mozilla.firefox
 #ytdlp
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh
 
