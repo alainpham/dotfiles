@@ -1,7 +1,8 @@
 #!/bin/bash
 
 for i in {1..6}; do
-    if pactl info >/dev/null 2>&1; then
+dummysinkisthere=$(pactl list sinks  short | grep alsa_output.dummy-sink | wc -l)
+    if [ "$dummysinkisthere" == "1" ]; then
         asnddef &
         echo "Pipewire is up, setting default config with asnddef ">>~/.xinit.log
         break
