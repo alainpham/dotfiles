@@ -5,6 +5,7 @@ for i in {1..6}; do
     if [ "$dummysinkisthere" == "1" ]; then
         asnddef &
         echo "Pipewire is up, setting default config with asnddef ">>~/.xinit.log
+        dunstify "Sound is up"
         break
     fi
     echo "Waiting for PulseAudio/PipeWire pulse server... ($i/5)">>~/.xinit.log
@@ -13,6 +14,7 @@ done
 
 if [ ! -f ~/.nonumlock ]; then
     numlockx
+    dunstify "Numlock is on"
 fi
 
 mon &
@@ -27,11 +29,13 @@ fi
 if [ -f "$HOME/.fehbg" ]; then
     sleep 5 && ~/.fehbg &
 else
+    dunstify "Downloading backgrounds"
     sleep 5 && sbg &
 fi
 
 if [ ! -f ~/.gtkrc-2.0 ]; then 
 theme
+dunstify "Setting up theme"
 fi
 
 piddwmblocks=$(pgrep dwmblocks)
@@ -47,19 +51,24 @@ if command -v libinput-gestures >/dev/null 2>&1; then
     if [ ! -z "$pidgestures" ]; then
         kill -9 $pidgestures
         echo libinput-gestures restarted>>~/.xinit.log
+
     fi
     libinput-gestures &
+    dunstify "Input gestures started"
 fi
 
 
 if command -v sunshine >/dev/null 2>&1; then
     if [ -f "$HOME/.sunshineonboot" ]; then
         pkill sunshine ; sunshine &
+        dunstify "Sunshine started"
+
     fi
 fi
 
 if command -v gshorts >/dev/null 2>&1; then
     pkill gshorts ; gshorts &
+    dunstify "Gshorts started"
 fi
 
 if command -v slack >/dev/null 2>&1; then
@@ -89,4 +98,5 @@ if [ ! -f ~/.nopicom ]; then
         done
     fi
     picom -b --config ~/.config/picom/picom.conf
+    dunstify "Picom started"
 fi
