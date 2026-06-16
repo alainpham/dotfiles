@@ -3,17 +3,12 @@
 for i in {1..6}; do
     if pactl info >/dev/null 2>&1; then
         asnddef &
+        echo "Pipewire is up, setting default config with asnddef ">>~/.xinit.log
         break
     fi
     echo "Waiting for PulseAudio/PipeWire pulse server... ($i/5)">>~/.xinit.log
     sleep 1
 done
-
-# Final check
-if ! pactl info >/dev/null 2>&1; then
-    echo "Pulse server not available after 5 retries"
-    exit 1
-fi
 
 if [ ! -f ~/.nonumlock ]; then
     numlockx
