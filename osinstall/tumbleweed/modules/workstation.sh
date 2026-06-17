@@ -35,6 +35,7 @@ flatpak install -y flathub com.slack.Slack
 
 flatpak install -y flathub org.godotengine.Godot
 flatpak install -y flathub fm.reaper.Reaper
+flatpak install -y flathub org.mixxx.Mixxx
 
 # TODO REAPER
 # TODO MLVAPP
