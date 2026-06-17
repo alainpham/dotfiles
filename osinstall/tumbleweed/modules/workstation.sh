@@ -2,7 +2,6 @@
 set -euo pipefail
 
 
-
 flatpak install -y flathub org.blender.Blender
 flatpak install -y flathub org.gimp.GIMP
 flatpak install -y flathub com.rawtherapee.RawTherapee
