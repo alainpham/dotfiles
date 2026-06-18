@@ -53,3 +53,7 @@ if [ "$ENABLE_WORKSTATION" == "true" ]; then
 echo "running workstation.sh"
 bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/workstation.sh"
 fi
+if [ "$ENABLE_VIRTUALIZATION" == "true" ]; then
+echo "running virtualization.sh"
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/virtualization.sh"
+fi
