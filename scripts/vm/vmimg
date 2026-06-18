@@ -1,2 +1,53 @@
 #!/bin/bash
 
+# list of distros in the form "name|url"
+DISTROS=(
+    "opensusetumbleweed|https://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-Minimal-VM.x86_64-Cloud.qcow2"
+    "ubuntu|https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-amd64.img"
+)
+
+# show choices
+echo "Available distros:"
+for i in "${!DISTROS[@]}"; do
+    name="${DISTROS[$i]%%|*}"
+    printf "%d) %s\n" $((i+1)) "$name"
+done
+
+# prompt user to choose
+read -rp "Choose a distro by number or name: " CHOICE
+
+# resolve choice to entry
+SELECTED=""
+if [[ "$CHOICE" =~ ^[0-9]+$ ]]; then
+    idx=$((CHOICE-1))
+    if (( idx>=0 && idx<${#DISTROS[@]} )); then
+        SELECTED="${DISTROS[$idx]}"
+    fi
+else
+    for entry in "${DISTROS[@]}"; do
+        name="${entry%%|*}"
+        if [[ "$CHOICE" == "$name" ]]; then
+            SELECTED="$entry"
+            break
+        fi
+    done
+fi
+
+if [[ -z "$SELECTED" ]]; then
+    echo "Invalid choice." >&2
+    exit 1
+fi
+
+# export selected distro and URL
+export DISTRO_NAME="${SELECTED%%|*}"
+export DISTRO_URL="${SELECTED#*|}"
+
+echo "Selected: $DISTRO_NAME -> $DISTRO_URL"
+
+DIR=/home/${USER}/virt/images
+VMS_DIR=/home/${USER}/virt/runtime
+
+mkdir -p $DIR
+mkdir -p $VMS_DIR
+
+curl -Lo /home/user/virt/images/$DISTRO_NAME.qcow2 $DISTRO_URL
