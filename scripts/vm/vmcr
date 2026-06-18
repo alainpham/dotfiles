@@ -132,7 +132,7 @@ echo "virt-install --import \
   --disk $VMS_DIR/$DATA_DISK,format=qcow2,bus=virtio \
   --disk $CI_ISO,readonly=on \
   --network bridge=$BRIDGE,model=virtio,mac=$MAC \
-  --os-variant=$OS_VARIANT \
+  --osinfo=$OS_VARIANT \
   --noautoconsole \
   --cpu host-passthrough"
 
@@ -144,7 +144,7 @@ virt-install --import \
   --disk $VMS_DIR/$DATA_DISK,format=qcow2,bus=virtio \
   --disk $CI_ISO,readonly=on \
   --network bridge=$BRIDGE,model=virtio,mac=$MAC \
-  --os-variant=$OS_VARIANT \
+  --osinfo=$OS_VARIANT \
   --noautoconsole \
   --cpu host-passthrough
 
