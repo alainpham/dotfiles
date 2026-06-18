@@ -15,5 +15,9 @@ rm -f $VMS_DIR/$1-data.qcow2
 rm -f $VMS_DIR/$1-cidata.iso
 echo "$(date -R) Removing ip from dhcp server..."
 virsh net-update default delete ip-dhcp-host "<host name='$1' />" --live --config
-ansible 127.0.0.1 -m lineinfile -a "path=/etc/NetworkManager/dnsmasq.d/vms regexp='^.*address=/$1.*$' state=absent"
+if [ -f /etc/NetworkManager/dnsmasq.d/vms ]; then
+    tmpfile=$(mktemp)
+    grep -v -F "address=/$1" /etc/NetworkManager/dnsmasq.d/vms > "$tmpfile"
+    mv "$tmpfile" /etc/NetworkManager/dnsmasq.d/vms
+fi
 nmcli general reload
