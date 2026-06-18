@@ -16,4 +16,12 @@ set -euo pipefail
 #     mkisofs \
 #     cdrkit-cdrtools-compat
 
-zypper in -y qemu-img libvirt-client libvirt-daemon virt-install guestfs-tools virt-manager bridge-utils libosinfo
+zypper in -y \
+    qemu-img \
+    libvirt-client \
+    libvirt-daemon \
+    virt-install \
+    guestfs-tools \
+    virt-manager \
+    bridge-utils \
+    libosinfo
