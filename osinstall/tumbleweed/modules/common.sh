@@ -42,14 +42,13 @@ cp -R /home/$TARGET_USERNAME/dotfiles/etc/* /etc/
 
 #####################
 echo setting user groups
-groupadd -f docker
-usermod -aG docker "$TARGET_USERNAME"
 
-groupadd -f input
-usermod -aG input "$TARGET_USERNAME"
-
-groupadd -f pipewire
-usermod -aG pipewire "$TARGET_USERNAME"
+groups=(docker input pipewire kvm libvirt render)
+for group in "${groups[@]}"; do
+    groupadd -f "$group"
+    usermod -aG "$group" "$TARGET_USERNAME"
+    echo added to group $group
+done
 
 #####################
 echo setup fastboot in /boot/efi/loader/loader.conf

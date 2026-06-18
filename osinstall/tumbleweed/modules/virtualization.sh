@@ -17,11 +17,11 @@ set -euo pipefail
 #     cdrkit-cdrtools-compat
 
 zypper in -y \
-    qemu-img \
     libvirt-client \
-    libvirt-daemon \
+    qemu-img \
     virt-install \
-    guestfs-tools \
     virt-manager \
-    bridge-utils \
+    libvirt-daemon \
     libosinfo
+
+systemctl enable libvirtd.service

@@ -101,7 +101,7 @@ instance-id: $1
 local-hostname: $1
 _EOF_
 
-genisoimage -output $CI_ISO  -volid cidata -joliet -rock $USER_DATA $META_DATA
+mkisofs -output $CI_ISO  -volid cidata -joliet -rock $USER_DATA $META_DATA
 
 echo "$(date -R) Creating image from template..."
 cp $IMAGE $VMS_DIR/base-$DISK
