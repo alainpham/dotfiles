@@ -14,10 +14,20 @@ VMS_DIR=/home/${USER}/virt/runtime
 mkdir -p $DIR
 mkdir -p $VMS_DIR
 
+# Ensure /home/$USER has permission 755
+HOME_PERM=$(stat -c %a /home/$USER 2>/dev/null || echo "")
+if [ "$HOME_PERM" != "755" ]; then
+  echo "/home/$USER permission is $HOME_PERM; expected 755"
+  sudo chmod 755 /home/$USER
+fi
+
 if [ ! -f /etc/NetworkManager/dnsmasq.d/vms ]; then
   sudo touch /etc/NetworkManager/dnsmasq.d/vms
   sudo chown $USER /etc/NetworkManager/dnsmasq.d/vms
 fi
+
+
+
 
 echo "Setting up network for virtualization.."
 if [[ -z "$(virsh net-list | grep default)" ]] then
