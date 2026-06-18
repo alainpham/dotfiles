@@ -18,6 +18,6 @@ virsh net-update default delete ip-dhcp-host "<host name='$1' />" --live --confi
 if [ -f /etc/NetworkManager/dnsmasq.d/vms ]; then
     tmpfile=$(mktemp)
     grep -v -F "address=/$1" /etc/NetworkManager/dnsmasq.d/vms > "$tmpfile"
-    mv "$tmpfile" /etc/NetworkManager/dnsmasq.d/vms
+    cat "$tmpfile" | tee /etc/NetworkManager/dnsmasq.d/vms
 fi
 nmcli general reload
