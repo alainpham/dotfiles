@@ -71,6 +71,7 @@ flatpak install -y flathub org.videolan.VLC
 flatpak install -y flathub dev.lizardbyte.app.Sunshine
 flatpak install -y flathub com.moonlight_stream.Moonlight
 flatpak install -y flathub org.mozilla.firefox
+zypper rm -y MozillaFirefox MozillaFirefox-branding-openSUSE
 #ytdlp
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh
 
