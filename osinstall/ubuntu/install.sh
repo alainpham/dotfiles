@@ -954,6 +954,11 @@ cat << 'EOF' | tee ${ROOTFS}/etc/udev/rules.d/89-uinput-udev.rules
 KERNEL=="uinput", MODE="0660", GROUP="input", SYMLINK+="uinput"
 EOF
 
+# load the uinput module at boot so the udev rule above can apply its
+# input-group ownership (needed for Sunshine/Moonlight virtual input)
+mkdir -p ${ROOTFS}/etc/modules-load.d
+echo 'uinput' | tee ${ROOTFS}/etc/modules-load.d/uinput.conf
+
 # install script for monitor
 
 cp -R ${ROOTFS}/home/$TARGET_USERNAME/dotfiles/scripts/desktop/* ${ROOTFS}/usr/local/bin/
