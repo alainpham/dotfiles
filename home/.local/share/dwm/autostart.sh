@@ -1,11 +1,4 @@
 #!/bin/bash
-
-# tell the systemd user manager the graphical session is up so that units with
-# WantedBy/PartOf=graphical-session.target (e.g. sunshine.service) start with dwm.
-# graphical-session.target has RefuseManualStart=yes, so it can only be pulled in
-# as a dependency -> we start dwm-session.target, which BindsTo it.
-dbus-update-activation-environment --systemd DISPLAY XAUTHORITY XDG_SESSION_TYPE 2>/dev/null
-systemctl --user import-environment DISPLAY XAUTHORITY XDG_SESSION_TYPE
 systemctl --user start dwm-session.target
 
 for i in {1..6}; do
