@@ -41,14 +41,21 @@ done
 
 # dconf reset -f /
 
-gsettings set org.gnome.desktop.interface gtk-theme "${GTK_THEME}"
-gsettings set org.gnome.desktop.interface icon-theme "${GTK_ICON_THEME}"
-gsettings set org.gnome.desktop.interface font-name "${GTK_FONT_NAME}"
-gsettings set org.gnome.desktop.interface cursor-theme "${GTK_CURSOR_THEME}"
-gsettings set org.gnome.desktop.interface cursor-size "${GTK_CURSOR_SIZE}"
-gsettings set org.gnome.desktop.interface font-hinting slight
-gsettings set org.gnome.desktop.interface color-scheme "${GTK_COLOR_SCHEME}"
+# gsettings set org.gnome.desktop.interface gtk-theme "${GTK_THEME}"
+# gsettings set org.gnome.desktop.interface icon-theme "${GTK_ICON_THEME}"
+# gsettings set org.gnome.desktop.interface font-name "${GTK_FONT_NAME}"
+# gsettings set org.gnome.desktop.interface cursor-theme "${GTK_CURSOR_THEME}"
+# gsettings set org.gnome.desktop.interface cursor-size "${GTK_CURSOR_SIZE}"
+# gsettings set org.gnome.desktop.interface font-hinting slight
+# gsettings set org.gnome.desktop.interface color-scheme "${GTK_COLOR_SCHEME}"
 
+dconf write /org/gnome/desktop/interface/gtk-theme "'${GTK_THEME}'"
+dconf write /org/gnome/desktop/interface/icon-theme "'${GTK_ICON_THEME}'"
+dconf write /org/gnome/desktop/interface/font-name "'${GTK_FONT_NAME}'"
+dconf write /org/gnome/desktop/interface/cursor-theme "'${GTK_CURSOR_THEME}'"
+dconf write /org/gnome/desktop/interface/cursor-size "${GTK_CURSOR_SIZE}"
+dconf write /org/gnome/desktop/interface/font-hinting "'slight'"
+dconf write /org/gnome/desktop/interface/color-scheme "'${GTK_COLOR_SCHEME}'"
 
 pkill  thunar
 thunar --daemon &
