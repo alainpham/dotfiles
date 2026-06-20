@@ -121,3 +121,9 @@ if [ "$DISABLE_TURBO_BOOST" == "true" ]; then
 else
     systemctl disable disable-intel-turboboost.service
 fi
+
+export hypervisor=$(virt-what)
+
+if [ "$hypervisor" = "hyperv" ] || [ "$hypervisor" = "kvm" ]; then
+    firstboot
+fi

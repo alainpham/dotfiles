@@ -1,0 +1,13 @@
+[Unit]
+Description=firstboot-dockerbuildx
+Requires=network.target docker.service
+After=network.target docker.service
+
+[Service]
+Type=oneshot
+User=${TARGET_USERNAME}
+ExecStart=/usr/local/bin/firstboot-dockerbuildx
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -9,3 +9,5 @@ if [ ! -f /usr/local/bin/k3s ]; then
     bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/kube.sh
 fi
 
+systemctl enable firstboot-dockernet.service
+systemctl enable firstboot-dockerbuildx.service
