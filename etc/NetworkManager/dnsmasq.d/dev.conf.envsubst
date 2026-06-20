@@ -1,5 +1,5 @@
 #/etc/NetworkManager/dnsmasq.d/dev.conf
-local=/$$WILDCARD_DOMAIN/
-address=/$$WILDCARD_DOMAIN/172.18.0.1
-local=/$$WILDCARD_DOMAIN/
-address=/$$WILDCARD_DOMAIN/172.18.0.1
+local=/${WILDCARD_DOMAIN}/
+address=/${WILDCARD_DOMAIN}/172.18.0.1
+local=/${K3S_WILDCARD_DOMAIN}/
+address=/${K3S_WILDCARD_DOMAIN}/172.18.0.1
