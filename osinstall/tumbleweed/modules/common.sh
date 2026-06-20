@@ -34,9 +34,23 @@ cp -r /home/$TARGET_USERNAME/dotfiles/icons/* /usr/local/share/icons
 
 
 #####################
-echo copy whole etc folder
+echo install etc files
 echo network config dnsmasq and powersave
-cp -R /home/$TARGET_USERNAME/dotfiles/etc/* /etc/
+ETC_SRC="/home/$TARGET_USERNAME/dotfiles/etc"
+find "$ETC_SRC" -type f | while read -r file; do
+    rel="${file#$ETC_SRC/}"
+    if [[ "$file" == *.envsubst ]]; then
+        dest="/etc/${rel%.envsubst}"
+        sudo mkdir -p "$(dirname "$dest")"
+        envsubst < "$file" | sudo tee "$dest" > /dev/null
+        echo "applied envsubst and copied $file -> $dest"
+    else
+        dest="/etc/$rel"
+        sudo mkdir -p "$(dirname "$dest")"
+        sudo cp "$file" "$dest"
+        echo "copied $file -> $dest"
+    fi
+done
 
 # hostnamectl hostname $HOSTNAME
 
