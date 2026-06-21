@@ -36,5 +36,5 @@ flatpak install -y flathub org.godotengine.Godot
 flatpak install -y flathub fm.reaper.Reaper
 flatpak install -y flathub org.mixxx.Mixxx
 
-# TODO REAPER
-# TODO MLVAPP
+
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/derivations/mlvapp.sh"
