@@ -17,16 +17,16 @@ mkdir -p /home/${TARGET_USERNAME}/.config/ppsspp/PSP/
 
 
 
-if [ ! -L "/home/${USER}/.config/ppsspp/PSP/SAVEDATA" ] || [ "$(readlink "/home/${USER}/.config/ppsspp/PSP/SAVEDATA")" != "/home/${TARGET_USERNAME}/syncthing/ppsspp/SAVEDATA" ]; then
+if [ ! -L "/home/${TARGET_USERNAME}/.config/ppsspp/PSP/SAVEDATA" ] || [ "$(readlink "/home/${TARGET_USERNAME}/.config/ppsspp/PSP/SAVEDATA")" != "/home/${TARGET_USERNAME}/syncthing/ppsspp/SAVEDATA" ]; then
     rm -rf /home/${TARGET_USERNAME}/.config/ppsspp/PSP/SAVEDATA    
-    ln -sf "/home/${TARGET_USERNAME}/syncthing/ppsspp/SAVEDATA" "/home/${USER}/.config/ppsspp/PSP/SAVEDATA"
+    ln -sf "/home/${TARGET_USERNAME}/syncthing/ppsspp/SAVEDATA" "/home/${TARGET_USERNAME}/.config/ppsspp/PSP/SAVEDATA"
     echo creating symlink SAVEDATA for the first time
 else
     echo symlink for SAVEDATA OK
 fi
-if [ ! -L "/home/${USER}/.config/ppsspp/PSP/PPSSPP_STATE" ] || [ "$(readlink "/home/${USER}/.config/ppsspp/PSP/PPSSPP_STATE")" != "/home/${TARGET_USERNAME}/syncthing/ppsspp/PPSSPP_STATE" ]; then
+if [ ! -L "/home/${TARGET_USERNAME}/.config/ppsspp/PSP/PPSSPP_STATE" ] || [ "$(readlink "/home/${TARGET_USERNAME}/.config/ppsspp/PSP/PPSSPP_STATE")" != "/home/${TARGET_USERNAME}/syncthing/ppsspp/PPSSPP_STATE" ]; then
     rm -rf /home/${TARGET_USERNAME}/.config/ppsspp/PSP/PPSSPP_STATE
-    ln -sf "/home/${TARGET_USERNAME}/syncthing/ppsspp/PPSSPP_STATE" "/home/${USER}/.config/ppsspp/PSP/PPSSPP_STATE"
+    ln -sf "/home/${TARGET_USERNAME}/syncthing/ppsspp/PPSSPP_STATE" "/home/${TARGET_USERNAME}/.config/ppsspp/PSP/PPSSPP_STATE"
     echo creating symlink PPSSPP_STATE for the first time
 else
     echo symlink for PPSSPP_STATE OK
