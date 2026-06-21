@@ -14,3 +14,5 @@ bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/retroarch.sh
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/ppsspp.sh
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/pcsx2.sh
+
+zypper in -y dolphin-emu

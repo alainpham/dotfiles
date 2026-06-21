@@ -59,6 +59,11 @@ if [ -f /usr/local/bin/dolphin-emu ]; then
     /usr/local/bin/dolphin-emu "$@"
 fi
 
+if [ -f /usr/bin/dolphin-emu ]; then
+    echo launching from /usr/bin/dolphin-emu
+    /usr/bin/dolphin-emu "$@"
+fi
+
 if [ -f /run/current-system/sw/bin/dolphin-emu ]; then
     echo launching from /run/current-system/sw/bin/dolphin-emu
     /run/current-system/sw/bin/dolphin-emu "$@"
