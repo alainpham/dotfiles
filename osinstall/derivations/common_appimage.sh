@@ -14,6 +14,7 @@ done
 
 
 if [ ! -f /opt/appimages/${APPNAME}.AppImage ] || [ "$(cat /opt/appimages/${APPNAME}.version 2>/dev/null)" != "${APPIMAGEVERSION}" ]; then
+    mkdir -p /opt/appimages/ 
     wget -O /opt/appimages/${APPNAME}.AppImage ${APPIMAGEURL}
     chmod 755 /opt/appimages/${APPNAME}.AppImage
     echo "${APPIMAGEVERSION}" > /opt/appimages/${APPNAME}.version
