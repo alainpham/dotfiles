@@ -10,3 +10,7 @@ zypper in -y --auto-agree-with-licenses wine winetricks lutris
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/esde.sh
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/retroarch.sh
+
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/ppsspp.sh
+
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/pcsx2.sh
