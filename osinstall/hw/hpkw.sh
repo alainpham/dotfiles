@@ -1,8 +1,8 @@
 
 
 ihw(){
-    zypper in intel-media-driver intel-gpu-tools
-    zypper in openSUSE-repos-Tumbleweed-NVIDIA
-    zypper ref
-    zypper in nvidia-driver-G06-kmp-meta
+    zypper in -y --auto-agree-with-licenses intel-media-driver intel-gpu-tools
+    zypper in -y --auto-agree-with-licenses openSUSE-repos-Tumbleweed-NVIDIA
+    zypper ref -y --auto-agree-with-licenses
+    zypper in -y --auto-agree-with-licenses nvidia-driver-G06-kmp-meta
 }
