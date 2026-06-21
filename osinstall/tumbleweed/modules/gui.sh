@@ -57,6 +57,8 @@ zypper in -y \
     SDL2 \
     rofi
 
+#themes
+zypper in -y pantheon-wallpapers
 
 zypper in -y flatpak
 
@@ -109,11 +111,10 @@ cat << EOF | tee /etc/lightdm/lightdm.conf
 [Seat:*]
 greeter-setup-script=/usr/bin/numlockx on
 EOF
-
 else
-    systemctl disable nlock
-    touch /home/${TARGET_USERNAME}/.nonumlock
-    chown ${TARGET_USERNAME}:${TARGET_USERNAME} /home/${TARGET_USERNAME}/.nonumlock
+systemctl disable nlock
+touch /home/${TARGET_USERNAME}/.nonumlock
+chown ${TARGET_USERNAME}:${TARGET_USERNAME} /home/${TARGET_USERNAME}/.nonumlock
 cat << EOF | tee /etc/lightdm/lightdm.conf
 [Seat:*]
 greeter-setup-script=/usr/bin/numlockx off
