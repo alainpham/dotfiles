@@ -7,12 +7,3 @@ export APPIMAGEVERSION=${PPSSPP_VERSION}
 
 bash "/home/$TARGET_USERNAME/dotfiles/osinstall/derivations/common_appimage.sh"
 
-mkdir -p /home/$TARGET_USERNAME/syncthing/ppsspp/SAVEDATA
-mkdir -p /home/$TARGET_USERNAME/syncthing/ppsspp/PPSSPP_STATE
-mkdir -p /home/$TARGET_USERNAME/.config/ppsspp/PSP/
-
-rm -rf /home/$TARGET_USERNAME/.config/ppsspp/PSP/SAVEDATA
-rm -rf /home/$TARGET_USERNAME/.config/ppsspp/PSP/PPSSPP_STATE
-
-ln -sf /home/$TARGET_USERNAME/syncthing/ppsspp/SAVEDATA /home/${USER}/.config/ppsspp/PSP/SAVEDATA
-ln -sf /home/$TARGET_USERNAME/syncthing/ppsspp/PPSSPP_STATE /home/${USER}/.config/ppsspp/PSP/PPSSPP_STATE
