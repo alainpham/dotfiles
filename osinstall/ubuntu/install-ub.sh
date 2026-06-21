@@ -1367,7 +1367,7 @@ touch ${ROOTFS}/etc/bluetooth/input.conf
 lineinfile ${ROOTFS}/etc/bluetooth/input.conf ".*ClassicBondedOnly.*" "ClassicBondedOnly=false"
 
 cat << EOF | chroot ${ROOTFS} ${CHROOT_BASH}
-    zypper in -y wine winetricks lutris
+    apt install -y wine winetricks lutris
 EOF
 
 #esde

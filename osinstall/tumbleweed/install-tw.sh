@@ -57,3 +57,7 @@ if [ "$ENABLE_VIRTUALIZATION" == "true" ]; then
 echo "running virtualization.sh"
 bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/virtualization.sh"
 fi
+if [ "$ENABLE_GAMING" == "true" ]; then
+echo "running gaming.sh"
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/gaming.sh"
+fi
