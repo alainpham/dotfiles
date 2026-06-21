@@ -1,15 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/sdljstest.sh
 
-cd /home/$TARGET_USERNAME/wm
-git clone https://github.com/Grumbel/sdl-jstest.git
+zypper in -y wine winetricks lutris
 
-mkdir -p build /home/$TARGET_USERNAME/wm/sdl-jstest/build
- 
-cd  /home/$TARGET_USERNAME/wm/sdl-jstest
-git submodule init
-git submodule update
-cd /home/$TARGET_USERNAME/wm/sdl-jstest/build && cmake .. && make install
 
-chown -R $TARGET_USERNAME:$TARGET_USERNAME /home/$TARGET_USERNAME/wm
