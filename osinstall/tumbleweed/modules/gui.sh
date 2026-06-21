@@ -54,7 +54,10 @@ zypper in -y \
     mozilla-nss-tools \
     v4l2loopback-autoload \
     v4l2loopback-utils \
-    SDL2 \
+    SDL SDL2 \
+    SDL3-devel \
+    libSDL-1_2-0 \
+    sdl12_compat-devel sdl2-compat-devel \
     rofi
 
 #themes
