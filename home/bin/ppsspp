@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ -f /run/current-system/sw/bin/ppsspp ]; then
+    export APPCMD=/run/current-system/sw/bin/ppsspp
+elif [ -f /usr/local/bin/ppsspp ]; then
+    export APPCMD=/usr/local/bin/ppsspp
+else
+    echo "executable not found" >&2
+    exit 1
+fi
+
+
+
+mkdir -p /home/${TARGET_USERNAME}/syncthing/ppsspp/SAVEDATA
+mkdir -p /home/${TARGET_USERNAME}/syncthing/ppsspp/PPSSPP_STATE
+mkdir -p /home/${TARGET_USERNAME}/.config/ppsspp/PSP/
+
+
+
+
+if [ ! -L "/home/${USER}/.config/ppsspp/PSP/SAVEDATA" ] || [ "$(readlink "/home/${USER}/.config/ppsspp/PSP/SAVEDATA")" != "/home/${TARGET_USERNAME}/syncthing/ppsspp/SAVEDATA" ]; then
+    rm -rf /home/${TARGET_USERNAME}/.config/ppsspp/PSP/SAVEDATA    
+    ln -sf "/home/${TARGET_USERNAME}/syncthing/ppsspp/SAVEDATA" "/home/${USER}/.config/ppsspp/PSP/SAVEDATA"
+    echo creating symlink SAVEDATA for the first time
+fi
+if [ ! -L "/home/${USER}/.config/ppsspp/PSP/PPSSPP_STATE" ] || [ "$(readlink "/home/${USER}/.config/ppsspp/PSP/PPSSPP_STATE")" != "/home/${TARGET_USERNAME}/syncthing/ppsspp/PPSSPP_STATE" ]; then
+    rm -rf /home/${TARGET_USERNAME}/.config/ppsspp/PSP/PPSSPP_STATE
+    ln -sf "/home/${TARGET_USERNAME}/syncthing/ppsspp/PPSSPP_STATE" "/home/${USER}/.config/ppsspp/PSP/PPSSPP_STATE"
+    echo creating symlink PPSSPP_STATE for the first time
+fi
+
+
+$APPCMD "$@"
