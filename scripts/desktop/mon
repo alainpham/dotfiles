@@ -26,6 +26,7 @@ fi
 # List available monitors using xrandr
 monitors=$(xrandr --query | grep " connected" | awk '{ print $1 }')
 echo "Available monitors: $monitors"
+laptop="$(xrandr --listmonitors | awk 'NR>1 {print $NF}' | grep eDP)"
 if [ "$PRODUCT_NAME" == "21MCCTO1WW" ] ; then
     echo "Lenovo T14 AMD detected, setting monitor configuration..."
     dock_left="DisplayPort-6"
@@ -34,7 +35,6 @@ if [ "$PRODUCT_NAME" == "21MCCTO1WW" ] ; then
     else
         dock_center="DisplayPort-8"
     fi
-    laptop="eDP"
     laptop_mode="1920x1200"
     hdmi="HDMI-A-0"
     moonlight="HDMI-A-0"
@@ -46,7 +46,6 @@ elif [ "$PRODUCT_NAME" == "Dell G15 5520" ]; then
         dock_left="DP-1-1"
     fi
     dock_center="DP-1-2"
-    laptop="eDP-1"
     laptop_mode="1920x1080"
     hdmi="HDMI-1-0"
     moonlight="HDMI-1-0"
