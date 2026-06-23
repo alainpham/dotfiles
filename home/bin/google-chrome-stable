@@ -1,0 +1,12 @@
+if [ -f /run/current-system/sw/bin/google-chrome-stable ]; then
+    export APPCMD=/run/current-system/sw/bin/obs
+elif [ -f /usr/bin/google-chrome-stable ]; then
+    export APPCMD=/usr/bin/obs
+elif [ -f /var/lib/flatpak/exports/share/applications/com.google.Chrome.desktop ]; then
+    export APPCMD="flatpak run com.google.Chrome"
+else
+    echo "app not found" >&2
+    exit 1
+fi
+
+$APPCMD "$@"
