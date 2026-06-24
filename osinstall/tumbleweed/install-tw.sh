@@ -26,10 +26,18 @@ select file in "$SCRIPT_DIR/../hw/"*.sh; do
     fi
 done
 
+
+
 echo "running common.sh"
 bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/common.sh"
 source /etc/profile.d/vars.sh
 source /etc/profile.d/sources.sh
+
+current_hostname="$(hostnamectl --static status 2>/dev/null)"
+if [[ -z "$current_hostname" && -n "${HOSTNAME:-}" ]]; then
+    echo "hostname is unset; setting hostname to $HOSTNAME"
+    hostnamectl hostname "$HOSTNAME"
+fi
 
 if [ "$ENABLE_DEV" == "true" ]; then
 echo "running dev.sh"
