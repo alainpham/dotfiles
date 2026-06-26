@@ -117,37 +117,42 @@ hdmi_beside_laptop(){   # $1 = left|right
     refresh_wallpaper
 }
 
-# Mirror every connected screen at the largest mode they all support.
+# Mirror every connected screen at the best common mode reported by the
+# `bestmode` command, which prints "<WxH> <frequency>" or "0" if no single
+# mode is supported by every connected screen.
 mirror_all(){
-    local n=${#CONN_OUTPUT[@]} mode
-    mode=$(xrandr | awk -v n="$n" '
-        /^[ \t]+[0-9]+x[0-9]+/ { split($1,a,"x"); cnt[$1]++; area[$1]=a[1]*a[2] }
-        END {
-            best=""; ba=0
-            for (r in cnt) if (cnt[r]==n && area[r]>ba) { best=r; ba=area[r] }
-            print best
-        }')
+    local mode res rate args=() first="" sha out
+    mode=$(bestmode 2>/dev/null)
 
-    local args=() first="" sha out
+    if [ -n "$mode" ] && [ "$mode" != "0" ]; then
+        res=$(echo "$mode" | awk '{print $1}')
+        rate=$(echo "$mode" | awk '{print $2}')
+    else
+        echo "bestmode found no common mode; falling back to each screen's auto mode."
+        res=""
+        rate=""
+    fi
+
     for sha in "${!CONN_OUTPUT[@]}"; do
         out="${CONN_OUTPUT[$sha]}"
         if [ -z "$first" ]; then
             first="$out"
-            if [ -n "$mode" ]; then
-                args+=(--output "$out" --mode "$mode" --pos 0x0 --primary)
+            if [ -n "$res" ]; then
+                args+=(--output "$out" --mode "$res" --rate "$rate" --pos 0x0 --rotate normal --primary)
             else
                 args+=(--output "$out" --auto --pos 0x0 --primary)
             fi
         else
-            if [ -n "$mode" ]; then
-                args+=(--output "$out" --mode "$mode" --same-as "$first")
+            if [ -n "$res" ]; then
+                args+=(--output "$out" --mode "$res" --rate "$rate" --same-as "$first" --rotate normal)
             else
                 args+=(--output "$out" --auto --same-as "$first")
             fi
         fi
     done
-    log "mirror all screens, mode=${mode:-auto}"
-    echo "Mirroring all screens at mode ${mode:-auto}"
+
+    log "mirror all screens, mode=${res:-auto} rate=${rate:-auto}"
+    echo "Mirroring all screens at mode ${res:-auto} rate ${rate:-auto}"
     xrandr "${args[@]}"
     refresh_wallpaper
 }
