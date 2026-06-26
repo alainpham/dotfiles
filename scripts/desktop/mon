@@ -1,298 +1,256 @@
 #!/bin/bash
-# This script is used to set the monitor configuration for X11.
+# mon - apply an X11 monitor layout
+#
+# Screens are identified by the sha256sum of their EDID (computed by the
+# companion `monid` script, which must be in PATH), so a saved layout is
+# stable no matter which xrandr output a given physical screen lands on.
+#
+# ~/.sclayout format - one connected screen per line, in left-to-right order:
+#
+#     <sha256sum-of-edid> <human_name_with_underscores>
+#
+# The human name is purely for readability; matching is done on the sha256sum.
 
-command=$1
-echo $(date) "setting monitor to $command">>~/.mon.log
+MONID="monid"
+LAYOUT_FILE="$HOME/.sclayout"
+LOG="$HOME/.mon.log"
+
+command="$1"
+
+log(){ echo "$(date) $*" >> "$LOG"; }
 
 if [ "$command" == "help" ]; then
-    echo "Usage: $0 <command>"
+    echo "Usage: $0 [command]"
     echo "Commands:"
     echo "  la      - Show only laptop screen"
     echo "  hd      - Show HDMI only"
     echo "  cp      - mirror all screens"
     echo "  hl      - Show HDMI left of laptop screen"
     echo "  hr      - Show HDMI right of laptop screen"
-    echo "  ce      - Center screen only"
-    echo "  cl      - Center and left screen only no laptop screen"
-    echo "  clm     - Center and left screen only no laptop screen + moonlight"
-    echo "  <empty> - Default docking station or laptop only"
+    echo "  <empty> - Apply the saved layout from ~/.sclayout"
+    echo
+    echo "~/.sclayout lines are:  <sha256sum-of-edid> <human_name>"
+    echo "Screens are listed left-to-right; run 'monid' to discover the"
+    echo "sha256sums of the currently connected screens."
+    exit 0
+fi
+
+if ! command -v "$MONID" >/dev/null 2>&1; then
+    echo "Cannot find 'monid' in PATH." >&2
     exit 1
 fi
 
-if [ -z "${PRODUCT_NAME}" ]; then
-    export PRODUCT_NAME=$(cat /sys/devices/virtual/dmi/id/product_name)
-fi
+# ---------------------------------------------------------------------------
+# Discover currently connected screens via monid.
+#   CONN_OUTPUT[sha] = xrandr output id
+#   CONN_NAME[sha]   = human readable name
+# ---------------------------------------------------------------------------
+declare -A CONN_OUTPUT
+declare -A CONN_NAME
+laptop_sha=""
+laptop_name=""
+hdmi_sha=""
 
-# List available monitors using xrandr
-monitors=$(xrandr --query | grep " connected" | awk '{ print $1 }')
-echo "Available monitors: $monitors"
-laptop="$(xrandr --listmonitors | awk 'NR>1 {print $NF}' | grep eDP)"
-if [ "$PRODUCT_NAME" == "21MCCTO1WW" ] ; then
-    echo "Lenovo T14 AMD detected, setting monitor configuration..."
-    dock_left="DisplayPort-6"
-    if echo "$monitors" | grep -q "DisplayPort-7"; then
-        dock_center="DisplayPort-7"
+while read -r sha name output; do
+    [ -z "$sha" ] && continue
+    CONN_OUTPUT["$sha"]="$output"
+    CONN_NAME["$sha"]="$name"
+    # The internal laptop panel is an eDP (or older LVDS / mobile DSI) output.
+    if [[ "$output" =~ ^(eDP|LVDS|DSI) ]]; then
+        laptop_sha="$sha"
+        laptop_name="$name"
+    fi
+    # First HDMI output found.
+    if [[ "$output" =~ HDMI ]] && [ -z "$hdmi_sha" ]; then
+        hdmi_sha="$sha"
+    fi
+done < <("$MONID")
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+# Print " --output X --off" for every connected screen NOT in the given list
+# of outputs to keep on.
+others_off_args(){
+    local keep=("$@") sha out k listed
+    for sha in "${!CONN_OUTPUT[@]}"; do
+        out="${CONN_OUTPUT[$sha]}"
+        listed=0
+        for k in "${keep[@]}"; do
+            [ "$k" == "$out" ] && { listed=1; break; }
+        done
+        [ "$listed" -eq 0 ] && printf ' --output %s --off' "$out"
+    done
+}
+
+refresh_wallpaper(){ [ -x "$HOME/.fehbg" ] && "$HOME/.fehbg"; return 0; }
+
+# Show a single screen, turning off all others.
+single_screen(){   # $1 = sha, $2 = label
+    local out="" off
+    [ -n "$1" ] && out="${CONN_OUTPUT[$1]}"
+    if [ -z "$out" ]; then
+        echo "$2 screen not connected."
+        return 1
+    fi
+    log "$2 screen only ($out)"
+    echo "$2 screen only: $out"
+    off=$(others_off_args "$out")
+    xrandr --output "$out" --auto --primary --pos 0x0 $off
+    refresh_wallpaper
+}
+
+# HDMI to the left or right of the laptop screen.
+hdmi_beside_laptop(){   # $1 = left|right
+    local lo="" ho="" rel off
+    [ -n "$laptop_sha" ] && lo="${CONN_OUTPUT[$laptop_sha]}"
+    [ -n "$hdmi_sha" ]   && ho="${CONN_OUTPUT[$hdmi_sha]}"
+    if [ -z "$lo" ]; then echo "Laptop screen not connected."; return 1; fi
+    if [ -z "$ho" ]; then echo "HDMI screen not connected."; return 1; fi
+    if [ "$1" == "right" ]; then rel="--right-of"; else rel="--left-of"; fi
+    log "HDMI ($ho) $1 of laptop ($lo)"
+    echo "HDMI $1 of laptop: laptop=$lo hdmi=$ho"
+    off=$(others_off_args "$lo" "$ho")
+    xrandr --output "$lo" --auto --primary --pos 0x0 \
+           --output "$ho" --auto "$rel" "$lo" $off
+    refresh_wallpaper
+}
+
+# Mirror every connected screen at the largest mode they all support.
+mirror_all(){
+    local n=${#CONN_OUTPUT[@]} mode
+    mode=$(xrandr | awk -v n="$n" '
+        /^[ \t]+[0-9]+x[0-9]+/ { split($1,a,"x"); cnt[$1]++; area[$1]=a[1]*a[2] }
+        END {
+            best=""; ba=0
+            for (r in cnt) if (cnt[r]==n && area[r]>ba) { best=r; ba=area[r] }
+            print best
+        }')
+
+    local args=() first="" sha out
+    for sha in "${!CONN_OUTPUT[@]}"; do
+        out="${CONN_OUTPUT[$sha]}"
+        if [ -z "$first" ]; then
+            first="$out"
+            if [ -n "$mode" ]; then
+                args+=(--output "$out" --mode "$mode" --pos 0x0 --primary)
+            else
+                args+=(--output "$out" --auto --pos 0x0 --primary)
+            fi
+        else
+            if [ -n "$mode" ]; then
+                args+=(--output "$out" --mode "$mode" --same-as "$first")
+            else
+                args+=(--output "$out" --auto --same-as "$first")
+            fi
+        fi
+    done
+    log "mirror all screens, mode=${mode:-auto}"
+    echo "Mirroring all screens at mode ${mode:-auto}"
+    xrandr "${args[@]}"
+    refresh_wallpaper
+}
+
+# ---------------------------------------------------------------------------
+# Saved-layout (~/.sclayout) handling
+# ---------------------------------------------------------------------------
+
+# Valid layout: file exists, non-empty, every line is a 64-hex sha + a name.
+valid_layout(){
+    [ -s "$LAYOUT_FILE" ] || return 1
+    local sha name
+    while read -r sha name; do
+        [[ "$sha" =~ ^[0-9a-fA-F]{64}$ ]] || return 1
+        [ -n "$name" ] || return 1
+    done < "$LAYOUT_FILE"
+    return 0
+}
+
+# Create a default layout containing only the detected laptop screen.
+create_default(){
+    if [ -n "$laptop_sha" ]; then
+        local n="$laptop_name"
+        [ "$n" == "UNKNOWN" ] && n="laptop"
+        echo "$laptop_sha $n" > "$LAYOUT_FILE"
+        log "created default ~/.sclayout with laptop screen $laptop_sha ($n)"
+        echo "Created default ~/.sclayout: $laptop_sha $n"
+    elif [ "${#CONN_OUTPUT[@]}" -gt 0 ]; then
+        local sha
+        for sha in "${!CONN_OUTPUT[@]}"; do
+            echo "$sha ${CONN_NAME[$sha]}" > "$LAYOUT_FILE"
+            log "created default ~/.sclayout with screen $sha (${CONN_NAME[$sha]})"
+            echo "Created default ~/.sclayout: $sha ${CONN_NAME[$sha]}"
+            break
+        done
     else
-        dock_center="DisplayPort-8"
+        echo "No connected screens detected; cannot create a default layout." >&2
+        return 1
     fi
-    laptop_mode="1920x1200"
-    hdmi="HDMI-A-0"
-    moonlight="HDMI-A-0"
-elif [ "$PRODUCT_NAME" == "Dell G15 5520" ]; then
-    echo "Dell G15 5520 detected, setting monitor configuration..."
-    if echo "$monitors" | grep -q "DP-1-3"; then
-        dock_left="DP-1-3"
-    else
-        dock_left="DP-1-1"
+}
+
+# Apply ~/.sclayout left -> right, turning off any screen not listed.
+apply_layout(){
+    local shas=() sha name
+    while read -r sha name; do
+        [ -z "$sha" ] && continue
+        shas+=("$sha")
+    done < "$LAYOUT_FILE"
+
+    for sha in "${shas[@]}"; do
+        if [ -z "${CONN_OUTPUT[$sha]}" ]; then
+            echo "Screen from layout not connected: $sha"
+            return 1
+        fi
+    done
+
+    local args=() prev="" idx=0 out
+    for sha in "${shas[@]}"; do
+        out="${CONN_OUTPUT[$sha]}"
+        if [ "$idx" -eq 0 ]; then
+            args+=(--output "$out" --auto --primary --pos 0x0)
+        else
+            args+=(--output "$out" --auto --right-of "$prev")
+        fi
+        prev="$out"
+        idx=$((idx + 1))
+    done
+
+    # Turn off every connected screen not part of the layout.
+    local keep=() offargs
+    for sha in "${shas[@]}"; do keep+=("${CONN_OUTPUT[$sha]}"); done
+    read -r -a offargs <<< "$(others_off_args "${keep[@]}")"
+    args+=("${offargs[@]}")
+
+    log "applying layout: xrandr ${args[*]}"
+    echo "Applying layout (left to right): ${shas[*]}"
+    xrandr "${args[@]}"
+    refresh_wallpaper
+    return 0
+}
+
+apply_saved_layout(){
+    if ! valid_layout; then
+        echo "~/.sclayout missing or malformed; recreating default."
+        create_default || return 1
     fi
-    dock_center="DP-1-2"
-    laptop_mode="1920x1080"
-    hdmi="HDMI-1-0"
-    moonlight="HDMI-1-0"
-else
-    echo "Unknown product name: $PRODUCT_NAME, applying default on the first monitor found"
-    first_monitor=$(echo "$monitors" | head -n1)
-    laptop="$first_monitor"
-    laptop_mode=$(xrandr | grep -A1 "^$laptop connected" | tail -n1 | awk '{print $1}')
-    hdmi=$(echo "$monitors" | grep HDMI |  head -n1)
-    if [ -z "$hdmi" ]; then 
-        hdmi="HDMI_NOT_FOUND"
+    if ! apply_layout; then
+        echo "Saved layout could not be applied (a listed screen is missing)."
+        echo "Recreating default layout with the laptop screen only."
+        create_default || return 1
+        apply_layout
     fi
-    dock_left="DOCK_LEFT_NOT_FOUND"
-    dock_center="DOCK_CENTER_NOT_FOUND"
-fi
-
-
-echo "Available monitors:"
-for monitor in $monitors; do
-    echo "- $monitor"
-done
-
-echo "Using the following configuration:"
-echo "Laptop: $laptop (mode: $laptop_mode)"
-echo "HDMI: $hdmi"
-echo "Dock Left: $dock_left"
-echo "Dock Center: $dock_center"
-echo "Moonlight screen: $moonlight"
-
-# default behavior
-export ITERATION_FLAG=0
-default() {
-    if [ ! -f ~/.sclayout ]; then
-        echo "la" > ~/.sclayout
-    fi
-    export command=$(cat ~/.sclayout)
-    
-    # default layout can't be applied defaulting to laptop
-    if [ "${ITERATION_FLAG}" == "1" ];then 
-        export command="la"
-    fi
-    export ITERATION_FLAG=1
-    echo default layout is $command
-    applylayout
-
 }
 
-lap() {
-
-    echo $(date) "Laptop screen only.">>~/.mon.log
-
-    appendcommand=""
-
-    for monitor in $monitors; do
-        if [ "$monitor" != "$laptop" ]; then
-            appendcommand+=" --output $monitor --off"
-        fi
-    done
-    xrandr --output $laptop --auto --primary  \
-        $appendcommand
-}
-
-hdmi(){
-    echo $(date) "DMI screen only">>~/.mon.log
-
-    appendcommand=""
-    for monitor in $monitors; do
-        if [ "$monitor" != "$hdmi" ]; then
-            appendcommand+=" --output $monitor --off"
-        fi
-    done
-
-    xrandr --output $hdmi --auto --primary \
-        $appendcommand
-}
-
-hdmileft(){
-    echo $(date) "HDMI left of Laptop screen">>~/.mon.log
-
-    appendcommand=""
-    for monitor in $monitors; do
-        if [ "$monitor" != "$hdmi" ] && [ "$monitor" != "$laptop" ]; then
-            appendcommand+=" --output $monitor --off"
-        fi
-    done
-
-    xrandr \
-        --output $laptop --auto --pos 0x0 --primary \
-        --output $hdmi --mode 1920x1080 --pos -1920x0 --rate 60 --rotate normal \
-        $appendcommand
-}
-
-hdmiright(){
-    echo $(date) "HDMI right of Laptop screen">>~/.mon.log
-
-    appendcommand=""
-    for monitor in $monitors; do
-        if [ "$monitor" != "$hdmi" ] && [ "$monitor" != "$laptop" ]; then
-            appendcommand+=" --output $monitor --off"
-        fi
-    done
-
-    xrandr \
-        --output $laptop --auto --pos 0x0 --primary \
-        --output $hdmi --mode 1920x1080 --pos 1920x0 --rate 60 --rotate normal \
-        $appendcommand
-}
-
-copyallscreens(){
-    copy_mode=$(bestmode)
-    echo $(date) "mirror on all available screens with resolution ${copy_mode}">>~/.mon.log
-    
-    if [ "$copy_mode" == "0" ]; then
-        echo "No suitable copy mode found. Defaulting to laptop resolution."
-        copy_mode="$laptop_mode 60"
-    fi
-
-    copy_resolution=$(echo "$copy_mode" | awk '{print $1}')
-    copy_refresh_rate=$(echo "$copy_mode" | awk '{print $2}')
-
-    echo "Resolution: $copy_resolution"
-    echo "Refresh rate: $copy_refresh_rate"
-
-    echo "HDMI & Laptop screen mirroring"
-
-    appendcommand=""
-    for monitor in $monitors; do
-        if [ "$monitor" != "$laptop" ]; then
-            appendcommand+=" --output $monitor --mode $copy_resolution --pos 0x0 --rate $copy_refresh_rate --rotate normal"
-        fi
-    done
-
-    xrandr \
-        --output $laptop --mode $copy_resolution --pos 0x0 --rate $copy_refresh_rate --rotate normal --primary \
-        $appendcommand
-
-}
-
-centerdock(){
-    echo "Center dock screen"
-    echo $(date) "Center dock screen">>~/.mon.log
-
-    appendcommand=""
-    for monitor in $monitors; do
-        if [ "$monitor" != "$dock_center" ]; then
-            appendcommand+=" --output $monitor --off"
-        fi
-    done
-    xrandr \
-        --output $dock_center --auto --pos 0x0 --primary \
-        $appendcommand
-
-}
-
-centerandleftdock(){
-    echo $(date) "Center and left dock screen">>~/.mon.log
-
-    appendcommand=""
-    for monitor in $monitors; do
-        if [ "$monitor" != "$dock_left" ] && [ "$monitor" != "$dock_center" ]; then
-            appendcommand+=" --output $monitor --off"
-        fi
-    done
-    xrandr \
-        --output $dock_left   --mode 1920x1080      --pos 0x0       --rate 60   --rotate normal --primary \
-        --output $dock_center --mode 1920x1080      --pos 1920x0    --rate 60   --rotate normal \
-        $appendcommand
-
-}
-
-centerleftml(){
-    echo $(date) "Moonlight, dock left, dock center">>~/.mon.log
-
-    appendcommand=""
-    for monitor in $monitors; do
-        if [ "$monitor" != "$dock_left" ] && [ "$monitor" != "$dock_center" ] && [ "$monitor" != "$moonlight" ]; then
-            appendcommand+=" --output $monitor --off"
-        fi
-    done
-    xrandr \
-        --output $moonlight   --mode 1280x800       --pos 0x0       --rate 60   --rotate normal --primary \
-        --output $dock_left   --mode 1920x1080      --pos 1280x0    --rate 60   --rotate normal \
-        --output $dock_center --mode 1920x1080      --pos 3200x0    --rate 60   --rotate normal \
-        $appendcommand
-
-}
-
-home() {
-    echo $(date) "dock left, dock center, laptop">>~/.mon.log
-    appendcommand=""
-    for monitor in $monitors; do
-        if [ "$monitor" != "$dock_left" ] && [ "$monitor" != "$dock_center" ] && [ "$monitor" != "$laptop" ]; then
-            appendcommand+=" --output $monitor --off"
-        fi
-    done
-
-    xrandr \
-        --output $dock_left   --mode 1920x1080      --pos 0x0       --rate 60   --rotate normal --primary \
-        --output $dock_center --mode 1920x1080      --pos 1920x0    --rate 60   --rotate normal \
-        --output $laptop      --mode $laptop_mode   --pos 3840x0    --rate 60   --rotate normal \
-        $appendcommand
-
-}
-
-
-applylayout(){
-if [ "$command" == "la" ]; then
-    
-    lap
-
-elif [ "$command" == "hd" ] && echo "$monitors" | grep -q "$hdmi" ; then
-    
-    hdmi
-
-elif [ "$command" == "cp" ]; then
-
-    copyallscreens
-
-elif [ "$command" == "hl" ] && echo "$monitors" | grep -q "$hdmi" ; then
-
-    hdmileft
-
-elif [ "$command" == "hr" ] && echo "$monitors" | grep -q "$hdmi" ; then
-
-    hdmiright
-
-elif [ "$command" == "ce" ] && echo "$monitors" | grep -q "$dock_center" ; then
-    
-    centerdock
-
-elif [ "$command" == "cl" ] && echo "$monitors" | grep -q "$dock_left" && echo "$monitors" | grep -q "$dock_center"; then
-    
-    centerandleftdock
-
-elif [ "$command" == "clm" ] && echo "$monitors" | grep -q "$dock_left" && echo "$monitors" | grep -q "$dock_center" && echo "$monitors" | grep -q "$moonlight"; then
-    
-    centerleftml
-
-elif [ "$command" == "lcl" ] && echo "$monitors" | grep -q "$dock_left" && echo "$monitors" | grep -q "$dock_center" ; then
-    home
-else
-    echo "No specific command provided or no docking station detected. Defaulting"
-    default
-fi
-
-~/.fehbg
-
-}
-
-applylayout
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+case "$command" in
+    "")   apply_saved_layout ;;
+    la)   single_screen "$laptop_sha" "Laptop" ;;
+    hd)   single_screen "$hdmi_sha"   "HDMI" ;;
+    cp)   mirror_all ;;
+    hl)   hdmi_beside_laptop left ;;
+    hr)   hdmi_beside_laptop right ;;
+    *)    echo "Unknown command: $command"; echo "Run '$0 help' for usage."; exit 1 ;;
+esac

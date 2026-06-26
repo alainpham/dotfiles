@@ -1,0 +1,56 @@
+#!/bin/bash
+# List a sha256sum of the EDID for every connected screen, along with the
+# monitor name decoded from the EDID and the xrandr output id.
+#
+# Output (one line per connected screen):
+#   <sha256sum> <display name> <xrandr id>
+#
+# The list of sha256sums (space separated) is printed first, then the
+# detailed per-screen lines.
+
+# Pull the EDID (hex) for each connected output out of `xrandr --props`.
+xrandr --props | awk '
+    # Output line, e.g. "HDMI-A-0 connected ..." or "eDP connected ..."
+    / connected/ {
+        output = $1
+        connected[output] = 1
+        in_edid = 0
+        next
+    }
+    # Any other non-indented line ends a possible EDID block.
+    /^[^ \t]/ { in_edid = 0 }
+    # Start of an EDID block.
+    /^[ \t]+EDID:/ { in_edid = 1; next }
+    # Indented hex lines that belong to the current EDID block.
+    in_edid && /^[ \t]+[0-9a-fA-F]+[ \t]*$/ {
+        gsub(/[ \t]/, "", $0)
+        edid[output] = edid[output] $0
+    }
+    END {
+        for (o in connected) print o " " edid[o]
+    }
+' | while read -r output hex; do
+
+    [ -z "$hex" ] && continue
+
+    # sha256sum of the raw EDID bytes.
+    sum=$(printf '%s' "$hex" | xxd -r -p 2>/dev/null | sha256sum | awk '{print $1}')
+
+    # Decode the monitor name from the EDID descriptor blocks.
+    # Each of the 4 descriptors is 18 bytes starting at byte offset 54.
+    # A descriptor whose first 3 bytes are 00 00 00 and 4th byte is FC
+    # carries the monitor name as ASCII (bytes 5..18), 0x0a terminated.
+    name=""
+    for start in 108 144 180 216; do   # 54,72,90,108 bytes -> *2 hex chars
+        block=${hex:$start:36}
+        if [ "${block:0:8}" == "000000fc" ] || [ "${block:0:8}" == "000000FC" ]; then
+            ascii=${block:10:26}
+            name=$(printf '%s' "$ascii" | xxd -r -p 2>/dev/null | tr -d '\n' | sed 's/[[:space:]]*$//' | tr ' ' '_')
+            break
+        fi
+    done
+    [ -z "$name" ] && name="UNKNOWN"
+
+    echo "$sum $name $output"
+
+done
