@@ -3,9 +3,13 @@
 TERMINAL=x-terminal-emulator
 
 if [ -f /run/current-system/sw/bin/estation ]; then
-$TERMINAL -e /run/current-system/sw/bin/estation
+    export APPCMD=/run/current-system/sw/bin/estation
+elif [ -f /usr/local/bin/estation ]; then
+    export APPCMD=/usr/local/bin/estation
+else
+    echo "app not found" >&2
+    exit 1
 fi
 
-if [ -f /usr/local/bin/estation ]; then
-$TERMINAL -e /usr/local/bin/estation
-fi
+
+$TERMINAL -e $APPCMD
