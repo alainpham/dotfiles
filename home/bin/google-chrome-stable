@@ -6,6 +6,7 @@ elif [ -f /var/lib/flatpak/exports/share/applications/com.google.Chrome.desktop 
     export APPCMD="flatpak run com.google.Chrome"
 else
     echo "app not found" >&2
+    notify-send "app not found"
     exit 1
 fi
 

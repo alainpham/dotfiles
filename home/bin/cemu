@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [ -f /usr/local/bin/cemu ]; then
+    export APPCMD=/usr/local/bin/cemu
+elif [ -f /run/current-system/sw/bin/cemu ]; then
+    export APPCMD=/run/current-system/sw/bin/cemu
+else
+    echo "app not found" >&2
+    notify-send "app not found"
+    exit 1
+fi
 
 lines=$(sdl2-jstest --list | awk '
 /Joystick GUID:/  { print $3 }
@@ -24,13 +33,4 @@ for line in $lines; do
 done
 
 
-
-if [ -f /usr/local/bin/cemu ]; then
-    echo launching from /usr/local/bin/cemu
-    /usr/local/bin/cemu "$@"
-fi
-
-if [ -f /run/current-system/sw/bin/dolphin-emu ]; then
-    echo launching from /run/current-system/sw/bin/cemu
-    /run/current-system/sw/bin/cemu "$@"
-fi
+$APPCMD "$@"
