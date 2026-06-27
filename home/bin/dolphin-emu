@@ -1,5 +1,17 @@
 #!/bin/bash
 
+if [ -f /usr/local/bin/dolphin-emu ]; then
+    export APPCMD=/usr/local/bin/dolphin-emu
+elif [ -f /usr/bin/dolphin-emu ]; then
+    export APPCMD=/usr/bin/dolphin-emu
+elif [ -f /run/current-system/sw/bin/dolphin-emu ]; then
+    export APPCMD=/run/current-system/sw/bin/dolphin-emu
+else
+    echo "app not found" >&2
+    exit 1
+fi
+
+
 # make all controllers look like a PS3 controller so that it maps generically
 
 SDL_GAMECONTROLLERCONFIG=""
@@ -54,18 +66,4 @@ if [ ! -f "$CONFIG" ]; then
     cp $CONFIG.template "$CONFIG"
 fi
 
-if [ -f /usr/local/bin/dolphin-emu ]; then
-    echo launching from /usr/local/bin/dolphin-emu
-    /usr/local/bin/dolphin-emu "$@"
-fi
-
-if [ -f /usr/bin/dolphin-emu ]; then
-    echo launching from /usr/bin/dolphin-emu
-    /usr/bin/dolphin-emu "$@"
-fi
-
-if [ -f /run/current-system/sw/bin/dolphin-emu ]; then
-    echo launching from /run/current-system/sw/bin/dolphin-emu
-    /run/current-system/sw/bin/dolphin-emu "$@"
-fi
-
+$APPCMD "$@"
