@@ -1,7 +1,7 @@
 if [ -f /run/current-system/sw/bin/google-chrome-stable ]; then
-    export APPCMD=/run/current-system/sw/bin/obs
+    export APPCMD=/run/current-system/sw/bin/google-chrome-stable
 elif [ -f /usr/bin/google-chrome-stable ]; then
-    export APPCMD=/usr/bin/obs
+    export APPCMD=/usr/bin/google-chrome-stable
 elif [ -f /var/lib/flatpak/exports/share/applications/com.google.Chrome.desktop ]; then
     export APPCMD="flatpak run com.google.Chrome"
 else
