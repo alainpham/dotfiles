@@ -3,11 +3,11 @@
 TERMINAL=x-terminal-emulator
 
 if [ -f /run/current-system/sw/bin/code ]; then
-    export CODECMD=/run/current-system/sw/bin/code
+    export APPCMD=/run/current-system/sw/bin/code
 elif [ -f /usr/bin/code ]; then
-    export CODECMD=/usr/bin/code
+    export APPCMD=/usr/bin/code
 else
-    echo "code not found" >&2
+    echo "app not found" >&2
     exit 1
 fi
 
@@ -61,4 +61,4 @@ if [ -n "$INSTALL_INSTRUCTIONS" ]; then
     $TERMINAL -e $INSTALL_INSTRUCTIONS
 fi
 
-$CODECMD "$@"
+$APPCMD "$@"
