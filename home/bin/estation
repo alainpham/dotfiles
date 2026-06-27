@@ -8,6 +8,7 @@ elif [ -f /usr/local/bin/estation ]; then
     export APPCMD=/usr/local/bin/estation
 else
     echo "app not found" >&2
+    notify-send "app not found"
     exit 1
 fi
 

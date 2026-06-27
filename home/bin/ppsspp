@@ -6,6 +6,7 @@ elif [ -f /usr/local/bin/ppsspp ]; then
     export APPCMD=/usr/local/bin/ppsspp
 else
     echo "executable not found" >&2
+    notify-send "app not found"
     exit 1
 fi
 

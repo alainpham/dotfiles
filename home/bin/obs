@@ -15,6 +15,7 @@ elif [ -f /var/lib/flatpak/exports/share/applications/com.obsproject.Studio.desk
 
 else
     echo "obs not found" >&2
+    notify-send "obs not found"
     exit 1
 fi
 

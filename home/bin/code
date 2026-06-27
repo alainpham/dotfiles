@@ -8,6 +8,7 @@ elif [ -f /usr/bin/code ]; then
     export APPCMD=/usr/bin/code
 else
     echo "app not found" >&2
+    notify-send "app not found"
     exit 1
 fi
 

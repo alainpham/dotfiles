@@ -8,6 +8,7 @@ elif [ -f /run/current-system/sw/bin/dolphin-emu ]; then
     export APPCMD=/run/current-system/sw/bin/dolphin-emu
 else
     echo "app not found" >&2
+    notify-send "app not found"
     exit 1
 fi
 
