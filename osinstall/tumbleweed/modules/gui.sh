@@ -60,6 +60,10 @@ zypper in -y \
     sdl12_compat-devel sdl2-compat-devel \
     rofi
 
+# for llamacpp
+zypper in -y shaderc shaderc-devel glslang-devel spirv-tools-devel spirv-headers
+
+
 #themes
 zypper in -y pantheon-wallpapers
 
