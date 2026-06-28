@@ -19,4 +19,6 @@ zypper in -y dolphin-emu
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/cemu.sh
 
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/mgba.sh
+
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/gshorts.sh
