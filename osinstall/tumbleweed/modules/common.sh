@@ -132,7 +132,7 @@ fi
 echo setup ssh authorized keys
 mkdir -p /home/$TARGET_USERNAME/.ssh
 chmod 700 /home/$TARGET_USERNAME/.ssh
-curl -s https://github.com/alainpham.keys >> /home/$TARGET_USERNAME/.ssh/authorized_keys
+curl -s https://github.com/alainpham.keys > /home/$TARGET_USERNAME/.ssh/authorized_keys
 chmod 600 /home/$TARGET_USERNAME/.ssh/authorized_keys
 chown -R $TARGET_USERNAME:$TARGET_USERNAME /home/$TARGET_USERNAME/.ssh
 
