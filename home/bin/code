@@ -47,13 +47,13 @@ export EXTENSION_LIST="
     zobo.php-intellisense
 "
 
-INSTALLED_EXTENSIONS=$($CODECMD --list-extensions)
+INSTALLED_EXTENSIONS=$($APPCMD --list-extensions)
 INSTALL_INSTRUCTIONS=""
 
 for extension in $EXTENSION_LIST; do
     if ! echo "$INSTALLED_EXTENSIONS" | grep -q "$extension"; then
         echo installing $extension
-        INSTALL_INSTRUCTIONS="$CODECMD --install-extension $extension ; "$INSTALL_INSTRUCTIONS
+        INSTALL_INSTRUCTIONS="$APPCMD --install-extension $extension ; "$INSTALL_INSTRUCTIONS
     fi
 done
 
