@@ -30,3 +30,9 @@ echo pi already installed
 fi
 
 
+if [ ! -e /home/$TARGET_USERNAME/.local/bin/hf ]; then 
+curl -LsSf https://hf.co/cli/install.sh | sudo -u $TARGET_USERNAME bash
+else
+echo hf already installed
+fi
+
