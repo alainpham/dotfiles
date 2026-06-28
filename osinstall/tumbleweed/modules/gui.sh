@@ -140,6 +140,16 @@ fi
 # EOF
 # fi
 
+if [ "$AUTOMATIC_LOGIN" == "true" ]; then
+mkdir -p /etc/lightdm/lightdm.conf.d/50-autologin.conf
+cat << EOF | tee /etc/lightdm/lightdm.conf.d/50-autologin.conf
+[Seat:*]
+autologin-user=$TARGET_USERNAME
+autologin-user-timeout=0
+autologin-session=dwm
+EOF
+fi
+
 
 echo webapps
 
