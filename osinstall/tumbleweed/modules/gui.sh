@@ -10,6 +10,7 @@ fi
 
 zypper in -y \
     google-noto-fonts \
+    google-noto-sans-cjk-fonts \
     alacritty \
     brightnessctl \
     upower
