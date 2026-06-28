@@ -125,7 +125,8 @@ fi
 export hypervisor=$(virt-what)
 
 if [ "$hypervisor" = "hyperv" ] || [ "$hypervisor" = "kvm" ]; then
-    firstboot
+    # todo
+    # firstboot
 fi
 
 #####################
