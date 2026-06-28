@@ -61,7 +61,6 @@ zypper in -y \
     rofi
 
 # for llamacpp
-zypper in -y shaderc shaderc-devel glslang-devel spirv-tools-devel spirv-headers
 
 
 #themes
