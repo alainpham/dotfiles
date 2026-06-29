@@ -197,15 +197,17 @@ create_default(){
 
 # Apply ~/.sclayout left -> right, turning off any screen not listed.
 apply_layout(){
-    local shas=() sha name
+    local shas=() names=() sha name idx
     while read -r sha name; do
         [ -z "$sha" ] && continue
         shas+=("$sha")
+        names+=("${name:-$sha}")
     done < "$LAYOUT_FILE"
 
-    for sha in "${shas[@]}"; do
+    for idx in "${!shas[@]}"; do
+        sha="${shas[$idx]}"
         if [ -z "${CONN_OUTPUT[$sha]}" ]; then
-            echo "Screen from layout not connected: $sha"
+            echo "Screen from layout not connected: ${names[$idx]}"
             return 1
         fi
     done
@@ -228,8 +230,8 @@ apply_layout(){
     read -r -a offargs <<< "$(others_off_args "${keep[@]}")"
     args+=("${offargs[@]}")
 
-    log "applying layout: xrandr ${args[*]}"
-    echo "Applying layout (left to right): ${shas[*]}"
+    log "applying layout (left to right): ${names[*]}"
+    echo "Applying layout (left to right): ${names[*]}"
     xrandr "${args[@]}"
     refresh_wallpaper
     return 0
