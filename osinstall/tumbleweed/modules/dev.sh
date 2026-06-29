@@ -19,14 +19,6 @@ else
     echo nvm already installed
 fi
 
-
-if [ ! -e /home/$TARGET_USERNAME/.config/bin/hf ]; then 
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | sudo -u $TARGET_USERNAME bash
-else
-    echo nvm already installed
-fi
-
-
 if [ ! -e /home/$TARGET_USERNAME/.opencode/bin/opencode ]; then 
 curl -fsSL https://opencode.ai/install | sudo -u $TARGET_USERNAME bash
 else
