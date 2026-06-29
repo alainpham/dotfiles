@@ -9,7 +9,23 @@ zypper in -y just
 # for llama cpp
 zypper in -y shaderc shaderc-devel glslang-devel spirv-tools-devel spirv-headers libopenssl-3-devel
 # for stable diffusion cpp
-zypper in -y pnpm
+# zypper in -y pnpm
+
+
+# nvm
+if [ ! -e /home/$TARGET_USERNAME/.config/nvm/nvm.sh ]; then 
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | sudo -u $TARGET_USERNAME bash
+else
+    echo nvm already installed
+fi
+
+
+if [ ! -e /home/$TARGET_USERNAME/.config/bin/hf ]; then 
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | sudo -u $TARGET_USERNAME bash
+else
+    echo nvm already installed
+fi
+
 
 if [ ! -e /home/$TARGET_USERNAME/.opencode/bin/opencode ]; then 
 curl -fsSL https://opencode.ai/install | sudo -u $TARGET_USERNAME bash
@@ -35,4 +51,5 @@ curl -LsSf https://hf.co/cli/install.sh | sudo -u $TARGET_USERNAME bash
 else
 echo hf already installed
 fi
+
 

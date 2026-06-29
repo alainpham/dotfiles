@@ -57,7 +57,7 @@ done
 #####################
 echo setting user groups
 
-groups=(docker input pipewire kvm libvirt render)
+groups=(docker input pipewire kvm video render libvirt render gamemode)
 for group in "${groups[@]}"; do
     groupadd -f "$group"
     usermod -aG "$group" "$TARGET_USERNAME"
