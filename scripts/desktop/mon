@@ -66,6 +66,15 @@ while read -r sha name output; do
     fi
 done < <("$MONID")
 
+# If no internal panel was detected, fall back to the first connected screen.
+if [ -z "$laptop_sha" ]; then
+    for sha in "${!CONN_OUTPUT[@]}"; do
+        laptop_sha="$sha"
+        laptop_name="${CONN_NAME[$sha]}"
+        break
+    done
+fi
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -172,26 +181,18 @@ valid_layout(){
     return 0
 }
 
-# Create a default layout containing only the detected laptop screen.
+# Create a default layout containing only the laptop screen (which itself
+# falls back to the first connected screen when no internal panel exists).
 create_default(){
-    if [ -n "$laptop_sha" ]; then
-        local n="$laptop_name"
-        [ "$n" == "UNKNOWN" ] && n="laptop"
-        echo "$laptop_sha $n" > "$LAYOUT_FILE"
-        log "created default ~/.sclayout with laptop screen $laptop_sha ($n)"
-        echo "Created default ~/.sclayout: $laptop_sha $n"
-    elif [ "${#CONN_OUTPUT[@]}" -gt 0 ]; then
-        local sha
-        for sha in "${!CONN_OUTPUT[@]}"; do
-            echo "$sha ${CONN_NAME[$sha]}" > "$LAYOUT_FILE"
-            log "created default ~/.sclayout with screen $sha (${CONN_NAME[$sha]})"
-            echo "Created default ~/.sclayout: $sha ${CONN_NAME[$sha]}"
-            break
-        done
-    else
+    if [ -z "$laptop_sha" ]; then
         echo "No connected screens detected; cannot create a default layout." >&2
         return 1
     fi
+    local n="$laptop_name"
+    [ "$n" == "UNKNOWN" ] && n="laptop"
+    echo "$laptop_sha $n" > "$LAYOUT_FILE"
+    log "created default ~/.sclayout with laptop screen $laptop_sha ($n)"
+    echo "Created default ~/.sclayout: $laptop_sha $n"
 }
 
 # Apply ~/.sclayout left -> right, turning off any screen not listed.
@@ -235,15 +236,18 @@ apply_layout(){
 }
 
 apply_saved_layout(){
+    # Missing or malformed file: write a fresh laptop-only default and use it.
     if ! valid_layout; then
-        echo "~/.sclayout missing or malformed; recreating default."
-        create_default || return 1
-    fi
-    if ! apply_layout; then
-        echo "Saved layout could not be applied (a listed screen is missing)."
-        echo "Recreating default layout with the laptop screen only."
+        echo "~/.sclayout missing or malformed; creating default laptop layout."
         create_default || return 1
         apply_layout
+        return
+    fi
+    # File is valid but a listed screen is not connected: fall back to the
+    # laptop screen without overwriting the saved layout.
+    if ! apply_layout; then
+        echo "A screen from the saved layout is not connected; falling back to the laptop screen."
+        single_screen "$laptop_sha" "Laptop"
     fi
 }
 
