@@ -3,14 +3,19 @@
 TERMINAL=x-terminal-emulator
 
 if [ -f /run/current-system/sw/bin/estation ]; then
-    export APPCMD=gamemode /run/current-system/sw/bin/estation
+    export APPCMD=/run/current-system/sw/bin/estation
 elif [ -f /usr/local/bin/estation ]; then
-    export APPCMD=gamemode /usr/local/bin/estation
+    export APPCMD=/usr/local/bin/estation
 else
     echo "app not found" >&2
     notify-send "app not found"
     exit 1
 fi
 
+
+
+if command -v gamemoderun >/dev/null 2>&1; then
+    APPCMD="gamemoderun $APPCMD"
+fi
 
 $TERMINAL -e $APPCMD
