@@ -1,0 +1,29 @@
+#!/bin/bash
+# Launch flameshot's region GUI and force its capture overlay to true fullscreen.
+# dwm ignores the _NET_WM_STATE_FULLSCREEN flameshot sets directly (it leaves the
+# window offset by the bar), but honors an EWMH client message, so re-assert it.
+
+if [ -f /run/current-system/sw/bin/flameshot ]; then
+    export APPCMD=/run/current-system/sw/bin/flameshot
+elif [ -f /usr/bin/flameshot ]; then
+    export APPCMD=/usr/bin/flameshot
+else
+    echo "app not found" >&2
+    notify-send "app not found"
+    exit 1
+fi
+
+$APPCMD "$@" &
+
+for _ in $(seq 1 60); do
+  for w in $(xdotool search --class flameshot 2>/dev/null); do
+    g=$(xdotool getwindowgeometry "$w" 2>/dev/null | awk '/Geometry/{print $2}')
+    [ -z "$g" ] && continue
+    w_px=${g%x*}; h_px=${g#*x}
+    if [ "${h_px:-0}" -ge 600 ] && [ "${w_px:-0}" -ge 600 ]; then
+      wmctrl -ir "$w" -b add,fullscreen
+      exit 0
+    fi
+  done
+  sleep 0.02
+done
