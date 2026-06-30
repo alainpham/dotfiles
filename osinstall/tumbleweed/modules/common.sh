@@ -66,7 +66,9 @@ done
 
 #####################
 echo setup fastboot in /boot/efi/loader/loader.conf
-bootctl set-timeout 1
+if bootctl is-installed; then
+    bootctl set-timeout 1
+fi
 
 #####################
 echo install essentials
