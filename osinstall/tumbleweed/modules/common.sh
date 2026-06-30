@@ -73,6 +73,19 @@ fi
 #####################
 echo install essentials
 
+echo enable oss, non-oss and openh264 repos
+# alias names differ between variants (e.g. "repo-oss" on Tumbleweed vs
+# "openSUSE:repo-oss" on Leap 16), so match by the trailing repo name.
+for repo in repo-oss repo-non-oss repo-openh264 repo-update; do
+    alias=$(zypper repos | awk -F'|' -v r="$repo" '{gsub(/ /,"",$2); if ($2 == r || $2 ~ ":"r"$") print $2}' | head -n1)
+    if [ -n "$alias" ]; then
+        sudo zypper mr -e "$alias"
+        echo enabled repo $alias
+    else
+        echo "repo $repo not found, skipping"
+    fi
+done
+
 zypper in -y terminfo \
     tmux \
     micro-editor \
