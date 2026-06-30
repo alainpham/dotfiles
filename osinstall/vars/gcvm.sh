@@ -8,7 +8,7 @@ export WILDCARD_DOMAIN="houze.dns.army"
 export K3S_WILDCARD_DOMAIN="kubes.dns.army"
 export DISABLE_TURBO_BOOST="false"
 export NUMLOCK_ON_BOOT="true"
-export AUTOMATIC_LOGIN="true"
+export AUTOMATIC_LOGIN="false"
 
 export ENABLE_DEV="true"
 export ENABLE_CONTAINERS="true"
