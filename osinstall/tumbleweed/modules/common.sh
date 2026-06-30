@@ -90,28 +90,34 @@ zypper in -y terminfo \
     tmux \
     micro-editor \
     ncdu \
-    bmon \
     htop \
     btop \
     nvtop \
     virt-what \
     wireguard-tools \
-    jc \
     iotop \
     wol \
     stow \
     nmap \
     telnet \
-    tini \
     zip \
     unzip \
     7zip \
     sshfs \
     lshw \
     libva-utils \
-    bchunk \
     iperf \
     growpart
+
+# these are only packaged on Tumbleweed, not Leap 16
+. /etc/os-release
+if [ "$ID" = "opensuse-tumbleweed" ]; then
+    echo install tumbleweed-only essentials
+    zypper in -y bmon \
+        bchunk \
+        jc \
+        tini
+fi
 
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/speedtest.sh
