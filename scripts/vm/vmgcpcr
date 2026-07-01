@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Create a GCE VM running the latest openSUSE Leap image.
+#
+# Usage: ./create-vm.sh [instance-name]    (default: alain-dm)
+
+INSTANCE_NAME="${1:-alain-dm}"
+PROJECT="solutions-engineering-248511"
+PROJECT_NUMBER="72723261885"
+ZONE="europe-west1-b"
+
+# If a VM with this name already exists in the zone, do nothing (but still
+# print its public IP below).
+if gcloud compute instances describe "${INSTANCE_NAME}" \
+    --project="${PROJECT}" \
+    --zone="${ZONE}" >/dev/null 2>&1; then
+    echo "Instance '${INSTANCE_NAME}' already exists in ${ZONE}; skipping creation." >&2
+else
+echo "==> Provisioning instance '${INSTANCE_NAME}' in ${ZONE} (this can take a minute)..." >&2
+gcloud compute instances create "${INSTANCE_NAME}" \
+    --project="${PROJECT}" \
+    --zone="${ZONE}" \
+    --verbosity=info \
+    --machine-type=e2-medium \
+    --network-interface=network-tier=PREMIUM,stack-type=IPV4_ONLY,subnet=default \
+    --metadata=enable-oslogin=true \
+    --maintenance-policy=MIGRATE \
+    --provisioning-model=STANDARD \
+    --create-disk=boot=yes,image-family=projects/opensuse-cloud/global/images/family/opensuse-leap,size=30 \
+    --no-shielded-secure-boot \
+    --shielded-vtpm \
+    --shielded-integrity-monitoring \
+    --labels=goog-ec-src=vm_add-gcloud \
+    --reservation-affinity=any
+fi
+
+# Look up the VM's public IP (with progress logging).
+echo "==> Describing instance to fetch its public IP..." >&2
+PUBLIC_IP="$(gcloud compute instances describe "${INSTANCE_NAME}" \
+    --project="${PROJECT}" \
+    --zone="${ZONE}" \
+    --verbosity=info \
+    --format='get(networkInterfaces[0].accessConfigs[0].natIP)')"
+echo "==> Public IP: ${PUBLIC_IP}" >&2
+
+# Wait until the VM is RUNNING and its SSH port is actually accepting
+# connections before opening the browser SSH session.
+echo "==> Waiting for instance to be up and accessible..." >&2
+READY=0
+for _ in $(seq 1 60); do
+    STATUS="$(gcloud compute instances describe "${INSTANCE_NAME}" \
+        --project="${PROJECT}" \
+        --zone="${ZONE}" \
+        --format='get(status)' 2>/dev/null || true)"
+    if [[ "${STATUS}" == "RUNNING" ]] \
+        && timeout 3 bash -c ">/dev/tcp/${PUBLIC_IP}/22" 2>/dev/null; then
+        READY=1
+        break
+    fi
+    echo "    status=${STATUS:-unknown}, ssh not reachable yet; retrying in 5s..." >&2
+    sleep 5
+done
+
+# Emit the IP on stdout (the script's machine-readable output).
+echo "${PUBLIC_IP}"
+
+if [[ "${READY}" -eq 1 ]]; then
+    echo "==> Instance is up and SSH is reachable; opening browser SSH." >&2
+    SSH_URL="https://ssh.cloud.google.com/v2/ssh/projects/${PROJECT}/zones/${ZONE}/instances/${INSTANCE_NAME}?authuser=1&hl=en_US&projectNumber=${PROJECT_NUMBER}&useAdminProxy=true"
+    echo "    ${SSH_URL}" >&2
+    xdg-open "${SSH_URL}" >/dev/null 2>&1 &
+else
+    echo "==> Timed out waiting for the instance to become accessible; not opening browser SSH." >&2
+fi

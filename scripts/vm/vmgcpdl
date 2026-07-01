@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Delete a GCE VM by instance name.
+#
+# Usage: ./vmgcpdl [instance-name]    (default: alain-dm)
+
+INSTANCE_NAME="${1:-alain-dm}"
+PROJECT="solutions-engineering-248511"
+ZONE="europe-west1-b"
+
+# If no VM with this name exists in the zone, there is nothing to do.
+if ! gcloud compute instances describe "${INSTANCE_NAME}" \
+    --project="${PROJECT}" \
+    --zone="${ZONE}" >/dev/null 2>&1; then
+    echo "Instance '${INSTANCE_NAME}' does not exist in ${ZONE}; nothing to delete." >&2
+    exit 0
+fi
+
+echo "==> Deleting instance '${INSTANCE_NAME}' in ${ZONE} (this can take a minute)..." >&2
+gcloud compute instances delete "${INSTANCE_NAME}" \
+    --project="${PROJECT}" \
+    --zone="${ZONE}" \
+    --verbosity=info \
+    --quiet
+
+echo "==> Instance '${INSTANCE_NAME}' deleted." >&2
