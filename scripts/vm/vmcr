@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Take one argument from the commandline: VM name
-if ! [ $# -eq 8 ]; then
-    echo "Usage: $0 <node-name> <ram-MB> <vcpus> <source-image> <mac-ip-suffix> <disk-size> <data-size> <os-variant>"
-    echo "ie: vmcreate prime 2048 4 debian 10 40G 40G debian10"
+if ! [ $# -eq 7 ]; then
+    echo "Usage: $0 <node-name> <ram-MB> <vcpus> <source-image> <mac-ip-suffix> <disk-size> <os-variant>"
+    echo "ie: vmcreate prime 2048 4 debian 10 40G debian10"
     exit 1
 fi
 
@@ -48,7 +48,6 @@ MEM=$2
 CPUS=$3
 
 DISK=$1.qcow2
-DATA_DISK=$1-data.qcow2
 
 BRIDGE=virbr0
 
@@ -58,8 +57,13 @@ CI_ISO=$VMS_DIR/$1-cidata.iso
 MAC="52:54:00:00:00:$5"
 IP="192.168.122.$5"
 DSIZE=$6
-DATADSIZE=$7
-OS_VARIANT=$8
+OS_VARIANT=$7
+
+# If the target disk already exists, do nothing (avoid clobbering a running VM).
+if [ -f "$VMS_DIR/$DISK" ]; then
+    echo "$(date -R) Disk $VMS_DIR/$1.qcow2 already exists; nothing to do."
+    exit 0
+fi
 
 echo "$(date -R) creating machine named $1 with $MEM MB of RAM and $CPUS vcpu(s) ...."
 
@@ -114,9 +118,8 @@ _EOF_
 mkisofs -output $CI_ISO  -volid cidata -joliet -rock $USER_DATA $META_DATA
 
 echo "$(date -R) Creating image from template..."
-cp $IMAGE $VMS_DIR/base-$DISK
-qemu-img create -f qcow2 -b $VMS_DIR/base-$DISK -F qcow2 $VMS_DIR/$DISK $DSIZE 
-qemu-img create -f qcow2 $VMS_DIR/$DATA_DISK $DATADSIZE 
+cp $IMAGE $VMS_DIR/$DISK
+qemu-img resize $VMS_DIR/$DISK $DSIZE
 
 
 echo "$(date -R) Setting up dhcp ip server..."
@@ -129,7 +132,6 @@ echo "virt-install --import \
   --ram $MEM \
   --vcpus $CPUS \
   --disk $VMS_DIR/$DISK,format=qcow2,bus=virtio \
-  --disk $VMS_DIR/$DATA_DISK,format=qcow2,bus=virtio \
   --disk $CI_ISO,readonly=on \
   --network bridge=$BRIDGE,model=virtio,mac=$MAC \
   --osinfo=$OS_VARIANT \
@@ -142,7 +144,6 @@ virt-install --import \
   --ram $MEM \
   --vcpus $CPUS \
   --disk $VMS_DIR/$DISK,format=qcow2,bus=virtio \
-  --disk $VMS_DIR/$DATA_DISK,format=qcow2,bus=virtio \
   --disk $CI_ISO,readonly=on \
   --network bridge=$BRIDGE,model=virtio,mac=$MAC \
   --osinfo=$OS_VARIANT \
