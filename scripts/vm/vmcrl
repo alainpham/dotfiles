@@ -1,4 +1,4 @@
 #!/bin/bash
 vmname=${1:-v8l}
 ipaddrsuffix=${2:-20}
-vmcr $vmname 16384 8 lnsvr $ipaddrsuffix 80G linux2024
+vmcr $vmname 16384 8 lnsv $ipaddrsuffix 80G linux2024

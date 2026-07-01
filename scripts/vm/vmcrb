@@ -3,8 +3,8 @@
 imageurl=https://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-Minimal-VM.x86_64-Cloud.qcow2
 
 mkdir -p /home/$USER/virt/images/
-if [[ ! -f /home/$USER/virt/images/lnsvr-orig.qcow2 ]] || [[ "$1" == "1" ]]; then
-    curl -Lo /home/$USER/virt/images/lnsvr-orig.qcow2 $imageurl
+if [[ ! -f /home/$USER/virt/images/lnsv-orig.qcow2 ]] || [[ "$1" == "1" ]]; then
+    curl -Lo /home/$USER/virt/images/lnsv-orig.qcow2 $imageurl
 fi
 
-vmcr bast 1024 4 lnsvr-orig 50 80G generic
+vmcr bast 1024 4 lnsv-orig 50 80G generic
