@@ -1,78 +1,82 @@
-#!/usr/bin/env python3
-import subprocess
-import jc
-import json
+#!/bin/sh
+#
+# Print the best common "mirror" mode across all connected outputs as
+# "<WIDTH>x<HEIGHT> <RATE>", or "0" if there is no single mode that every
+# connected output supports.
+#
+# For each connected output it takes that output's highest-"datarate"
+# (width * height * refresh) mode, then picks the weakest of those (the
+# smallest such datarate) as the candidate, and prints it only if every
+# connected output can also display that exact mode.
+#
+# Pure POSIX sh + awk; no external Python/jc dependency.
 
-def get_xrandr_modes():
-    # Run xrandr and parse with jc
-    result = subprocess.run(['xrandr'], capture_output=True, text=True)
-    parsed = jc.parse('xrandr', result.stdout)
-    maxrate = {}
-    deviceidx = 0
-    # Iterate through the parsed output to find connected devices and their modes
-    for device in parsed['screens'][0]['devices']:
-        if device['is_connected']:
-            modeix = 0
-            maxrate[device['device_name']] = {
-                'datarate': 0,
-                'width': 0,
-                'height': 0,
-                'frequency': 0,
-                'device_index': deviceidx,
-                'mode_index': modeix
+xrandr 2>/dev/null | awk '
+    function normf(s,   t) {
+        # Match the previous Python float formatting: strip trailing zeros
+        # but always keep at least one decimal ("60.00" -> "60.0",
+        # "59.94" -> "59.94", "50.00" -> "50.0").
+        t = s
+        sub(/0+$/, "", t)
+        if (t ~ /\.$/) t = t "0"
+        return t
+    }
+
+    # Only consider the first X screen (matches the previous behaviour).
+    /^Screen/ { screen++; next }
+    screen > 1 { next }
+
+    # Top-level output line, e.g. "HDMI-1 connected primary 1920x1080+0+0 ...".
+    /connected/ && $0 !~ /^[ \t]/ {
+        dev = $1
+        if ($2 == "connected") {
+            conn = 1
+            if (!(dev in seendev)) { seendev[dev] = 1; order[++ndev] = dev }
+        } else {
+            conn = 0
+        }
+        next
+    }
+
+    # Indented mode line, e.g. "   1920x1080     60.00*+  59.94".
+    conn && /^[ \t]+[0-9]+x[0-9]+/ {
+        split($1, res, "x")
+        w = res[1] + 0
+        h = res[2] + 0
+        for (i = 2; i <= NF; i++) {
+            f = $i
+            gsub(/[*+]/, "", f)
+            if (f ~ /^[0-9]+\.[0-9]+$/) {
+                dr = w * h * (f + 0)
+                have[dev SUBSEP w SUBSEP h SUBSEP f] = 1
+                if (dr > maxdr[dev]) {
+                    maxdr[dev] = dr
+                    mw[dev] = w; mh[dev] = h; mfs[dev] = f
+                }
             }
-            for mode in device['resolution_modes']:
-                frequencyidx = 0
-                for frequency in mode['frequencies']:
-                    # Track the maximum resolution for each device
-                    current_max = maxrate[device['device_name']].get('datarate', 0)
-                    datarate = mode['resolution_height'] * mode['resolution_width'] * frequency['frequency']
-                    if datarate > current_max:
-                        maxrate[device['device_name']]['datarate'] = datarate
-                        maxrate[device['device_name']]['width'] = mode['resolution_width']
-                        maxrate[device['device_name']]['height'] = mode['resolution_height']
-                        maxrate[device['device_name']]['frequency'] = frequency['frequency']
-                        maxrate[device['device_name']]['device_index'] = deviceidx
-                        maxrate[device['device_name']]['mode_index'] = modeix
-                        maxrate[device['device_name']]['frequency_index'] = frequencyidx
-                    frequencyidx += 1
-                modeix += 1
-        deviceidx += 1
+        }
+        next
+    }
 
-    min_device = None
-    min_datarate = None
-    bestconfig = None
-    bestwidth = 0
-    bestheight = 0
-    bestfrequency = 0
+    END {
+        if (ndev == 0) { print 0; exit }
 
-    for device, info in maxrate.items():
-        if min_datarate is None or info['datarate'] < min_datarate:
-            min_datarate = info['datarate']
-            min_device = device
-            bestconfig = info
-            bestwidth = info['width']
-            bestheight = info['height']
-            bestfrequency = info['frequency']
-        
-    compatible_with_all_connected = True
-    for device in parsed['screens'][0]['devices']:
-        if device['is_connected']:
-            device_is_compatible = False
-            for mode in device['resolution_modes']:
-                for frequency in mode['frequencies']:
-                    if (mode['resolution_width'] == bestwidth and
-                        mode['resolution_height'] == bestheight and
-                        frequency['frequency'] == bestfrequency):
-                        device_is_compatible = True
-                        break
-            if not device_is_compatible:
-                compatible_with_all_connected = False
-    if compatible_with_all_connected:
-        return(f"{bestconfig['width']}x{bestconfig['height']} {bestconfig['frequency']}")
-    else:
-        return 0
+        # Candidate = the connected output whose best mode has the smallest
+        # datarate (ties resolved by output order, like the original).
+        for (i = 1; i <= ndev; i++) {
+            d = order[i]
+            if (i == 1 || maxdr[d] < mindr) {
+                mindr = maxdr[d]
+                bw = mw[d]; bh = mh[d]; bfs = mfs[d]
+            }
+        }
 
-if __name__ == "__main__":
-    monitor_mode = get_xrandr_modes()
-    print(monitor_mode)
+        # Every connected output must support that exact mode.
+        for (i = 1; i <= ndev; i++) {
+            d = order[i]
+            if (!((d SUBSEP bw SUBSEP bh SUBSEP bfs) in have)) { print 0; exit }
+        }
+
+        print bw "x" bh " " normf(bfs)
+    }
+'

@@ -113,7 +113,7 @@ zypper in -y terminfo \
 . /etc/os-release
 if [ "$ID" = "opensuse-tumbleweed" ]; then
     echo install tumbleweed-only essentials
-    zypper in -y bmon \
+    zypper in -y \
         bchunk \
         jc \
         tini
