@@ -131,19 +131,18 @@ echo "virt-install --import \
   --name $1 \
   --ram $MEM \
   --vcpus $CPUS \
-  --disk $VMS_DIR/$DISK,format=qcow2,bus=virtio \
+  --disk $VMS_DIR/$DISK,format=qcow2,bus=virtio,cache=none,discard=unmap \
   --disk $CI_ISO,readonly=on \
   --network bridge=$BRIDGE,model=virtio,mac=$MAC \
   --osinfo=$OS_VARIANT \
   --noautoconsole \
-  --cpu host-passthrough \
-  --firmware=efi"
+  --cpu host-passthrough"
 
 virt-install --import \
   --name $1 \
   --ram $MEM \
   --vcpus $CPUS \
-  --disk $VMS_DIR/$DISK,format=qcow2,bus=virtio \
+  --disk $VMS_DIR/$DISK,format=qcow2,bus=virtio,cache=none,discard=unmap \
   --disk $CI_ISO,readonly=on \
   --network bridge=$BRIDGE,model=virtio,mac=$MAC \
   --osinfo=$OS_VARIANT \
