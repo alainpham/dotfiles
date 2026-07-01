@@ -136,7 +136,8 @@ echo "virt-install --import \
   --network bridge=$BRIDGE,model=virtio,mac=$MAC \
   --osinfo=$OS_VARIANT \
   --noautoconsole \
-  --cpu host-passthrough"
+  --cpu host-passthrough \
+  --boot uefi"
 
 virt-install --import \
   --name $1 \
@@ -147,7 +148,8 @@ virt-install --import \
   --network bridge=$BRIDGE,model=virtio,mac=$MAC \
   --osinfo=$OS_VARIANT \
   --noautoconsole \
-  --cpu host-passthrough
+  --cpu host-passthrough \
+  --boot uefi
 
 counter=0
 MAC=$(virsh dumpxml $1 | awk -F\' '/mac address/ {print $2}')
