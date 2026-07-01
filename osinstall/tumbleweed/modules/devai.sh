@@ -25,16 +25,14 @@ echo claude already installed
 fi
 
 if [ ! -e /home/$TARGET_USERNAME/.local/bin/pi ]; then 
-curl -fsSL https://pi.dev/install.sh | sudo -u $TARGET_USERNAME bash
+    sudo -u $TARGET_USERNAME bash -lc 'npm install -g --ignore-scripts --min-release-age=0 @earendil-works/pi-coding-agent'
 else
-echo pi already installed
+    echo pi already installed
 fi
 
 
 if [ ! -e /home/$TARGET_USERNAME/.local/bin/hf ]; then 
-curl -LsSf https://hf.co/cli/install.sh | sudo -u $TARGET_USERNAME bash
+    curl -LsSf https://hf.co/cli/install.sh | sudo -u $TARGET_USERNAME bash
 else
-echo hf already installed
+    echo hf already installed
 fi
-
-
