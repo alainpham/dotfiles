@@ -25,7 +25,7 @@ echo claude already installed
 fi
 
 if [ ! -e /home/$TARGET_USERNAME/.local/bin/pi ]; then 
-    sudo -u $TARGET_USERNAME bash -lc 'npm install -g --ignore-scripts --min-release-age=0 @earendil-works/pi-coding-agent'
+    sudo -u $TARGET_USERNAME bash -lc 'npm install -g --ignore-scripts --min-release-age=0 --prefix /home/user/.local @earendil-works/pi-coding-agent'
 else
     echo pi already installed
 fi
