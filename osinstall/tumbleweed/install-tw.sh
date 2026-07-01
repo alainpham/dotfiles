@@ -44,6 +44,11 @@ echo "running dev.sh"
 bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/dev.sh"
 fi
 
+if [ "$ENABLE_DEVAI" == "true" ]; then
+echo "running devai.sh"
+bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/devai.sh"
+fi
+
 if [ "$ENABLE_CONTAINERS" == "true" ]; then
 echo "running containers.sh"
 bash "/home/$TARGET_USERNAME/dotfiles/osinstall/tumbleweed/modules/containers.sh"

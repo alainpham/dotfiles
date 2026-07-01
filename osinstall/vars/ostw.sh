@@ -11,6 +11,7 @@ export NUMLOCK_ON_BOOT="true"
 export AUTOMATIC_LOGIN="true"
 
 export ENABLE_DEV="true"
+export ENABLE_DEVAI="true"
 export ENABLE_CONTAINERS="true"
 export ENABLE_VIRTUALIZATION="true"
 export ENABLE_DWM="true"
