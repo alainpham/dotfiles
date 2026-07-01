@@ -10,12 +10,27 @@ PROJECT="solutions-engineering-248511"
 PROJECT_NUMBER="72723261885"
 ZONE="europe-west1-b"
 
+# Fail fast if we don't have valid credentials — otherwise every gcloud call
+# below dies with a reauth error. Printing an access token forces a token
+# refresh and confirms an active account is available.
+if ! gcloud auth print-access-token >/dev/null 2>&1; then
+    echo "==> No valid gcloud credentials; run 'gcloud auth login' first." >&2
+    exit 1
+fi
+
 # If a VM with this name already exists in the zone, do nothing (but still
-# print its public IP below).
-if gcloud compute instances describe "${INSTANCE_NAME}" \
+# print its public IP below). Capture stderr so we can tell "already exists"
+# and "not found" (proceed to create) apart from a real failure (network,
+# permissions) — the latter must NOT be mistaken for "not found" and trigger
+# a spurious creation attempt.
+if describe_err="$(gcloud compute instances describe "${INSTANCE_NAME}" \
     --project="${PROJECT}" \
-    --zone="${ZONE}" >/dev/null 2>&1; then
+    --zone="${ZONE}" 2>&1 >/dev/null)"; then
     echo "Instance '${INSTANCE_NAME}' already exists in ${ZONE}; skipping creation." >&2
+elif ! grep -qi "was not found\|does not exist" <<<"${describe_err}"; then
+    echo "==> Failed to check instance '${INSTANCE_NAME}' in ${ZONE}:" >&2
+    echo "${describe_err}" >&2
+    exit 1
 else
 echo "==> Provisioning instance '${INSTANCE_NAME}' in ${ZONE} (this can take a minute)..." >&2
 gcloud compute instances create "${INSTANCE_NAME}" \
