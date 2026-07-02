@@ -89,10 +89,20 @@ done
 . /etc/os-release
 if [ "$ID" = "opensuse-leap" ]; then
     echo add Virtualization:containers repo for Leap
-    zypper addrepo --refresh https://download.opensuse.org/repositories/Virtualization:containers/${VERSION_ID}/Virtualization:containers.repo
-    zypper addrepo --refresh https://download.opensuse.org/repositories/multimedia:apps/${VERSION_ID}/multimedia:apps.repo
-    zypper addrepo --refresh https://download.opensuse.org/repositories/utilities/${VERSION_ID}/utilities.repo
-    zypper addrepo --refresh https://download.opensuse.org/repositories/network:utilities/${VERSION_ID}/network:utilities.repo
+    
+    add_or_ignore_repo() {
+        url="$1"
+        if zypper lr -u | awk '{print $NF}' | grep -Fxq "$url"; then
+            echo "repo $url already exists, skipping"
+        else
+            zypper addrepo --refresh "$url" || echo "failed to add $url (ignored)"
+        fi
+    }
+
+    add_or_ignore_repo "https://download.opensuse.org/repositories/Virtualization:containers/${VERSION_ID}/Virtualization:containers.repo"
+    add_or_ignore_repo "https://download.opensuse.org/repositories/multimedia:apps/${VERSION_ID}/multimedia:apps.repo"
+    add_or_ignore_repo "https://download.opensuse.org/repositories/utilities/${VERSION_ID}/utilities.repo"
+    add_or_ignore_repo "https://download.opensuse.org/repositories/network:utilities/${VERSION_ID}/network:utilities.repo"
 
     zypper --gpg-auto-import-keys refresh
 fi
