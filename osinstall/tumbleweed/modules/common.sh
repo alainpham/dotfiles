@@ -86,6 +86,16 @@ for repo in repo-oss repo-non-oss repo-openh264 repo-update; do
     fi
 done
 
+. /etc/os-release
+if [ "$ID" = "opensuse-leap" ]; then
+    echo add Virtualization:containers repo for Leap
+    zypper addrepo --refresh https://download.opensuse.org/repositories/Virtualization:containers/${VERSION_ID}/Virtualization:containers.repo
+    zypper addrepo --refresh https://download.opensuse.org/repositories/multimedia:apps/${VERSION_ID}/multimedia:apps.repo
+
+    zypper --gpg-auto-import-keys refresh
+fi
+
+
 zypper in -y terminfo \
     tmux \
     micro-editor \
@@ -107,15 +117,13 @@ zypper in -y terminfo \
     lshw \
     libva-utils \
     iperf \
-    growpart
+    growpart \
+    bmon\
+    jc \
+    tini \
+    bchunk
 
 # these are only packaged on Tumbleweed, not Leap 16
-. /etc/os-release
-if [ "$ID" = "opensuse-tumbleweed" ]; then
-    echo install tumbleweed-only essentials
-    zypper in -y \
-        tini
-fi
 
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/speedtest.sh
