@@ -91,6 +91,8 @@ if [ "$ID" = "opensuse-leap" ]; then
     echo add Virtualization:containers repo for Leap
     zypper addrepo --refresh https://download.opensuse.org/repositories/Virtualization:containers/${VERSION_ID}/Virtualization:containers.repo
     zypper addrepo --refresh https://download.opensuse.org/repositories/multimedia:apps/${VERSION_ID}/multimedia:apps.repo
+    zypper addrepo --refresh https://download.opensuse.org/repositories/utilities/${VERSION_ID}/utilities.repo
+    zypper addrepo --refresh https://download.opensuse.org/repositories/network:utilities/16.0/network:utilities.repo
 
     zypper --gpg-auto-import-keys refresh
 fi
