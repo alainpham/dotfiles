@@ -114,8 +114,6 @@ zypper in -y terminfo \
 if [ "$ID" = "opensuse-tumbleweed" ]; then
     echo install tumbleweed-only essentials
     zypper in -y \
-        bchunk \
-        jc \
         tini
 fi
 
