@@ -10,7 +10,7 @@ ln -sf /usr/local/bin/k3s /usr/local/bin/kubectl
 ln -sf /usr/local/bin/k3s /usr/local/bin/crictl
 ln -sf /usr/local/bin/k3s /usr/local/bin/ctr
 
-curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_ENABLE="true" INSTALL_K3S_SKIP_START="true" INSTALL_K3S_VERSION="${K3S_VERSION}" K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="server --disable=servicelb,traefik --bind-address 172.17.0.1 --node-ip 172.17.0.1 --advertise-address 172.17.0.1" sh -
+curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_SELINUX_RPM="true" INSTALL_K3S_SKIP_ENABLE="true" INSTALL_K3S_SKIP_START="true" INSTALL_K3S_VERSION="${K3S_VERSION}" K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="server --disable=servicelb,traefik --bind-address 172.17.0.1 --node-ip 172.17.0.1 --advertise-address 172.17.0.1" sh -
 
 curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
 chmod 755 /tmp/get_helm.sh
