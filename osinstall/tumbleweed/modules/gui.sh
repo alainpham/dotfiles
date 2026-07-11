@@ -142,7 +142,9 @@ fi
 # fi
 
 if [ "$AUTOMATIC_LOGIN" == "true" ]; then
-mkdir -p /etc/lightdm/lightdm.conf.d/50-autologin.conf
+mkdir -p /etc/lightdm/lightdm.conf.d
+groupadd -f autologin
+usermod -aG autologin $TARGET_USERNAME
 cat << EOF | tee /etc/lightdm/lightdm.conf.d/50-autologin.conf
 [Seat:*]
 autologin-user=$TARGET_USERNAME
