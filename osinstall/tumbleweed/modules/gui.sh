@@ -83,7 +83,9 @@ flatpak install -y flathub com.moonlight_stream.Moonlight
 flatpak install -y flathub org.mozilla.firefox
 flatpak install -y flathub com.google.Chrome
 
-zypper rm -y MozillaFirefox MozillaFirefox-branding-openSUSE
+for pkg in MozillaFirefox MozillaFirefox-branding-openSUSE; do
+    rpm -q "$pkg" >/dev/null 2>&1 && zypper rm -y "$pkg"
+done
 #ytdlp
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh
 
