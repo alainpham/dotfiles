@@ -11,6 +11,7 @@ fi
 zypper in -y \
     google-noto-fonts \
     google-noto-sans-cjk-fonts \
+    google-noto-coloremoji-fonts \
     alacritty \
     brightnessctl \
     upower
