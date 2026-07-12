@@ -6,7 +6,7 @@ export KEYBOARD_MODEL="pc105"
 export KEYBOARD_VARIANT="azerty"
 export WILDCARD_DOMAIN="houze.dns.army"
 export K3S_WILDCARD_DOMAIN="kubes.dns.army"
-export DISABLE_TURBO_BOOST="false"
+export DISABLE_TURBO_BOOST="true"
 export NUMLOCK_ON_BOOT="true"
 export AUTOMATIC_LOGIN="true"
 
