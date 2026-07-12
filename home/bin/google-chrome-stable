@@ -1,13 +1,46 @@
 if [ -f /run/current-system/sw/bin/google-chrome-stable ]; then
-    export APPCMD=/run/current-system/sw/bin/google-chrome-stable
+    APPCMD=/run/current-system/sw/bin/google-chrome-stable
 elif [ -f /usr/bin/google-chrome-stable ]; then
-    export APPCMD=/usr/bin/google-chrome-stable
+    APPCMD=/usr/bin/google-chrome-stable
 elif [ -f /var/lib/flatpak/exports/share/applications/com.google.Chrome.desktop ]; then
-    export APPCMD="flatpak run com.google.Chrome"
+    APPCMD="flatpak run"
+    FLATPAK_APPID=com.google.Chrome
 else
     echo "app not found" >&2
     notify-send "app not found"
     exit 1
 fi
 
-$APPCMD "$@"
+# Hardware video ENCODE (video calls, screen share, MediaRecorder). Not on by
+# default, so enable it explicitly; Chrome falls back to software where it can't
+# run. NOTE: on hybrid Intel+NVIDIA laptops, encoding GPU-sourced frames (canvas /
+# screen share) fails on cross-GPU buffer sharing and falls back to software;
+# webcam calls and single-GPU machines (AMD, pure-Intel) can use it.
+HWDEC_FLAGS="--enable-features=AcceleratedVideoEncoder"
+
+# Hardware video DECODE on hybrid Intel+NVIDIA laptops: Chrome restricts its VA-API
+# decoder to the *active* GPU (the NVIDIA dGPU) and hard-refuses to decode on
+# NVIDIA, so it silently uses software. Detect the Intel render node and, when an
+# NVIDIA GPU is also present, point VA-API at it with --render-node-override (this
+# switch alone is enough; libva auto-selects the iHD driver from the i915/xe node,
+# and VA-API decode is otherwise on by default).
+intel_render=""
+have_nvidia=""
+for _n in /dev/dri/renderD*; do
+    [ -e "$_n" ] || continue
+    _drv=$(sed -n 's/^DRIVER=//p' "/sys/class/drm/${_n##*/}/device/uevent" 2>/dev/null)
+    case "$_drv" in
+        i915|xe) [ -z "$intel_render" ] && intel_render="$_n" ;;
+        nvidia)  have_nvidia=1 ;;
+    esac
+done
+
+if [ -n "$intel_render" ] && [ -n "$have_nvidia" ]; then
+    HWDEC_FLAGS="--render-node-override=$intel_render"
+fi
+
+if [ -n "$FLATPAK_APPID" ]; then
+    exec $APPCMD "$FLATPAK_APPID" $HWDEC_FLAGS "$@"
+else
+    exec $APPCMD $HWDEC_FLAGS "$@"
+fi
