@@ -1,4 +1,4 @@
-export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/cuda/bin:$PATH"
 if [ -r /sys/devices/virtual/dmi/id/product_name ]; then
     export PRODUCT_NAME=$(cat /sys/devices/virtual/dmi/id/product_name)
 else
