@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ -f /run/current-system/sw/bin/mgba ]; then
+    APPCMD=/run/current-system/sw/bin/mgba
+elif [ -f /usr/local/bin/mgba ]; then
+    APPCMD=/usr/local/bin/mgba
+else
+    echo "app not found" >&2
+    notify-send "app not found"
+    exit 1
+fi
+
+SDL_AUDIO_DRIVER=pulseaudio "$APPCMD" "$@"
