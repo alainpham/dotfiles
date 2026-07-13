@@ -10,8 +10,32 @@ else
     exit 1
 fi
 
-# force SDL to go through pipewire instead of falling back to raw alsa,
-# which bypasses the asnd/asnddef pipewire routing straight to the internal speakers
+# without this, SDL opens raw ALSA hw directly: invisible to pactl/pw-link
+# and impossible to reroute
 export SDL_AUDIODRIVER=pipewire
 
-exec $APPCMD "$@"
+"$APPCMD" "$@" &
+APPPID=$!
+
+# mGBA's SDL3 backend hardcodes its stream's target.object to whatever pipewire
+# considers the physical default sink, bypassing the from-desktop indirection
+# that asnd/asnddef use to route audio to the currently selected output.
+#
+# This has to be a pactl move, not a plain pw-link relink: WirePlumber keeps
+# re-asserting a node's own declared target.object on every rescan, so a bare
+# pw-link -d/pw-link gets silently undone within seconds. pactl move-sink-input
+# writes a per-node override into the default metadata, which the linking
+# policy checks *after* (and instead of) the node's self-declared target, so
+# it's the one that actually sticks.
+(
+    for _ in $(seq 1 50); do
+        sinkinput=$(pactl -f json list sink-inputs 2>/dev/null | jq -r '.[] | select(.properties["application.process.binary"]=="mgba-qt") | .index' | head -1)
+        if [ -n "$sinkinput" ]; then
+            pactl move-sink-input "$sinkinput" from-desktop
+            break
+        fi
+        sleep 0.2
+    done
+) &
+
+wait $APPPID
