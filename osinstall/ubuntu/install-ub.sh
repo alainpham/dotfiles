@@ -4,7 +4,7 @@
 inputversions() {
     trap 'return 1' ERR
 
-    export CORE_VERSION=20260404
+    export CORE_VERSION=20260715
     echo "export CORE_VERSION=${CORE_VERSION}"
 
     ##############################
