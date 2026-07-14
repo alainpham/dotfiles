@@ -9,7 +9,7 @@ INSTANCE_NAME="${1:-alain-dm}"
 PROJECT="solutions-engineering-248511"
 PROJECT_NUMBER="72723261885"
 ZONE="europe-west1-b"
-IMAGE="projects/ubuntu-os-cloud/global/images/family/ubuntu-2604-resolute-amd64"
+IMAGE="projects/ubuntu-os-cloud/global/images/family/ubuntu-2604-lts-amd64"
 # IMAGE="projects/opensuse-cloud/global/images/family/opensuse-leap"
 
 # Fail fast if we don't have valid credentials — otherwise every gcloud call
