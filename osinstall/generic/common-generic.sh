@@ -1,0 +1,92 @@
+#!/bin/bash
+set -euo pipefail
+
+source /etc/profile.d/vars.sh
+source /etc/profile.d/sources.sh
+
+
+#####################
+echo install all custom scripts
+for dir in "/home/$TARGET_USERNAME/dotfiles/scripts/"*; do
+    if [ -d "$dir" ]; then
+        for file in "$dir"/*; do
+            [ -e "$file" ] || continue
+            cp "$file" /usr/local/bin/
+            echo copied file $file
+        done
+    fi
+done
+
+mkdir -p /usr/local/share/icons
+cp -r /home/$TARGET_USERNAME/dotfiles/icons/* /usr/local/share/icons
+
+
+#####################
+echo install etc files
+echo network config dnsmasq and powersave
+ETC_SRC="/home/$TARGET_USERNAME/dotfiles/etc"
+find "$ETC_SRC" -type f | while read -r file; do
+    rel="${file#$ETC_SRC/}"
+    if [[ "$file" == *.envsubst ]]; then
+        dest="/etc/${rel%.envsubst}"
+        sudo mkdir -p "$(dirname "$dest")"
+        envsubst < "$file" | sudo tee "$dest" > /dev/null
+        echo "applied envsubst and copied $file -> $dest"
+    else
+        dest="/etc/$rel"
+        sudo mkdir -p "$(dirname "$dest")"
+        sudo cp "$file" "$dest"
+        echo "copied $file -> $dest"
+    fi
+done
+
+# hostnamectl hostname $HOSTNAME
+
+#####################
+echo setting user groups
+
+groups=(docker input pipewire kvm video render libvirt render gamemode)
+for group in "${groups[@]}"; do
+    groupadd -f "$group"
+    usermod -aG "$group" "$TARGET_USERNAME"
+    echo added to group $group
+done
+
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/speedtest.sh
+
+#####################
+echo passwwordless sudo
+if [ "$AUTOMATIC_LOGIN" == "true" ]; then
+    echo "${TARGET_USERNAME} ALL=(ALL) NOPASSWD:ALL" | EDITOR='tee' visudo -f /etc/sudoers.d/nopwd
+fi
+
+if [ "$DISABLE_TURBO_BOOST" == "true" ]; then
+    systemctl enable disable-intel-turboboost.service
+else
+    systemctl disable disable-intel-turboboost.service
+fi
+
+export hypervisor=$(virt-what)
+
+if [ "$hypervisor" = "hyperv" ] || [ "$hypervisor" = "kvm" ]; then
+    echo todo
+    # firstboot
+fi
+
+#####################
+echo setup stow dotfiles
+prevfld=$(pwd)
+cd /home/$TARGET_USERNAME/dotfiles
+sudo -u $TARGET_USERNAME stow --no-folding --target=/home/$TARGET_USERNAME --adopt home
+sudo -u $TARGET_USERNAME git restore .
+cd $prevfld
+
+
+#####################
+echo setup ssh authorized keys
+mkdir -p /home/$TARGET_USERNAME/.ssh
+chmod 700 /home/$TARGET_USERNAME/.ssh
+curl -s https://github.com/alainpham.keys > /home/$TARGET_USERNAME/.ssh/authorized_keys
+chmod 600 /home/$TARGET_USERNAME/.ssh/authorized_keys
+chown -R $TARGET_USERNAME:$TARGET_USERNAME /home/$TARGET_USERNAME/.ssh
+
