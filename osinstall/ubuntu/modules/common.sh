@@ -13,7 +13,7 @@ echo 'GRUB_TIMEOUT=1' | tee /etc/default/grub.d/15_timeout.cfg
 echo install essentials
 apt -y update 
 apt install -y ncurses-term
-apt install -y upgrade
+apt upgrade -y 
 apt install -y \
     tmux \
     micro \
