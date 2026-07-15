@@ -3,12 +3,15 @@ set -euo pipefail
 
 # Create a GCE VM running the latest openSUSE Leap image.
 #
-# Usage: ./create-vm.sh [instance-name]    (default: alain-dm)
+# Usage: ./create-vm.sh [instance-name] [machine-type]
+#        defaults: alain-dm, e2-standard-4
 
 INSTANCE_NAME="${1:-alain-dm}"
 PROJECT="solutions-engineering-248511"
 PROJECT_NUMBER="72723261885"
 ZONE="europe-west1-b"
+MACHINE_TYPE="${2:-e2-standard-4}"
+# small : e2-medium ; bigger : e2-standard-4
 IMAGE="projects/ubuntu-os-cloud/global/images/family/ubuntu-2604-lts-amd64"
 # IMAGE="projects/opensuse-cloud/global/images/family/opensuse-leap"
 
@@ -39,7 +42,7 @@ gcloud compute instances create "${INSTANCE_NAME}" \
     --project="${PROJECT}" \
     --zone="${ZONE}" \
     --verbosity=info \
-    --machine-type=e2-medium \
+    --machine-type=${MACHINE_TYPE} \
     --network-interface=network-tier=PREMIUM,stack-type=IPV4_ONLY,subnet=default \
     --metadata=enable-oslogin=true \
     --maintenance-policy=MIGRATE \
