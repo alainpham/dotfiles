@@ -3,6 +3,15 @@ if [ -f /run/current-system/sw/bin/reaper ]; then
     export REAPERCMD=/run/current-system/sw/bin/reaper
 elif [ -f /usr/local/bin/reaper ]; then
     export REAPERCMD=/usr/local/bin/reaper
+elif [ -f /var/lib/flatpak/exports/share/applications/fm.reaper.Reaper.desktop ]; then
+
+    if [ -d "$HOME/.var/app/fm.reaper.Reaper/config/REAPER" ]; then
+        rm -rf "$HOME/.var/app/fm.reaper.Reaper/config/REAPER"
+    fi
+
+    ln -sf "$HOME/.config/REAPER" \
+      "$HOME/.var/app/fm.reaper.Reaper/config/REAPER"
+    export REAPERCMD="/usr/bin/flatpak run fm.reaper.Reaper"
 else
     echo "reaper not found" >&2
     exit 1
