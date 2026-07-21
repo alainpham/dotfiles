@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Reaper
+Comment=Digital Audio Workstation
+Categories=Audio;Video;AudioVideo;AudioVideoEditing;Recorder;
+Exec=reaper
+Icon=fm.reaper.Reaper
+MimeType=application/x-reaper-project;application/x-reaper-project-backup;application/x-reaper-theme;
+Type=Application
+X-Flatpak-Tags=proprietary;
+X-Flatpak=fm.reaper.Reaper
