@@ -8,7 +8,7 @@ elif [ -f /var/lib/flatpak/exports/share/applications/fm.reaper.Reaper.desktop ]
     if [ -d "$HOME/.var/app/fm.reaper.Reaper/config/REAPER" ]; then
         rm -rf "$HOME/.var/app/fm.reaper.Reaper/config/REAPER"
     fi
-
+    mkdir -p $HOME/.config/REAPER
     ln -sf "$HOME/.config/REAPER" \
       "$HOME/.var/app/fm.reaper.Reaper/config/REAPER"
     export REAPERCMD="/usr/bin/flatpak run fm.reaper.Reaper"
