@@ -16,7 +16,8 @@ fi
 # run. NOTE: on hybrid Intel+NVIDIA laptops, encoding GPU-sourced frames (canvas /
 # screen share) fails on cross-GPU buffer sharing and falls back to software;
 # webcam calls and single-GPU machines (AMD, pure-Intel) can use it.
-HWDEC_FLAGS="--enable-features=AcceleratedVideoEncoder"
+# HWDEC_FLAGS="--enable-features=AcceleratedVideoEncoder"
+HWDEC_FLAGS=""
 
 # Hardware video DECODE on hybrid Intel+NVIDIA laptops: Chrome restricts its VA-API
 # decoder to the *active* GPU (the NVIDIA dGPU) and hard-refuses to decode on
