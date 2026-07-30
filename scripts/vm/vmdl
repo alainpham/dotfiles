@@ -8,7 +8,7 @@ fi
 
 VMS_DIR=/home/${USER}/virt/runtime
 virsh destroy $1
-virsh undefine $1
+virsh undefine $1 --nvram
 rm -f $VMS_DIR/base-$1.qcow2
 rm -f $VMS_DIR/$1.qcow2
 rm -f $VMS_DIR/$1-data.qcow2
