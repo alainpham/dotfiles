@@ -73,6 +73,9 @@ export RETROARCH_VERSION=1.22.2
 #  https://github.com/PCSX2/pcsx2/releases/latest
 export PCSX2_VERSION=2.6.3
 
+#  https://rpcs3.net/download
+export RPCS3_VERSION=0.0.42
+
 #  https://github.com/hrydgard/ppsspp/releases/latest
 export PPSSPP_VERSION=1.20.4
 

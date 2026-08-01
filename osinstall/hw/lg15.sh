@@ -13,4 +13,5 @@ ihw(){
     wget https://developer.download.nvidia.com/compute/cuda/13.3.1/local_installers/cuda_13.3.1_610.43.02_linux.run
     sudo sh cuda_13.3.1_610.43.02_linux.run
     echo "/usr/local/cuda/lib64" | tee /etc/ld.so.conf.d/cuda.conf
+    # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-zypper
 }
