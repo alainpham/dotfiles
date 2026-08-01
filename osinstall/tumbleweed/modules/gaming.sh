@@ -15,6 +15,8 @@ bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/ppsspp.sh
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/pcsx2.sh
 
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/rpcs3.sh
+
 zypper in -y dolphin-emu
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/cemu.sh
