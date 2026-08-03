@@ -24,7 +24,5 @@ if command -v xrandr >/dev/null 2>&1 && [ "$DISPLAY" = ":0" ]; then
     export XCURSOR_SIZE=24
     [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded">>~/.xinit.log
 
-    export DRI_PRIME=1
-
 fi
 
