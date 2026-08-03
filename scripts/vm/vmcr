@@ -173,5 +173,17 @@ MAC=$(virsh dumpxml $1 | awk -F\' '/mac address/ {print $2}')
 rm $USER_DATA $META_DATA
 
 echo "$(date -R) DONE. SSH to $1 using ${USER}@$IP , with  username '${USER}'."
+
+SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5"
+echo "$(date -R) Waiting for SSH on ${IP}..."
+until ssh ${SSH_OPTS} ${USER}@${IP} true >/dev/null 2>&1; do
+    sleep 1
+    echo "$(date -R) still waiting for SSH..."
+done
+
+echo "$(date -R) Running firstboot on ${USER}@${IP}..."
+ssh ${SSH_OPTS} ${USER}@${IP} sudo /usr/local/bin/firstboot
+
 lineinfile "/etc/NetworkManager/dnsmasq.d/vms" ".address=.$1" "address=/$1/$IP"
 nmcli general reload
+
