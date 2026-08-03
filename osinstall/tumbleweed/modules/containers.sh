@@ -5,9 +5,7 @@ zypper in -y docker docker-compose skopeo skopeo-bash-completion docker-buildx d
 
 systemctl enable --now docker
 
-if [ ! -f /usr/local/bin/k3s ]; then
-    bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/kube.sh
-fi
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/kube.sh
 
 systemctl enable firstboot-dockernet.service
 systemctl enable firstboot-dockerbuildx.service
