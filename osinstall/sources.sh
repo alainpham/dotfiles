@@ -7,20 +7,14 @@ export CORE_VERSION=20260605
 ##############################
 export NERDFONTS="Noto "
 
-# https://github.com/anomalyco/opencode/releases/latest
-export OPENCODE_VERSION=v1.15.13
-
 # https://kubernetes.io/releases/  https://cloud.google.com/kubernetes-engine/docs/release-notes
 export MAJOR_KUBE_VERSION=v1.35
 
 # https://github.com/k3s-io/k3s/releases
-export K3S_VERSION="v1.35.5+k3s1"
+export K3S_VERSION="v1.35.6+k3s1"
 
 # https://github.com/derailed/k9s/releases
 export K9S_VERSION=v0.51.0
-
-# https://maven.apache.org/download.cgi
-export MVN_VERSION=3.9.16
 
 # Speedtest ookla https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz
 export SPEEDTEST_VERSION=1.2.0
@@ -83,7 +77,7 @@ export PPSSPP_VERSION=1.20.4
 export CEMU_VERSION=2.6
 
 # https://github.com/godotengine/godot/releases/latest
-export GODOT_VERSION=4.6.3-stable
+export GODOT_VERSION=4.7.1-stable
 
 ##############################
 # OS RELATED                 #

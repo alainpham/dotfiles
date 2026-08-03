@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# cleanup-os.sh — reclaim disk space on openSUSE Tumbleweed after a `zypper dup`.
+# cleanup-tw.sh — reclaim disk space on openSUSE Tumbleweed after a `zypper dup`.
 #
 # Safe by design:
 #   * Never removes the currently running kernel.
@@ -8,9 +8,9 @@
 #   * Prints a before/after disk summary.
 #
 # Usage:
-#   ./cleanup-os.sh          # interactive: asks before removing packages
-#   ./cleanup-os.sh -y       # non-interactive: assume yes to everything
-#   ./cleanup-os.sh --dry-run  # show what would happen, change nothing
+#   ./cleanup-tw.sh          # interactive: asks before removing packages
+#   ./cleanup-tw.sh -y       # non-interactive: assume yes to everything
+#   ./cleanup-tw.sh --dry-run  # show what would happen, change nothing
 
 set -euo pipefail
 
