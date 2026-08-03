@@ -1,16 +1,26 @@
 #!/bin/bash
 
-# expand fs on vms
-if [ ! -f /var/log/firstboot.log ]; then
-    if lsblk | grep -q vda; then
-        DEVICE="/dev/vda"
-    elif lsblk | grep -q sda; then
-        DEVICE="/dev/sda"
-    else
-        DEVICE="/dev/sda"
-    fi
-    # Code to execute if log file does not exist
-    echo "First boot script has run">/var/log/firstboot.log
-    growpart $DEVICE 1
-    resize2fs ${DEVICE}1
+# expand the ext4 filesystem mounted on / to fill the whole disk (vms / cloud images)
+
+LOGFILE=/var/log/firstboot.log
+
+if [ -f "$LOGFILE" ]; then
+    exit 0
 fi
+
+echo "First boot script has run" >"$LOGFILE"
+
+log() {
+    echo "$*" | tee -a "$LOGFILE"
+}
+
+# partition backing /
+ROOT_DEV=$(realpath "$(findmnt -no SOURCE /)")
+PART_NAME=$(basename "$ROOT_DEV")
+PART_NUM=$(cat "/sys/class/block/$PART_NAME/partition")
+DISK=/dev/$(lsblk -no PKNAME "$ROOT_DEV")
+
+log "root is $ROOT_DEV -> partition $PART_NUM on $DISK"
+
+growpart "$DISK" "$PART_NUM" 2>&1 | tee -a "$LOGFILE"
+resize2fs "$ROOT_DEV" 2>&1 | tee -a "$LOGFILE"
