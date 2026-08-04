@@ -1,0 +1,18 @@
+# Use the NVIDIA GPU for hybrid systems with more than one graphics card.
+if command -v lspci >/dev/null 2>&1; then
+    gpu_status=$(lspci 2>/dev/null | awk '
+        /VGA compatible controller|3D controller|Display controller/ {
+            count++
+            if (tolower($0) ~ /nvidia/) {
+                nvidia=1
+            }
+        }
+        END { print count + 0, nvidia + 0 }
+    ')
+    gpu_count=$(printf '%s\n' "$gpu_status" | awk '{ print $1 }')
+    nvidia_present=$(printf '%s\n' "$gpu_status" | awk '{ print $2 }')
+
+    if [ "$gpu_count" -ge 2 ] && [ "$nvidia_present" -eq 1 ]; then
+        export DRI_PRIME=1
+    fi
+fi

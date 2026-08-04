@@ -67,4 +67,7 @@ if [ ! -f "$CONFIG" ]; then
     cp $CONFIG.template "$CONFIG"
 fi
 
+# Use the NVIDIA GPU for hybrid systems with more than one graphics card.
+source $HOME/bin/drisetup
+
 $APPCMD "$@"

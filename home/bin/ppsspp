@@ -33,5 +33,6 @@ else
     echo symlink for PPSSPP_STATE OK
 fi
 
+source $HOME/bin/drisetup
 
 $APPCMD "$@"

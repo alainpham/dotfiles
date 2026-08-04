@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ -f /usr/local/bin/pcsx2 ]; then
+    export APPCMD=/usr/local/bin/pcsx2
+elif [ -f /run/current-system/sw/bin/pcsx2-qt ]; then
+    export APPCMD=/run/current-system/sw/bin/pcsx2-qt
+else
+    echo "app not found" >&2
+    notify-send "app not found"
+    exit 1
+fi
+
+source $HOME/bin/drisetup
+
+$APPCMD "$@"
