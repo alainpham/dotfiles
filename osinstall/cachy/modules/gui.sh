@@ -25,10 +25,7 @@ pacman -S --needed --noconfirm \
     wireplumber \
     qpwgraph \
     pavucontrol \
-    alsa-utils \
-    bluez \
-    bluez-utils \
-    bluetui
+    alsa-utils 
 
 if pacman -Q jack2 >/dev/null 2>&1; then
     echo "removing jack2 before installing pipewire-jack"
