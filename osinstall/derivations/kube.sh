@@ -20,8 +20,10 @@ curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/main/
 chmod 755 /tmp/get_helm.sh
 /tmp/get_helm.sh
 
-kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null
-helm completion bash | tee /etc/bash_completion.d/helm > /dev/null
+BASH_COMPLETION_DIR=/usr/share/bash-completion/completions
+mkdir -p "$BASH_COMPLETION_DIR"
+kubectl completion bash | tee "$BASH_COMPLETION_DIR/kubectl" > /dev/null
+helm completion bash | tee "$BASH_COMPLETION_DIR/helm" > /dev/null
 
 if [ "$(k9s version -s 2>/dev/null | awk '/^Version/{print $2}')" != "${K9S_VERSION}" ]; then
     curl -fsSL -o /tmp/k9s.tar.gz https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_amd64.tar.gz

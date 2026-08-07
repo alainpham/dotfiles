@@ -16,6 +16,7 @@ echo install essentials
 pacman -Syu --noconfirm
 pacman -S --needed --noconfirm \
     ncurses \
+    bash-completion \
     tmux \
     micro \
     ncdu \
