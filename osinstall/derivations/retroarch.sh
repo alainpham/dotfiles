@@ -10,7 +10,7 @@ cd /tmp/
 7z x RetroArch.7z -aoa
 7z x RetroArch_cores.7z -aoa
 cd -
-wget -O /tmp/bios.zip https://github.com/Abdess/retrobios/releases/download/v2026.03.17.2/Lakka_RetroArch_BIOS_Pack.zip
+wget -O /tmp/bios.zip https://github.com/Abdess/retrobios/releases/download/v2026.08.06/RetroArch_Lakka_v1.22.2_Platform_BIOS_Pack.zip
 unzip /tmp/bios.zip 'system/*' -d /tmp/RetroArch-Linux-x86_64/RetroArch-Linux-x86_64.AppImage.home/.config/retroarch/
 
 rm -f /usr/local/bin/retroarch
