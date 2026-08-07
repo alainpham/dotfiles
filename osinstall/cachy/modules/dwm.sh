@@ -31,6 +31,8 @@ pacman -S --needed --noconfirm \
 
 pacman -S --needed --noconfirm \
   thunar \
+  gvfs \
+  thunar-volman \
   thunar-archive-plugin \
   thunar-media-tags-plugin \
   at-spi2-core
