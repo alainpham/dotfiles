@@ -16,7 +16,6 @@ pacman -S --needed --noconfirm \
     brightnessctl \
     upower
 
-
 # snd
 pacman -S --needed --noconfirm \
     pipewire \
@@ -55,6 +54,7 @@ pacman -S --needed --noconfirm \
     woff2-font-awesome \
     nwg-look \
     breeze \
+    breeze-gtk \
     linuxconsole \
     gparted \
     vulkan-tools \
@@ -69,7 +69,11 @@ pacman -S --needed --noconfirm \
 # for llamacpp
 
 
-# themes and Flatpak
+
+#themes
+pacman -S --needed --noconfirm  elementary-wallpapers
+
+#Flatpak
 pacman -S --needed --noconfirm flatpak
 
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo

@@ -2,7 +2,11 @@
 # installing dwm with x11
 set -euo pipefail
 
-pacman -S --needed --noconfirm lightdm
+pacman -S --needed --noconfirm lightdm lightdm-gtk-greeter
+
+mkdir -p /usr/local/bin
+ln -sfn /etc/lightdm/Xsession /usr/local/bin/lightdm-session
+
 systemctl enable lightdm.service
 systemctl set-default graphical.target
 
