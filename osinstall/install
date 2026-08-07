@@ -10,6 +10,7 @@ case "$ID" in
     *tumbleweed*) OS="tumbleweed" ;;
     opensuse*) OS="tumbleweed" ;;
     ubuntu)       OS="ubuntu" ;;
+    cachyos)      OS="cachy" ;;
     *) echo "Unsupported OS ID: '$ID'" >&2; exit 1 ;;
 esac
 echo "detected OS : $OS"
