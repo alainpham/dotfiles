@@ -27,8 +27,14 @@ pacman -S --needed --noconfirm \
     qpwgraph \
     pavucontrol \
     alsa-utils \
-    bluetui \
-    pipewire-jack
+    bluetui
+
+if pacman -Q jack2 >/dev/null 2>&1; then
+    echo "removing jack2 before installing pipewire-jack"
+    pacman -Rdd --noconfirm jack2
+fi
+
+pacman -S --needed --noconfirm pipewire-jack
 
 pacman -S --needed --noconfirm \
     ntfs-3g \
