@@ -26,6 +26,8 @@ pacman -S --needed --noconfirm \
     qpwgraph \
     pavucontrol \
     alsa-utils \
+    bluez \
+    bluez-utils \
     bluetui
 
 if pacman -Q jack2 >/dev/null 2>&1; then

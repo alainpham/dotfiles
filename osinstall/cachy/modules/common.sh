@@ -30,6 +30,7 @@ pacman -S --needed --noconfirm \
     stow \
     nmap \
     inetutils \
+    openssh \
     zip \
     unzip \
     7zip \
@@ -41,3 +42,9 @@ pacman -S --needed --noconfirm \
     bmon \
     jc \
     bchunk
+
+systemctl enable --now sshd.service
+
+if command -v ufw >/dev/null 2>&1; then
+    ufw disable
+fi
