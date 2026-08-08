@@ -25,4 +25,4 @@ bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/mgba.sh
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/gshorts.sh
 
-zypper in -y gamemode mangohud
+zypper in -y gamemode mangohud mame-tools

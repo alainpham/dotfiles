@@ -35,6 +35,7 @@ pacman -S --needed --noconfirm \
   thunar-volman \
   thunar-archive-plugin \
   thunar-media-tags-plugin \
+  engrampa \
   at-spi2-core
 
 

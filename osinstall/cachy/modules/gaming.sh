@@ -25,4 +25,4 @@ bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/mgba.sh
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/gshorts.sh
 
-pacman -S --needed --noconfirm gamemode mangohud
+pacman -S --needed --noconfirm gamemode mangohud mame-tools
