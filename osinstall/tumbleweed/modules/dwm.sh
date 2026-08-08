@@ -23,7 +23,7 @@ zypper in -y xorg-x11-server xinit numlockx usbutils
 zypper in -y thunar \
   thunar-archive-plugin \
   thunar-media-tags-plugin \
-  file-roller \
+  engrampa \
   at-spi2-core
 
 
