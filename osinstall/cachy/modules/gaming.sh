@@ -26,3 +26,11 @@ bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/mgba.sh
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/gshorts.sh
 
 pacman -S --needed --noconfirm gamemode mangohud mame-tools
+
+# libs for wine
+pacman pacman -S --needed --noconfirm \
+    lib32-freetype2 lib32-fontconfig lib32-alsa-plugins lib32-libpulse \
+    lib32-libxcursor lib32-libxcomposite lib32-libxdamage \
+    lib32-libxfixes lib32-libxi lib32-libxinerama \
+    lib32-libxkbcommon lib32-libxkbcommon-x11 \
+    lib32-libxrandr lib32-libxrender lib32-libxft

@@ -16,9 +16,6 @@ pacman -S --needed --noconfirm \
     brightnessctl \
     upower
 
-# libs for wine
-pacman pacman -S --needed --noconfirm \
-    lib32-freetype2 lib32-fontconfig
 
 # snd
 pacman -S --needed --noconfirm \
