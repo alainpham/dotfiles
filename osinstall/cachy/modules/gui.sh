@@ -16,6 +16,10 @@ pacman -S --needed --noconfirm \
     brightnessctl \
     upower
 
+# libs for wine
+pacman pacman -S --needed --noconfirm \
+    lib32-freetype2 lib32-fontconfig
+
 # snd
 pacman -S --needed --noconfirm \
     pipewire \
@@ -25,7 +29,10 @@ pacman -S --needed --noconfirm \
     wireplumber \
     qpwgraph \
     pavucontrol \
-    alsa-utils 
+    alsa-utils \
+    bluez \
+    bluez-utils \
+    bluetui
 
 if pacman -Q jack2 >/dev/null 2>&1; then
     echo "removing jack2 before installing pipewire-jack"
