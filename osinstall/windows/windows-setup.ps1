@@ -95,6 +95,14 @@ public class NativeMethods {
     @{ Title = "Install Syncthing and create C:\syncthing"; Action = {
         winget install --id Syncthing.Syncthing -e --accept-source-agreements --accept-package-agreements --silent
         mkdir -Force "C:\syncthing" | Out-Null
+        $SyncthingExe = (Get-Command syncthing.exe -ErrorAction Stop).Source
+        $StartupFolder = [Environment]::GetFolderPath("Startup")
+        $WshShell = New-Object -ComObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut((Join-Path $StartupFolder "Syncthing.lnk"))
+        $Shortcut.TargetPath = $SyncthingExe
+        $Shortcut.Arguments = "--no-browser"
+        $Shortcut.WorkingDirectory = "C:\syncthing"
+        $Shortcut.Save()
     }},
     @{ Title = "Install core apps (Terminal, Chrome, Git, 7zip, Java, Neovim, micro, AHK, VSCode)"; Action = {
         winget install --id Microsoft.WindowsTerminal          -e --accept-source-agreements --accept-package-agreements --silent

@@ -72,28 +72,6 @@ function Get-LocalConfigPaths {
     ) | Where-Object { $_ -and $_ -ne "\Syncthing\config.xml" }
 }
 
-function Start-LocalSyncthing {
-    if (Get-Process -Name "syncthing" -ErrorAction SilentlyContinue) { return }
-
-    $command = Get-Command "syncthing.exe" -ErrorAction SilentlyContinue
-    $executable = if ($command) { $command.Source } else { $null }
-
-    if (!$executable) {
-        $candidates = @(
-            "$env:ProgramFiles\Syncthing\syncthing.exe",
-            "${env:ProgramFiles(x86)}\Syncthing\syncthing.exe",
-            "$env:LOCALAPPDATA\Syncthing\syncthing.exe"
-        )
-        $executable = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
-    }
-
-    if (!$executable) {
-        throw "syncthing.exe was not found. Install Syncthing with winget or start it manually."
-    }
-
-    Start-Process -FilePath $executable -ArgumentList "-no-browser" -WindowStyle Hidden | Out-Null
-}
-
 function Wait-ForLocalSyncthing {
     for ($attempt = 0; $attempt -lt 30; $attempt++) {
         try {
@@ -151,7 +129,6 @@ function Get-HubApiKey {
     return $match.Groups[1].Value
 }
 
-Start-LocalSyncthing
 Wait-ForLocalSyncthing
 
 $localConfigPaths = Get-LocalConfigPaths
