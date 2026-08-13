@@ -1630,7 +1630,7 @@
         <extension>.bin .BIN .chd .CHD .ciso .CISO .cso .CSO .dump .DUMP .elf .ELF .gz .GZ .lnk .LNK .m3u .M3U .mdf .MDF .img .IMG .iso .ISO .isz .ISZ .ngr .NRG .zso .ZSO</extension>
         <command label="LRPS2">C:\apps\RetroArch-Win64\retroarch.exe -L C:\apps\RetroArch-Win64\cores\pcsx2_libretro.dll %ROM%</command>
         <command label="PCSX2">C:\apps\RetroArch-Win64\retroarch.exe -L C:\apps\RetroArch-Win64\cores\pcsx2_libretro.dll %ROM%</command>
-        <command label="PCSX2 (Standalone)">%EMULATOR_PCSX2% -batch %ROM%</command>
+        <command label="PCSX2 (Standalone)">C:\apps\pcsx2\pcsx2-qt.exe -batch %ROM%</command>
         <command label="PCSX2 Legacy (Standalone)">%EMULATOR_PCSX2-LEGACY% --nogui %ROM%</command>
         <command label="Play! (Standalone)">%STARTDIR%=%EMUDIR% %EMULATOR_PLAY!% --fullscreen --disc %ROM%</command>
         <command label="Shortcut or script">%HIDEWINDOW% %ESCAPESPECIALS% %EMULATOR_OS-SHELL% /C %ROM%</command>
