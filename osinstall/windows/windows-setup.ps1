@@ -92,6 +92,10 @@ public class NativeMethods {
     @{ Title = "Install winget (needed on Win10 / LTSC)"; Action = {
         Invoke-WebRequest https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1 -UseBasicParsing | iex
     }},
+    @{ Title = "Install Syncthing and create C:\syncthing"; Action = {
+        winget install --id Syncthing.Syncthing -e --accept-source-agreements --accept-package-agreements --silent
+        mkdir -Force "C:\syncthing" | Out-Null
+    }},
     @{ Title = "Install core apps (Terminal, Chrome, Git, 7zip, Java, Neovim, micro, AHK, VSCode)"; Action = {
         winget install --id Microsoft.WindowsTerminal          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id jurplel.qView                      -e --accept-source-agreements --accept-package-agreements --silent
