@@ -230,7 +230,7 @@ public class NativeMethods {
         & "C:\Program Files\7-Zip\7z.exe" x "bios.zip" -o".\RetroArch-Win64\system\" -y
         mkdir -Force "C:\apps" | Out-Null
         Move-Item RetroArch-Win64 "C:\apps\" -Force
-        curl.exe -L https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/retroarch/retroarch.win64.cfg -o "C:\apps\RetroArch-Win64\retroarch.cfg"
+        Copy-Item "C:\dotfiles\home\.config\retroarch\retroarch.win64.cfg" "C:\apps\RetroArch-Win64\retroarch.cfg" -Force
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\retroarch.lnk")
         $Shortcut.TargetPath = "C:\apps\RetroArch-Win64\retroarch.exe"
@@ -244,11 +244,11 @@ public class NativeMethods {
         & "C:\Program Files\7-Zip\7z.exe" x estation.zip -y
         Move-Item ES-DE "C:\apps" -Force
         mkdir -Force "C:\apps\ES-DE\ES-DE\settings" | Out-Null
-        curl.exe -L "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/ES-DE/settings/es_settings.win64.xml" `
-            -o "C:\apps\ES-DE\ES-DE\settings\es_settings.xml"
+        Copy-Item "C:\dotfiles\home\ES-DE\settings\es_settings.win64.xml" `
+            "C:\apps\ES-DE\ES-DE\settings\es_settings.xml" -Force
         mkdir -Force "C:\apps\ES-DE\resources\systems\windows" | Out-Null
-        curl.exe -L "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/ES-DE/settings/es_systems.win64.xml" `
-            -o "C:\apps\ES-DE\resources\systems\windows\es_systems.xml"
+        Copy-Item "C:\dotfiles\home\ES-DE\settings\es_systems.win64.xml" `
+            "C:\apps\ES-DE\resources\systems\windows\es_systems.xml" -Force
         $GameLists = @(
             "gc\gamelist.xml",
             "n3ds\gamelist.xml",
@@ -260,8 +260,7 @@ public class NativeMethods {
         foreach ($GameList in $GameLists) {
             $GameListPath = Join-Path "C:\apps\ES-DE\ES-DE\gamelists" $GameList
             mkdir -Force (Split-Path $GameListPath -Parent) | Out-Null
-            $GameListUrl = "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/ES-DE/gamelists/$($GameList -replace '\\', '/')"
-            curl.exe -L $GameListUrl -o $GameListPath
+            Copy-Item (Join-Path "C:\dotfiles\home\ES-DE\gamelists" $GameList) $GameListPath -Force
         }
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\estation.lnk")
@@ -285,8 +284,8 @@ public class NativeMethods {
         mkdir -Force "C:\Users\$username\Documents\PCSX2\inis" | Out-Null
         curl.exe -L https://github.com/archtaurus/RetroPieBIOS/raw/master/BIOS/pcsx2/bios/ps2-0230a-20080220.bin `
             -o "C:\Users\$username\Documents\PCSX2\bios\ps2-0230a-20080220.bin"
-        curl.exe -L https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/PCSX2/inis/PCSX2-win.ini `
-            -o "C:\Users\$username\Documents\PCSX2\inis\PCSX2.ini"
+        Copy-Item "C:\dotfiles\home\.config\PCSX2\inis\PCSX2-win.ini" `
+            "C:\Users\$username\Documents\PCSX2\inis\PCSX2.ini" -Force
         Pop-Location
     }},
     @{ Title = "Install Dolphin $DOLPHIN_VERSION"; Action = {
@@ -302,12 +301,11 @@ public class NativeMethods {
         $username = $env:USERNAME
         $cfg = "C:\Users\$username\AppData\Roaming\Dolphin Emulator\Config"
         mkdir -Force $cfg | Out-Null
-        $base = "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/dolphin-emu"
-        curl.exe -L "$base/win/Dolphin.ini"   -o "$cfg\Dolphin.ini"
-        curl.exe -L "$base/GCPadNew.ini"      -o "$cfg\GCPadNew.ini"
-        curl.exe -L "$base/WiimoteNew.ini"    -o "$cfg\WiimoteNew.ini"
-        curl.exe -L "$base/GFX.ini"           -o "$cfg\GFX.ini"
-        curl.exe -L "$base/Hotkeys.ini"       -o "$cfg\Hotkeys.ini"
+        Copy-Item "C:\dotfiles\home\.config\dolphin-emu\win\Dolphin.ini" "$cfg\Dolphin.ini" -Force
+        Copy-Item "C:\dotfiles\home\.config\dolphin-emu\GCPadNew.ini" "$cfg\GCPadNew.ini" -Force
+        Copy-Item "C:\dotfiles\home\.config\dolphin-emu\WiimoteNew.ini" "$cfg\WiimoteNew.ini" -Force
+        Copy-Item "C:\dotfiles\home\.config\dolphin-emu\GFX.ini" "$cfg\GFX.ini" -Force
+        Copy-Item "C:\dotfiles\home\.config\dolphin-emu\Hotkeys.ini" "$cfg\Hotkeys.ini" -Force
         Pop-Location
     }},
     @{ Title = "Install Cemu v$CEMU_VERSION"; Action = {
@@ -323,9 +321,10 @@ public class NativeMethods {
         $username = $env:USERNAME
         $cfg = "C:\Users\$username\AppData\Roaming\Cemu"
         mkdir -Force "$cfg\controllerProfiles" | Out-Null
-        $base = "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/cemu"
-        curl.exe -L "$base/settings-win.xml"                   -o "$cfg\settings.xml"
-        curl.exe -L "$base/controllerProfiles/controller0.xml" -o "$cfg\controllerProfiles\controller0.xml"
+        Copy-Item "C:\dotfiles\home\.config\cemu\settings-win.xml" `
+            "$cfg\settings.xml" -Force
+        Copy-Item "C:\dotfiles\home\.config\cemu\controllerProfiles\controller0.xml" `
+            "$cfg\controllerProfiles\controller0.xml" -Force
         Pop-Location
     }},
     @{ Title = "Install gshorts + scheduled task at logon"; Action = {
