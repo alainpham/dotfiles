@@ -248,6 +248,20 @@ public class NativeMethods {
         mkdir -Force "C:\apps\ES-DE\resources\systems\windows" | Out-Null
         curl.exe -L "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/ES-DE/settings/es_systems.win64.xml" `
             -o "C:\apps\ES-DE\resources\systems\windows\es_systems.xml"
+        $GameLists = @(
+            "gc\gamelist.xml",
+            "n3ds\gamelist.xml",
+            "ps2\gamelist.xml",
+            "psp\gamelist.xml",
+            "psx\gamelist.xml",
+            "wii\gamelist.xml"
+        )
+        foreach ($GameList in $GameLists) {
+            $GameListPath = Join-Path "C:\apps\ES-DE\ES-DE\gamelists" $GameList
+            mkdir -Force (Split-Path $GameListPath -Parent) | Out-Null
+            $GameListUrl = "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/ES-DE/gamelists/$($GameList -replace '\\', '/')"
+            curl.exe -L $GameListUrl -o $GameListPath
+        }
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\estation.lnk")
         $Shortcut.TargetPath = "C:\apps\ES-DE\ES-DE.exe"
