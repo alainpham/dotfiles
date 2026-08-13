@@ -207,16 +207,17 @@ public class NativeMethods {
         Set-ItemProperty -Path $policyPath -Name "NoDriveTypeAutoRun" -Value 0xFF -Type DWord
     }},
     @{ Title = "Install RetroArch $RETROARCH_VERSION + cores + BIOS"; Action = {
-        Push-Location c:\temp
+        mkdir -Force "C:\temp" | Out-Null
+        Push-Location C:\temp
         curl.exe -LO "https://buildbot.libretro.com/stable/${RETROARCH_VERSION}/windows/x86_64/RetroArch.7z"
         curl.exe -LO "https://buildbot.libretro.com/stable/${RETROARCH_VERSION}/windows/x86_64/RetroArch_cores.7z"
         & "C:\Program Files\7-Zip\7z.exe" x RetroArch.7z
         & "C:\Program Files\7-Zip\7z.exe" x RetroArch_cores.7z
         curl.exe -L "https://github.com/Abdess/retrobios/releases/download/${RETROARCH_BIOS_VERSION}/RetroArch_Lakka_v${RETROARCH_VERSION}_Platform_BIOS_Pack.zip" -o bios.zip
         & "C:\Program Files\7-Zip\7z.exe" x "bios.zip" -o".\RetroArch-Win64\system\" -y
-        mkdir -Force c:\apps | Out-Null
-        Move-Item RetroArch-Win64 c:\apps\ -Force
-        curl.exe -L https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/retroarch/retroarch.win64.cfg -o C:\apps\RetroArch-Win64\retroarch.cfg
+        mkdir -Force "C:\apps" | Out-Null
+        Move-Item RetroArch-Win64 "C:\apps\" -Force
+        curl.exe -L https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/retroarch/retroarch.win64.cfg -o "C:\apps\RetroArch-Win64\retroarch.cfg"
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\retroarch.lnk")
         $Shortcut.TargetPath = "C:\apps\RetroArch-Win64\retroarch.exe"
@@ -225,10 +226,16 @@ public class NativeMethods {
         Pop-Location
     }},
     @{ Title = "Install EmulationStation DE"; Action = {
-        Push-Location c:\temp
+        Push-Location C:\temp
         curl.exe -L https://gitlab.com/es-de/emulationstation-de/-/package_files/288156909/download -o estation.zip
         & "C:\Program Files\7-Zip\7z.exe" x estation.zip
-        Move-Item ES-DE c:\apps -Force
+        Move-Item ES-DE "C:\apps" -Force
+        mkdir -Force "C:\apps\ES-DE\ES-DE\settings" | Out-Null
+        curl.exe -L "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/ES-DE/settings/es_settings.win64.xml" `
+            -o "C:\apps\ES-DE\ES-DE\settings\es_settings.xml"
+        mkdir -Force "C:\apps\ES-DE\resources\systems\windows" | Out-Null
+        curl.exe -L "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/ES-DE/settings/es_systems.win64.xml" `
+            -o "C:\apps\ES-DE\resources\systems\windows\es_systems.xml"
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\estation.lnk")
         $Shortcut.TargetPath = "C:\apps\ES-DE\ES-DE.exe"
@@ -237,10 +244,10 @@ public class NativeMethods {
         Pop-Location
     }},
     @{ Title = "Install PCSX2 v$PCSX2_VERSION"; Action = {
-        Push-Location c:\temp
+        Push-Location C:\temp
         curl.exe -L "https://github.com/PCSX2/pcsx2/releases/download/v${PCSX2_VERSION}/pcsx2-v${PCSX2_VERSION}-windows-x64-Qt.7z" -o pcsx2.7z
         & "C:\Program Files\7-Zip\7z.exe" x pcsx2.7z -opcsx2
-        Move-Item pcsx2 c:\apps -Force
+        Move-Item pcsx2 "C:\apps" -Force
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\pcsx2.lnk")
         $Shortcut.TargetPath = "C:\apps\pcsx2\pcsx2-qt.exe"
@@ -256,10 +263,10 @@ public class NativeMethods {
         Pop-Location
     }},
     @{ Title = "Install Dolphin $DOLPHIN_VERSION"; Action = {
-        Push-Location c:\temp
+        Push-Location C:\temp
         curl.exe -L "https://dl.dolphin-emu.org/releases/${DOLPHIN_VERSION}/dolphin-${DOLPHIN_VERSION}-x64.7z" -o dolphin.7z
         & "C:\Program Files\7-Zip\7z.exe" x dolphin.7z
-        Move-Item Dolphin-x64 c:\apps -Force
+        Move-Item Dolphin-x64 "C:\apps" -Force
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\dolphin.lnk")
         $Shortcut.TargetPath = "C:\apps\Dolphin-x64\Dolphin.exe"
@@ -277,10 +284,10 @@ public class NativeMethods {
         Pop-Location
     }},
     @{ Title = "Install Cemu v$CEMU_VERSION"; Action = {
-        Push-Location c:\temp
+        Push-Location C:\temp
         curl.exe -L "https://github.com/cemu-project/Cemu/releases/download/v${CEMU_VERSION}/cemu-${CEMU_VERSION}-windows-x64.zip" -o cmu.zip
         & "C:\Program Files\7-Zip\7z.exe" x cmu.zip
-        Move-Item Cemu* c:\apps\cemu -Force
+        Move-Item Cemu* "C:\apps\cemu" -Force
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\cemu.lnk")
         $Shortcut.TargetPath = "C:\apps\cemu\Cemu.exe"
