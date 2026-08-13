@@ -108,6 +108,7 @@ public class NativeMethods {
         winget install --id Microsoft.WindowsTerminal          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id jurplel.qView                      -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Google.Chrome                      -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Git.Git                            -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id 7zip.7zip                          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id AutoHotkey.AutoHotkey              -e --accept-source-agreements --accept-package-agreements --silent
         winget install --force Microsoft.VisualStudioCode --accept-source-agreements --accept-package-agreements `
