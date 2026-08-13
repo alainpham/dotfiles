@@ -132,13 +132,13 @@ public class NativeMethods {
     }},
     @{ Title = "Install advanced workstation apps (OBS, Kdenlive, Zoom, Avidemux)"; Action = {
         winget install --id OBSProject.OBSStudio       -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id KDE.Kdenlive               -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Meltytech.Shotcut          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Zoom.Zoom                  -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Avidemux.Avidemux          -e --accept-source-agreements --accept-package-agreements --silent
     }},
-    @{ Title = "Install WSL + Ubuntu 24.04"; Action = {
+    @{ Title = "Install WSL + Tumbleweed"; Action = {
         winget install --id Microsoft.WSL              -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Canonical.Ubuntu.2404      -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id SUSE.openSUSE.Tumbleweed   -e --accept-source-agreements --accept-package-agreements --silent
         wsl --install --no-distribution
     }},
     @{ Title = "Install OnlyOffice Desktop Editors"; Action = {
