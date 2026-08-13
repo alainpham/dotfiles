@@ -96,11 +96,7 @@ public class NativeMethods {
         winget install --id Microsoft.WindowsTerminal          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id jurplel.qView                      -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Google.Chrome                      -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Git.Git                            -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id 7zip.7zip                          -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Microsoft.OpenJDK.17               -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Neovim.Neovim                      -e --accept-source-agreements --accept-package-agreements --silent
-        winget install -e --id zyedidia.micro                  -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id AutoHotkey.AutoHotkey              -e --accept-source-agreements --accept-package-agreements --silent
         winget install --force Microsoft.VisualStudioCode --accept-source-agreements --accept-package-agreements `
             --override '/VERYSILENT /SP- /MERGETASKS="runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath"'
@@ -125,7 +121,6 @@ public class NativeMethods {
         winget install --id VideoLAN.VLC                              -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id GIMP.GIMP.3                               -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id WinSCP.WinSCP                             -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id yt-dlp.yt-dlp                             -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Inkscape.Inkscape                         -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id LibreHardwareMonitor.LibreHardwareMonitor  -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id LocalSend.LocalSend  -e --accept-source-agreements --accept-package-agreements --silent
