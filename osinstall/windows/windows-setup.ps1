@@ -285,7 +285,7 @@ public class NativeMethods {
         mkdir -Force "C:\Users\$username\Documents\PCSX2\inis" | Out-Null
         curl.exe -L https://github.com/archtaurus/RetroPieBIOS/raw/master/BIOS/pcsx2/bios/ps2-0230a-20080220.bin `
             -o "C:\Users\$username\Documents\PCSX2\bios\ps2-0230a-20080220.bin"
-        curl.exe -L https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/pcsx2/PCSX2-win.ini `
+        curl.exe -L https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/PCSX2/inis/PCSX2-win.ini `
             -o "C:\Users\$username\Documents\PCSX2\inis\PCSX2.ini"
         Pop-Location
     }},
