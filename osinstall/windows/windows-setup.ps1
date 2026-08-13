@@ -273,7 +273,7 @@ public class NativeMethods {
     @{ Title = "Install PCSX2 v$PCSX2_VERSION"; Action = {
         Push-Location C:\temp
         curl.exe -L "https://github.com/PCSX2/pcsx2/releases/download/v${PCSX2_VERSION}/pcsx2-v${PCSX2_VERSION}-windows-x64-Qt.7z" -o pcsx2.7z
-        & "C:\Program Files\7-Zip\7z.exe" x pcsx2.7z -opcsx2
+        & "C:\Program Files\7-Zip\7z.exe" x pcsx2.7z -opcsx2 -f
         Move-Item pcsx2 "C:\apps" -Force
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\pcsx2.lnk")
