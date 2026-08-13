@@ -285,7 +285,7 @@ public class NativeMethods {
         mkdir -Force "C:\Users\$username\Documents\PCSX2\inis" | Out-Null
         curl.exe -L https://github.com/archtaurus/RetroPieBIOS/raw/master/BIOS/pcsx2/bios/ps2-0230a-20080220.bin `
             -o "C:\Users\$username\Documents\PCSX2\bios\ps2-0230a-20080220.bin"
-        curl.exe -L https://raw.githubusercontent.com/alainpham/debian-os-image/master/scripts/emulation/pcsx2/PCSX2-win.ini `
+        curl.exe -L https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/pcsx2/PCSX2-win.ini `
             -o "C:\Users\$username\Documents\PCSX2\inis\PCSX2.ini"
         Pop-Location
     }},
@@ -302,7 +302,7 @@ public class NativeMethods {
         $username = $env:USERNAME
         $cfg = "C:\Users\$username\AppData\Roaming\Dolphin Emulator\Config"
         mkdir -Force $cfg | Out-Null
-        $base = "https://raw.githubusercontent.com/alainpham/debian-os-image/master/scripts/emulation/dolphin-emu"
+        $base = "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/dolphin-emu"
         curl.exe -L "$base/win/Dolphin.ini"   -o "$cfg\Dolphin.ini"
         curl.exe -L "$base/GCPadNew.ini"      -o "$cfg\GCPadNew.ini"
         curl.exe -L "$base/WiimoteNew.ini"    -o "$cfg\WiimoteNew.ini"
@@ -323,7 +323,7 @@ public class NativeMethods {
         $username = $env:USERNAME
         $cfg = "C:\Users\$username\AppData\Roaming\Cemu"
         mkdir -Force "$cfg\controllerProfiles" | Out-Null
-        $base = "https://raw.githubusercontent.com/alainpham/debian-os-image/master/scripts/emulation/cemu"
+        $base = "https://raw.githubusercontent.com/alainpham/dotfiles/refs/heads/master/home/.config/cemu"
         curl.exe -L "$base/settings-win.xml"                   -o "$cfg\settings.xml"
         curl.exe -L "$base/controllerProfiles/controller0.xml" -o "$cfg\controllerProfiles\controller0.xml"
         Pop-Location
