@@ -5,7 +5,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\windows-setup.ps1
 
 # ── Versions ─────────────────────────────────────────────────────────────────
-$MAVEN_VERSION          = "3.9.14"
+$MAVEN_VERSION          = "3.9.16"
 $RETROARCH_VERSION      = "1.22.2"
 $RETROARCH_BIOS_VERSION = "v2026.08.06"
 $PCSX2_VERSION          = "2.6.3"
@@ -111,6 +111,8 @@ public class NativeMethods {
         winget install --id Git.Git                            -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id 7zip.7zip                          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id AutoHotkey.AutoHotkey              -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id OpenJS.NodeJS.22                   -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Microsoft.OpenJDK.25               -e --accept-source-agreements --accept-package-agreements --silent
         winget install --force Microsoft.VisualStudioCode --accept-source-agreements --accept-package-agreements `
             --override '/VERYSILENT /SP- /MERGETASKS="runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath"'
     }},
