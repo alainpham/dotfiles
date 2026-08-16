@@ -233,6 +233,8 @@ public class NativeMethods {
         mkdir -Force "C:\apps" | Out-Null
         Move-Item RetroArch-Win64 "C:\apps\" -Force
         Copy-Item "C:\dotfiles\home\.config\retroarch\retroarch.win64.cfg" "C:\apps\RetroArch-Win64\retroarch.cfg" -Force
+        Copy-Item "C:\dotfiles\home\.config\retroarch\autoconfig" "C:\apps\RetroArch-Win64" -Recurse -Force
+        Copy-Item "C:\dotfiles\home\.config\retroarch\config" "C:\apps\RetroArch-Win64" -Recurse -Force
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\retroarch.lnk")
         $Shortcut.TargetPath = "C:\apps\RetroArch-Win64\retroarch.exe"
