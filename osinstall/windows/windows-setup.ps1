@@ -94,6 +94,7 @@ public class NativeMethods {
     }},
     @{ Title = "Install Syncthing and create C:\syncthing"; Action = {
         winget install --id Syncthing.Syncthing -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id WireGuard.WireGuard -e --accept-source-agreements --accept-package-agreements --silent
         mkdir -Force "C:\syncthing" | Out-Null
         $SyncthingExe = (Get-Command syncthing.exe -ErrorAction Stop).Source
         $StartupFolder = [Environment]::GetFolderPath("Startup")
@@ -226,21 +227,24 @@ public class NativeMethods {
         Push-Location C:\temp
         curl.exe -LO "https://buildbot.libretro.com/stable/${RETROARCH_VERSION}/windows/x86_64/RetroArch.7z"
         curl.exe -LO "https://buildbot.libretro.com/stable/${RETROARCH_VERSION}/windows/x86_64/RetroArch_cores.7z"
-        & "C:\Program Files\7-Zip\7z.exe" x RetroArch.7z
-        & "C:\Program Files\7-Zip\7z.exe" x RetroArch_cores.7z
+        & "C:\Program Files\7-Zip\7z.exe" x RetroArch.7z -y
+        & "C:\Program Files\7-Zip\7z.exe" x RetroArch_cores.7z -y
         curl.exe -L "https://github.com/Abdess/retrobios/releases/download/${RETROARCH_BIOS_VERSION}/RetroArch_Lakka_v${RETROARCH_VERSION}_Platform_BIOS_Pack.zip" -o bios.zip
         & "C:\Program Files\7-Zip\7z.exe" x "bios.zip" -o".\RetroArch-Win64\system\" -y
         mkdir -Force "C:\apps" | Out-Null
+        Remove-Item "C:\apps\RetroArch-Win64" -Recurse -Force -ErrorAction SilentlyContinue
         Move-Item RetroArch-Win64 "C:\apps\" -Force
-        Copy-Item "C:\dotfiles\home\.config\retroarch\retroarch.win64.cfg" "C:\apps\RetroArch-Win64\retroarch.cfg" -Force
-        Copy-Item "C:\dotfiles\home\.config\retroarch\autoconfig" "C:\apps\RetroArch-Win64" -Recurse -Force
-        Copy-Item "C:\dotfiles\home\.config\retroarch\config" "C:\apps\RetroArch-Win64" -Recurse -Force
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\retroarch.lnk")
         $Shortcut.TargetPath = "C:\apps\RetroArch-Win64\retroarch.exe"
         $Shortcut.WorkingDirectory = "C:\apps\RetroArch-Win64\"
         $Shortcut.Save()
         Pop-Location
+    }},
+    @{ Title = "Configure RetroArch"; Action = {
+        Copy-Item "C:\dotfiles\home\.config\retroarch\retroarch.win64.cfg" "C:\apps\RetroArch-Win64\retroarch.cfg" -Force
+        Copy-Item "C:\dotfiles\home\.config\retroarch\autoconfig" "C:\apps\RetroArch-Win64" -Recurse -Force
+        Copy-Item "C:\dotfiles\home\.config\retroarch\config" "C:\apps\RetroArch-Win64" -Recurse -Force
     }},
     @{ Title = "Install EmulationStation DE"; Action = {
         Push-Location C:\temp
