@@ -413,7 +413,6 @@ public class NativeMethods {
         $cfg = "C:\Users\$username\AppData\Roaming\Cemu"
         mkdir -Force "$cfg\controllerProfiles" | Out-Null
         Copy-Item "C:\dotfiles\home\.config\cemu\settings-win.xml" "$cfg\settings.xml" -Force
-        Copy-Item "C:\dotfiles\home\.config\cemu\controllerProfiles\controller0.xml" "$cfg\controllerProfiles\controller0.xml" -Force
     }},
     @{ Title = "Download gshorts source and optionally register logon task"; Action = {
         mkdir -Force "C:\apps\gshorts" | Out-Null
