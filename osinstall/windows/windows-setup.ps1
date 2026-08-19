@@ -11,10 +11,12 @@ $RETROARCH_BIOS_VERSION = "v2026.08.06"
 $PCSX2_VERSION          = "2.6.3"
 $DOLPHIN_VERSION        = "2606a"
 $CEMU_VERSION           = "2.6"
+$BTHPS3_VERSION         = "2.17.0"
+$DSHIDMINI_VERSION      = "3.5.1"
 
 # ── Step definitions ─────────────────────────────────────────────────────────
 $Steps = @(
-    @{ Title = "Activate Administrator account"; Action = {
+    @{ Title = "Activate Administrator account and set password"; Action = {
         net user administrator /active:yes
         net user administrator Password1!
     }},
@@ -52,7 +54,12 @@ $Steps = @(
         Stop-Process -ProcessName explorer -Force -ErrorAction SilentlyContinue
         Start-Process explorer
     }},
-    @{ Title = "Restore classic right-click context menu"; Action = {
+    @{ Title = "Restore classic right-click context menu (Windows 11 only)"; Action = {
+        $os = Get-CimInstance Win32_OperatingSystem
+        if ([int]$os.BuildNumber -lt 22000) {
+            Write-Host "Skipping: Windows 11 is required; Windows 10 detected." -ForegroundColor Yellow
+            return
+        }
         reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
     }},
     @{ Title = "Show seconds in clock, set date/locale format, taskbar tweaks"; Action = {
@@ -92,23 +99,26 @@ public class NativeMethods {
     @{ Title = "Install winget (needed on Win10 / LTSC)"; Action = {
         Invoke-WebRequest https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1 -UseBasicParsing | iex
     }},
-    @{ Title = "Install Syncthing and create C:\syncthing"; Action = {
+    @{ Title = "Install Syncthing and WireGuard"; Action = {
         winget install --id Syncthing.Syncthing -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id WireGuard.WireGuard -e --accept-source-agreements --accept-package-agreements --silent
+    }},
+    @{ Title = "Configure Syncthing startup shortcut"; Action = {
         mkdir -Force "C:\syncthing" | Out-Null
         $SyncthingExe = (Get-Command syncthing.exe -ErrorAction Stop).Source
         $StartupFolder = [Environment]::GetFolderPath("Startup")
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut((Join-Path $StartupFolder "Syncthing.lnk"))
         $Shortcut.TargetPath = $SyncthingExe
-        $Shortcut.Arguments = "--no-browser"
+        $Shortcut.Arguments = "--no-browser --no-console"
         $Shortcut.WorkingDirectory = "C:\syncthing"
         $Shortcut.Save()
     }},
-    @{ Title = "Install core apps (Terminal, Chrome, Git, 7zip, Java, Neovim, micro, AHK, VSCode)"; Action = {
+    @{ Title = "Install core apps (Terminal, qView, Chrome, Bitwarden, Git, 7zip, AutoHotkey, NodeJS, OpenJDK, VSCode)"; Action = {
         winget install --id Microsoft.WindowsTerminal          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id jurplel.qView                      -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Google.Chrome                      -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Bitwarden.Bitwarden                   -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Git.Git                            -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id 7zip.7zip                          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id AutoHotkey.AutoHotkey              -e --accept-source-agreements --accept-package-agreements --silent
@@ -131,7 +141,7 @@ public class NativeMethods {
             [Environment]::SetEnvironmentVariable("Path", $currentPath + ";" + $newPath, [EnvironmentVariableTarget]::Machine)
         }
     }},
-    @{ Title = "Install extra apps (Moonlight, Postman, VLC, GIMP, WinSCP, yt-dlp, Inkscape, LibreHardwareMonitor)"; Action = {
+    @{ Title = "Install extra apps (Moonlight, Postman, VLC, GIMP, WinSCP, Inkscape, LibreHardwareMonitor, LocalSend)"; Action = {
         winget install --id MoonlightGameStreamingProject.Moonlight   -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Postman.Postman                           -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id VideoLAN.VLC                              -e --accept-source-agreements --accept-package-agreements --silent
@@ -146,7 +156,7 @@ public class NativeMethods {
         Write-Host "MSYS2 installed. Open MSYS2 shell and run:" -ForegroundColor Yellow
         Write-Host "  pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-pkg-config mingw-w64-ucrt-x86_64-SDL2 git vim" -ForegroundColor Yellow
     }},
-    @{ Title = "Install advanced workstation apps (OBS, Kdenlive, Zoom, Avidemux)"; Action = {
+    @{ Title = "Install advanced workstation apps (OBS, Shotcut, Zoom, Avidemux)"; Action = {
         winget install --id OBSProject.OBSStudio       -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Meltytech.Shotcut          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Zoom.Zoom                  -e --accept-source-agreements --accept-package-agreements --silent
@@ -215,14 +225,77 @@ public class NativeMethods {
         Get-AppxPackage -Name "Microsoft.XboxIdentityProvider" -ErrorAction SilentlyContinue | Remove-AppxPackage -ErrorAction SilentlyContinue
         Get-AppxPackage -Name "Microsoft.XboxSpeechToTextOverlay" -ErrorAction SilentlyContinue | Remove-AppxPackage -ErrorAction SilentlyContinue
     }},
-    @{ Title = "Disable AutoPlay for USB devices"; Action = {
-        Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" `
-            -Name "DisableAutoplay" -Value 1 -Type DWord
-        $policyPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-        if (!(Test-Path $policyPath)) { New-Item -Path $policyPath -Force | Out-Null }
-        Set-ItemProperty -Path $policyPath -Name "NoDriveTypeAutoRun" -Value 0xFF -Type DWord
+    @{ Title = "Disable AutoPlay and AutoRun for all existing users"; Action = {
+        $autoRunValue = 0xFF
+        $machinePolicyPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+        if (!(Test-Path $machinePolicyPath)) { New-Item -Path $machinePolicyPath -Force | Out-Null }
+        New-ItemProperty -Path $machinePolicyPath -Name "NoDriveTypeAutoRun" -PropertyType DWord -Value $autoRunValue -Force | Out-Null
+
+        $profileListPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"
+        $profiles = foreach ($profileKey in Get-ChildItem $profileListPath) {
+            $profileData = Get-ItemProperty -LiteralPath $profileKey.PSPath -ErrorAction SilentlyContinue
+            if ($profileData.ProfileImagePath) {
+                $profilePath = [Environment]::ExpandEnvironmentVariables($profileData.ProfileImagePath)
+                $ntUserPath = Join-Path $profilePath "NTUSER.DAT"
+                if (Test-Path $ntUserPath) {
+                    [PSCustomObject]@{
+                        Sid = $profileKey.PSChildName
+                        NtUserPath = $ntUserPath
+                    }
+                }
+            }
+        }
+
+        foreach ($profile in $profiles) {
+            $hiveName = $profile.Sid
+            $hivePath = "Registry::HKEY_USERS\$hiveName"
+            $mountedByStep = $false
+
+            if (!(Test-Path $hivePath)) {
+                $mountName = "AutoPlay_$($profile.Sid -replace '[^A-Za-z0-9_]', '_')"
+                & reg.exe load "HKU\$mountName" $profile.NtUserPath | Out-Null
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Warning "Could not load profile hive $($profile.Sid); skipping."
+                    continue
+                }
+                $hiveName = $mountName
+                $hivePath = "Registry::HKEY_USERS\$hiveName"
+                $mountedByStep = $true
+            }
+
+            try {
+                $autoplayPath = Join-Path $hivePath "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers"
+                if (!(Test-Path $autoplayPath)) { New-Item -Path $autoplayPath -Force | Out-Null }
+                New-ItemProperty -Path $autoplayPath -Name "DisableAutoplay" -PropertyType DWord -Value 1 -Force | Out-Null
+
+                $policyPath = Join-Path $hivePath "Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+                if (!(Test-Path $policyPath)) { New-Item -Path $policyPath -Force | Out-Null }
+                New-ItemProperty -Path $policyPath -Name "NoDriveTypeAutoRun" -PropertyType DWord -Value $autoRunValue -Force | Out-Null
+            }
+            finally {
+                if ($mountedByStep) {
+                    & reg.exe unload "HKU\$hiveName" | Out-Null
+                }
+            }
+        }
+
+        Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+        Start-Process explorer.exe
     }},
-    @{ Title = "Install RetroArch $RETROARCH_VERSION + cores + BIOS"; Action = {
+    @{ Title = "Install BthPS3 $BTHPS3_VERSION and DsHidMini $DSHIDMINI_VERSION drivers"; Action = {
+        mkdir -Force "C:\temp" | Out-Null
+        Push-Location C:\temp
+        $BthPS3Msi = "C:\temp\Nefarius_BthPS3_Drivers_x64_arm64_v$($BTHPS3_VERSION).msi"
+        $DsHidMiniMsi = "C:\temp\Nefarius_DsHidMini_Drivers_x64_arm64_v$($DSHIDMINI_VERSION).msi"
+        curl.exe -L "https://github.com/nefarius/BthPS3/releases/download/setup-v$($BTHPS3_VERSION)/Nefarius_BthPS3_Drivers_x64_arm64_v$($BTHPS3_VERSION).msi" -o $BthPS3Msi
+        curl.exe -L "https://github.com/nefarius/DsHidMini/releases/download/setup-v$($DSHIDMINI_VERSION)/Nefarius_DsHidMini_Drivers_x64_arm64_v$($DSHIDMINI_VERSION).msi" -o $DsHidMiniMsi
+        $BthPS3Install = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $BthPS3Msi, "/qn", "/norestart") -Wait -PassThru
+        if ($BthPS3Install.ExitCode -notin @(0, 3010)) { throw "BthPS3 installation failed with exit code $($BthPS3Install.ExitCode)." }
+        $DsHidMiniInstall = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $DsHidMiniMsi, "/qn", "/norestart") -Wait -PassThru
+        if ($DsHidMiniInstall.ExitCode -notin @(0, 3010)) { throw "DsHidMini installation failed with exit code $($DsHidMiniInstall.ExitCode)." }
+        Pop-Location
+    }},
+    @{ Title = "Install RetroArch $RETROARCH_VERSION + cores + BIOS and create shortcut"; Action = {
         mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
         curl.exe -LO "https://buildbot.libretro.com/stable/${RETROARCH_VERSION}/windows/x86_64/RetroArch.7z"
@@ -247,16 +320,18 @@ public class NativeMethods {
         Copy-Item "C:\dotfiles\home\.config\retroarch\config" "C:\apps\RetroArch-Win64" -Recurse -Force
     }},
     @{ Title = "Install EmulationStation DE"; Action = {
+        mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
         curl.exe -L https://gitlab.com/es-de/emulationstation-de/-/package_files/288156909/download -o estation.zip
         & "C:\Program Files\7-Zip\7z.exe" x estation.zip -y
         Move-Item ES-DE "C:\apps" -Force
+        Pop-Location
+    }},
+    @{ Title = "Configure EmulationStation DE"; Action = {
         mkdir -Force "C:\apps\ES-DE\ES-DE\settings" | Out-Null
-        Copy-Item "C:\dotfiles\home\ES-DE\settings\es_settings.win64.xml" `
-            "C:\apps\ES-DE\ES-DE\settings\es_settings.xml" -Force
+        Copy-Item "C:\dotfiles\home\ES-DE\settings\es_settings.win64.xml" "C:\apps\ES-DE\ES-DE\settings\es_settings.xml" -Force
         mkdir -Force "C:\apps\ES-DE\resources\systems\windows" | Out-Null
-        Copy-Item "C:\dotfiles\home\ES-DE\settings\es_systems.win64.xml" `
-            "C:\apps\ES-DE\resources\systems\windows\es_systems.xml" -Force
+        Copy-Item "C:\dotfiles\home\ES-DE\settings\es_systems.win64.xml" "C:\apps\ES-DE\resources\systems\windows\es_systems.xml" -Force
         $GameLists = @(
             "gc\gamelist.xml",
             "n3ds\gamelist.xml",
@@ -275,32 +350,37 @@ public class NativeMethods {
         $Shortcut.TargetPath = "C:\apps\ES-DE\ES-DE.exe"
         $Shortcut.WorkingDirectory = "C:\"
         $Shortcut.Save()
-        Pop-Location
     }},
-    @{ Title = "Install PCSX2 v$PCSX2_VERSION"; Action = {
+    @{ Title = "Install PCSX2 v$PCSX2_VERSION + BIOS"; Action = {
+        mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
-        curl.exe -L "https://github.com/PCSX2/pcsx2/releases/download/v${PCSX2_VERSION}/pcsx2-v${PCSX2_VERSION}-windows-x64-Qt.7z" -o pcsx2.7z
+        curl.exe -L "https://github.com/PCSX2/pcsx2/releases/download/v$($PCSX2_VERSION)/pcsx2-v$($PCSX2_VERSION)-windows-x64-Qt.7z" -o pcsx2.7z
         & "C:\Program Files\7-Zip\7z.exe" x pcsx2.7z -opcsx2 -f
         Move-Item pcsx2 "C:\apps" -Force
+        $username = $env:USERNAME
+        mkdir -Force "C:\Users\$username\Documents\PCSX2\bios" | Out-Null
+        curl.exe -L https://github.com/archtaurus/RetroPieBIOS/raw/master/BIOS/pcsx2/bios/ps2-0230a-20080220.bin -o "C:\Users\$username\Documents\PCSX2\bios\ps2-0230a-20080220.bin"
+        Pop-Location
+    }},
+    @{ Title = "Configure PCSX2 v$PCSX2_VERSION"; Action = {
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\pcsx2.lnk")
         $Shortcut.TargetPath = "C:\apps\pcsx2\pcsx2-qt.exe"
         $Shortcut.WorkingDirectory = "C:\apps\pcsx2\"
         $Shortcut.Save()
         $username = $env:USERNAME
-        mkdir -Force "C:\Users\$username\Documents\PCSX2\bios" | Out-Null
         mkdir -Force "C:\Users\$username\Documents\PCSX2\inis" | Out-Null
-        curl.exe -L https://github.com/archtaurus/RetroPieBIOS/raw/master/BIOS/pcsx2/bios/ps2-0230a-20080220.bin `
-            -o "C:\Users\$username\Documents\PCSX2\bios\ps2-0230a-20080220.bin"
-        Copy-Item "C:\dotfiles\home\.config\PCSX2\inis\PCSX2-win.ini" `
-            "C:\Users\$username\Documents\PCSX2\inis\PCSX2.ini" -Force
-        Pop-Location
+        Copy-Item "C:\dotfiles\home\.config\PCSX2\inis\PCSX2-win.ini" "C:\Users\$username\Documents\PCSX2\inis\PCSX2.ini" -Force
     }},
     @{ Title = "Install Dolphin $DOLPHIN_VERSION"; Action = {
+        mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
-        curl.exe -L "https://dl.dolphin-emu.org/releases/${DOLPHIN_VERSION}/dolphin-${DOLPHIN_VERSION}-x64.7z" -o dolphin.7z
+        curl.exe -L "https://dl.dolphin-emu.org/releases/$($DOLPHIN_VERSION)/dolphin-$($DOLPHIN_VERSION)-x64.7z" -o dolphin.7z
         & "C:\Program Files\7-Zip\7z.exe" x dolphin.7z
         Move-Item Dolphin-x64 "C:\apps" -Force
+        Pop-Location
+    }},
+    @{ Title = "Configure Dolphin $DOLPHIN_VERSION"; Action = {
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\dolphin.lnk")
         $Shortcut.TargetPath = "C:\apps\Dolphin-x64\Dolphin.exe"
@@ -314,13 +394,16 @@ public class NativeMethods {
         Copy-Item "C:\dotfiles\home\.config\dolphin-emu\WiimoteNew.ini" "$cfg\WiimoteNew.ini" -Force
         Copy-Item "C:\dotfiles\home\.config\dolphin-emu\GFX.ini" "$cfg\GFX.ini" -Force
         Copy-Item "C:\dotfiles\home\.config\dolphin-emu\Hotkeys.ini" "$cfg\Hotkeys.ini" -Force
-        Pop-Location
     }},
     @{ Title = "Install Cemu v$CEMU_VERSION"; Action = {
+        mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
-        curl.exe -L "https://github.com/cemu-project/Cemu/releases/download/v${CEMU_VERSION}/cemu-${CEMU_VERSION}-windows-x64.zip" -o cmu.zip
+        curl.exe -L "https://github.com/cemu-project/Cemu/releases/download/v$($CEMU_VERSION)/cemu-$($CEMU_VERSION)-windows-x64.zip" -o cmu.zip
         & "C:\Program Files\7-Zip\7z.exe" x cmu.zip
         Move-Item Cemu* "C:\apps\cemu" -Force
+        Pop-Location
+    }},
+    @{ Title = "Configure Cemu v$CEMU_VERSION"; Action = {
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\cemu.lnk")
         $Shortcut.TargetPath = "C:\apps\cemu\Cemu.exe"
@@ -329,13 +412,10 @@ public class NativeMethods {
         $username = $env:USERNAME
         $cfg = "C:\Users\$username\AppData\Roaming\Cemu"
         mkdir -Force "$cfg\controllerProfiles" | Out-Null
-        Copy-Item "C:\dotfiles\home\.config\cemu\settings-win.xml" `
-            "$cfg\settings.xml" -Force
-        Copy-Item "C:\dotfiles\home\.config\cemu\controllerProfiles\controller0.xml" `
-            "$cfg\controllerProfiles\controller0.xml" -Force
-        Pop-Location
+        Copy-Item "C:\dotfiles\home\.config\cemu\settings-win.xml" "$cfg\settings.xml" -Force
+        Copy-Item "C:\dotfiles\home\.config\cemu\controllerProfiles\controller0.xml" "$cfg\controllerProfiles\controller0.xml" -Force
     }},
-    @{ Title = "Install gshorts + scheduled task at logon"; Action = {
+    @{ Title = "Download gshorts source and optionally register logon task"; Action = {
         mkdir -Force "C:\apps\gshorts" | Out-Null
         $base = "https://raw.githubusercontent.com/alainpham/debian-os-image/master/scripts/emulation/gshorts"
         curl.exe -L "$base/gshorts.c"   -o "C:\apps\gshorts\gshorts.c"
