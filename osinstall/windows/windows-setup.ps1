@@ -325,6 +325,11 @@ public class NativeMethods {
         curl.exe -L https://gitlab.com/es-de/emulationstation-de/-/package_files/288156909/download -o estation.zip
         & "C:\Program Files\7-Zip\7z.exe" x estation.zip -y
         Move-Item ES-DE "C:\apps" -Force
+        $WshShell = New-Object -ComObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\estation.lnk")
+        $Shortcut.TargetPath = "C:\apps\ES-DE\ES-DE.exe"
+        $Shortcut.WorkingDirectory = "C:\"
+        $Shortcut.Save()
         Pop-Location
     }},
     @{ Title = "Configure EmulationStation DE"; Action = {
@@ -345,11 +350,6 @@ public class NativeMethods {
             mkdir -Force (Split-Path $GameListPath -Parent) | Out-Null
             Copy-Item (Join-Path "C:\dotfiles\home\ES-DE\gamelists" $GameList) $GameListPath -Force
         }
-        $WshShell = New-Object -ComObject WScript.Shell
-        $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\estation.lnk")
-        $Shortcut.TargetPath = "C:\apps\ES-DE\ES-DE.exe"
-        $Shortcut.WorkingDirectory = "C:\"
-        $Shortcut.Save()
     }},
     @{ Title = "Install PCSX2 v$PCSX2_VERSION + BIOS"; Action = {
         mkdir -Force "C:\temp" | Out-Null
@@ -357,17 +357,17 @@ public class NativeMethods {
         curl.exe -L "https://github.com/PCSX2/pcsx2/releases/download/v$($PCSX2_VERSION)/pcsx2-v$($PCSX2_VERSION)-windows-x64-Qt.7z" -o pcsx2.7z
         & "C:\Program Files\7-Zip\7z.exe" x pcsx2.7z -opcsx2 -f
         Move-Item pcsx2 "C:\apps" -Force
+        $WshShell = New-Object -ComObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\pcsx2.lnk")
+        $Shortcut.TargetPath = "C:\apps\pcsx2\pcsx2-qt.exe"
+        $Shortcut.WorkingDirectory = "C:\apps\pcsx2\"
+        $Shortcut.Save()
         $username = $env:USERNAME
         mkdir -Force "C:\Users\$username\Documents\PCSX2\bios" | Out-Null
         curl.exe -L https://github.com/archtaurus/RetroPieBIOS/raw/master/BIOS/pcsx2/bios/ps2-0230a-20080220.bin -o "C:\Users\$username\Documents\PCSX2\bios\ps2-0230a-20080220.bin"
         Pop-Location
     }},
     @{ Title = "Configure PCSX2 v$PCSX2_VERSION"; Action = {
-        $WshShell = New-Object -ComObject WScript.Shell
-        $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\pcsx2.lnk")
-        $Shortcut.TargetPath = "C:\apps\pcsx2\pcsx2-qt.exe"
-        $Shortcut.WorkingDirectory = "C:\apps\pcsx2\"
-        $Shortcut.Save()
         $username = $env:USERNAME
         mkdir -Force "C:\Users\$username\Documents\PCSX2\inis" | Out-Null
         Copy-Item "C:\dotfiles\home\.config\PCSX2\inis\PCSX2-win.ini" "C:\Users\$username\Documents\PCSX2\inis\PCSX2.ini" -Force
@@ -378,14 +378,14 @@ public class NativeMethods {
         curl.exe -L "https://dl.dolphin-emu.org/releases/$($DOLPHIN_VERSION)/dolphin-$($DOLPHIN_VERSION)-x64.7z" -o dolphin.7z
         & "C:\Program Files\7-Zip\7z.exe" x dolphin.7z
         Move-Item Dolphin-x64 "C:\apps" -Force
-        Pop-Location
-    }},
-    @{ Title = "Configure Dolphin $DOLPHIN_VERSION"; Action = {
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\dolphin.lnk")
         $Shortcut.TargetPath = "C:\apps\Dolphin-x64\Dolphin.exe"
         $Shortcut.WorkingDirectory = "C:\apps\Dolphin-x64\"
         $Shortcut.Save()
+        Pop-Location
+    }},
+    @{ Title = "Configure Dolphin $DOLPHIN_VERSION"; Action = {
         $username = $env:USERNAME
         $cfg = "C:\Users\$username\AppData\Roaming\Dolphin Emulator\Config"
         mkdir -Force $cfg | Out-Null
@@ -401,14 +401,14 @@ public class NativeMethods {
         curl.exe -L "https://github.com/cemu-project/Cemu/releases/download/v$($CEMU_VERSION)/cemu-$($CEMU_VERSION)-windows-x64.zip" -o cmu.zip
         & "C:\Program Files\7-Zip\7z.exe" x cmu.zip
         Move-Item Cemu* "C:\apps\cemu" -Force
-        Pop-Location
-    }},
-    @{ Title = "Configure Cemu v$CEMU_VERSION"; Action = {
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\cemu.lnk")
         $Shortcut.TargetPath = "C:\apps\cemu\Cemu.exe"
         $Shortcut.WorkingDirectory = "C:\apps\cemu"
         $Shortcut.Save()
+        Pop-Location
+    }},
+    @{ Title = "Configure Cemu v$CEMU_VERSION"; Action = {
         $username = $env:USERNAME
         $cfg = "C:\Users\$username\AppData\Roaming\Cemu"
         mkdir -Force "$cfg\controllerProfiles" | Out-Null
