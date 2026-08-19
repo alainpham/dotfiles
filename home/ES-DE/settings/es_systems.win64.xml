@@ -2260,7 +2260,7 @@
         <fullname>Nintendo Wii U</fullname>
         <path>%ROMPATH%\wiiu</path>
         <extension>.elf .ELF .rpx .RPX .tmd .TMD .wua .WUA .wud .WUD .wuhb .WUHB .wux .WUX</extension>
-        <command label="Cemu (Standalone)">%EMULATOR_CEMU% -f -g %ROM%</command>
+        <command label="Cemu (Standalone)">C:\apps\cemu\Cemu.exe -f -g %ROM%</command>
         <platform>wiiu</platform>
         <theme>wiiu</theme>
     </system>
