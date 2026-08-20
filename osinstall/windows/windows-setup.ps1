@@ -154,7 +154,7 @@ public class NativeMethods {
     @{ Title = "Install MSYS2"; Action = {
         winget install --id MSYS2.MSYS2 -e --accept-source-agreements --accept-package-agreements --silent
         Write-Host "MSYS2 installed. Open MSYS2 shell and run:" -ForegroundColor Yellow
-        Write-Host "  pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-pkg-config mingw-w64-ucrt-x86_64-SDL2 git vim" -ForegroundColor Yellow
+        Write-Host "  pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-pkgconf mingw-w64-ucrt-x86_64-SDL2 git vim" -ForegroundColor Yellow
     }},
     @{ Title = "Install advanced workstation apps (OBS, Shotcut, Zoom, Avidemux)"; Action = {
         winget install --id OBSProject.OBSStudio       -e --accept-source-agreements --accept-package-agreements --silent
@@ -399,11 +399,15 @@ public class NativeMethods {
         mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
         curl.exe -L "https://github.com/cemu-project/Cemu/releases/download/v$($CEMU_VERSION)/cemu-$($CEMU_VERSION)-windows-x64.zip" -o cmu.zip
-        & "C:\Program Files\7-Zip\7z.exe" x cmu.zip
+        & "C:\Program Files\7-Zip\7z.exe" x cmu.zip -y
+        if (Test-Path "C:\apps\cemu") {
+            Remove-Item "C:\apps\cemu" -Recurse -Force -ErrorAction Stop
+        }
         Move-Item Cemu* "C:\apps\cemu" -Force
+        Copy-Item "C:\dotfiles\home\bin\cemu.bat" "C:\apps\cemu\cemu.bat" -Force
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\cemu.lnk")
-        $Shortcut.TargetPath = "C:\apps\cemu\Cemu.exe"
+        $Shortcut.TargetPath = "C:\apps\cemu\cemu.bat"
         $Shortcut.WorkingDirectory = "C:\apps\cemu"
         $Shortcut.Save()
         Pop-Location
@@ -414,20 +418,43 @@ public class NativeMethods {
         mkdir -Force "$cfg\controllerProfiles" | Out-Null
         Copy-Item "C:\dotfiles\home\.config\cemu\settings-win.xml" "$cfg\settings.xml" -Force
     }},
-    @{ Title = "Download gshorts source and optionally register logon task"; Action = {
+    @{ Title = "Download gshorts source, compile, and create startup shortcut"; Action = {
         mkdir -Force "C:\apps\gshorts" | Out-Null
-        $base = "https://raw.githubusercontent.com/alainpham/debian-os-image/master/scripts/emulation/gshorts"
+        $base = "https://raw.githubusercontent.com/alainpham/gshorts/master"
         curl.exe -L "$base/gshorts.c"   -o "C:\apps\gshorts\gshorts.c"
-        curl.exe -L "$base/gshorts.ahk" -o "C:\apps\gshorts\gshorts.ahk"
-        Write-Host "Compile gshorts in MSYS2 UCRT64 shell with:" -ForegroundColor Yellow
-        Write-Host '  cd "C:\apps\gshorts"' -ForegroundColor Yellow
-        Write-Host '  rm gshorts.exe; gcc gshorts.c -o gshorts.exe $(pkg-config --cflags --libs sdl2) -mconsole' -ForegroundColor Yellow
-        Write-Host '  cp "C:\msys64\ucrt64\bin\SDL2.dll" "C:\apps\gshorts\SDL2.dll"' -ForegroundColor Yellow
-        $choice2 = Read-Host "Register scheduled task now (requires .exe to exist)? (y/N)"
-        if ($choice2 -eq 'y') {
-            $TaskAction  = New-ScheduledTaskAction -Execute "C:\apps\gshorts\gshorts.ahk"
-            $TaskTrigger = New-ScheduledTaskTrigger -AtLogOn
-            Register-ScheduledTask -TaskName "gshorts" -Action $TaskAction -Trigger $TaskTrigger -Force
+        $MsysBash = "C:\msys64\usr\bin\bash.exe"
+        if (!(Test-Path $MsysBash)) { throw "MSYS2 Bash was not found at $MsysBash." }
+        $PreviousMSYSTEM = $env:MSYSTEM
+        $env:MSYSTEM = "UCRT64"
+        try {
+            & $MsysBash -lc 'pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-pkgconf mingw-w64-ucrt-x86_64-SDL2 && cd /c/apps/gshorts && rm -f gshorts.exe && gcc gshorts.c -o gshorts.exe $(pkg-config --cflags --libs sdl2) -mconsole && cp /ucrt64/bin/SDL2.dll /c/apps/gshorts/SDL2.dll'
+            if ($LASTEXITCODE -ne 0) { throw "gshorts compilation failed with exit code $LASTEXITCODE." }
+        }
+        finally {
+            if ($null -eq $PreviousMSYSTEM) { Remove-Item Env:MSYSTEM -ErrorAction SilentlyContinue }
+            else { $env:MSYSTEM = $PreviousMSYSTEM }
+        }
+        $StartupFolder = [Environment]::GetFolderPath("Startup")
+        $WshShell = New-Object -ComObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut((Join-Path $StartupFolder "gshorts.lnk"))
+        $Shortcut.TargetPath = "C:\apps\gshorts\gshorts.exe"
+        $Shortcut.WorkingDirectory = "C:\apps\gshorts"
+        $Shortcut.Save()
+    }},
+    @{ Title = "Download and compile SDL2 joystick tester"; Action = {
+        mkdir -Force "C:\temp" | Out-Null
+        mkdir -Force "C:\apps\sdl2-jstest" | Out-Null
+        $MsysBash = "C:\msys64\usr\bin\bash.exe"
+        if (!(Test-Path $MsysBash)) { throw "MSYS2 Bash was not found at $MsysBash." }
+        $PreviousMSYSTEM = $env:MSYSTEM
+        $env:MSYSTEM = "UCRT64"
+        try {
+            & $MsysBash -lc 'pacman -S --needed --noconfirm git mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-pkgconf mingw-w64-ucrt-x86_64-SDL2 mingw-w64-ucrt-x86_64-ncurses mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja && rm -rf /c/temp/sdl-jstest && git clone --depth 1 https://github.com/Grumbel/sdl-jstest.git /c/temp/sdl-jstest && sed -i ''s@setenv(\x22ESCDELAY\x22,[[:space:]]*\x2225\x22,[[:space:]]*1);@_putenv_s(\x22ESCDELAY\x22,\x2225\x22);@'' /c/temp/sdl-jstest/src/ui/test_ui.c && cd /c/temp/sdl-jstest && cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS=-DSDL_MAIN_HANDLED -DBUILD_SDL_JSTEST=OFF -DBUILD_SDL3_JSTEST=OFF && cmake --build build --config Release && exe=$(find build -type f -name "sdl2-jstest.exe" -print -quit) && test -n "$exe" && cp "$exe" /c/apps/sdl2-jstest/sdl2-jstest.exe && for dll in $(ldd "$exe" | awk ''$3 ~ /^\/ucrt64\/bin\/.*\.dll$/ {print $3}''); do cp "$dll" /c/apps/sdl2-jstest/; done'
+            if ($LASTEXITCODE -ne 0) { throw "sdl2-jstest compilation failed with exit code $LASTEXITCODE." }
+        }
+        finally {
+            if ($null -eq $PreviousMSYSTEM) { Remove-Item Env:MSYSTEM -ErrorAction SilentlyContinue }
+            else { $env:MSYSTEM = $PreviousMSYSTEM }
         }
     }}
 )
