@@ -27,7 +27,7 @@ pacman -S --needed --noconfirm \
   ncurses
 
 pacman -S --needed --noconfirm \
-  xorg-server xorg-xinit numlockx usbutils 
+  xorg-server xorg-xinit numlockx 
 
 pacman -S --needed --noconfirm \
   thunar \

@@ -38,6 +38,7 @@ fi
 pacman -S --needed --noconfirm pipewire-jack
 
 pacman -S --needed --noconfirm \
+    usbutils \
     ntfs-3g \
     ifuse \
     cmatrix \
@@ -111,7 +112,7 @@ fi
 
 if [ "$NUMLOCK_ON_BOOT" == "true" ]; then
 systemctl enable nlock
-
+mkdir -p /etc/lightdm/
 cat << EOF | tee /etc/lightdm/lightdm.conf
 [Seat:*]
 greeter-setup-script=/usr/bin/numlockx on
@@ -120,6 +121,7 @@ else
 systemctl disable nlock
 touch /home/${TARGET_USERNAME}/.nonumlock
 chown ${TARGET_USERNAME}:${TARGET_USERNAME} /home/${TARGET_USERNAME}/.nonumlock
+mkdir -p /etc/lightdm/
 cat << EOF | tee /etc/lightdm/lightdm.conf
 [Seat:*]
 greeter-setup-script=/usr/bin/numlockx off
@@ -137,15 +139,30 @@ fi
 # fi
 
 if [ "$AUTOMATIC_LOGIN" == "true" ]; then
-mkdir -p /etc/lightdm/lightdm.conf.d
-groupadd -f autologin
-usermod -aG autologin $TARGET_USERNAME
-cat << EOF | tee /etc/lightdm/lightdm.conf.d/50-autologin.conf
+    if pacman -Q lightdm >/dev/null 2>&1; then
+        echo "lightdm detected, configuring autologin for lightdm"
+        mkdir -p /etc/lightdm/lightdm.conf.d
+        groupadd -f autologin
+        usermod -aG autologin $TARGET_USERNAME
+        cat << EOF | tee /etc/lightdm/lightdm.conf.d/50-autologin.conf
 [Seat:*]
 autologin-user=$TARGET_USERNAME
 autologin-user-timeout=0
 autologin-session=dwm
 EOF
+    elif pacman -Q plasma-login-manager >/dev/null 2>&1; then
+        echo "plasma-login-manager detected, configuring autologin for plasmalogin"
+        session=$(basename "$(ls /usr/share/wayland-sessions/plasma*.desktop /usr/share/xsessions/plasma*.desktop 2>/dev/null | head -n1)")
+        session=${session:-plasma.desktop}
+        mkdir -p /etc/plasmalogin.conf.d
+        cat << EOF | tee /etc/plasmalogin.conf.d/autologin.conf
+[Autologin]
+User=$TARGET_USERNAME
+Session=$session
+EOF
+    else
+        echo "Neither lightdm nor plasma-login-manager is installed, skipping autologin configuration"
+    fi
 fi
 
 
