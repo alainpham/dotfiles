@@ -13,7 +13,6 @@ pacman -S --needed --noconfirm \
     noto-fonts-cjk \
     noto-fonts-emoji \
     alacritty \
-    brightnessctl \
     upower
 
 

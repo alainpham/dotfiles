@@ -27,7 +27,7 @@ pacman -S --needed --noconfirm \
   ncurses
 
 pacman -S --needed --noconfirm \
-  xorg-server xorg-xinit numlockx usbutils
+  xorg-server xorg-xinit numlockx usbutils 
 
 pacman -S --needed --noconfirm \
   thunar \
@@ -53,6 +53,7 @@ pacman -S --needed --noconfirm \
   libnotify \
   libinput-tools \
   dbus \
+  brightnessctl \
   wmctrl
 
 bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/x11dwm.sh
