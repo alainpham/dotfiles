@@ -12,7 +12,9 @@ if [ ! -f /opt/appimages/RetroArch-Linux-x86_64.AppImage ] || [ "$(cat ${retroar
     cd "$workdir"
     7z x "$workdir/RetroArch.7z" -aoa
     7z x "$workdir/RetroArch_cores.7z" -aoa
-    wget -O "$workdir/bios.zip" "https://github.com/Abdess/retrobios/releases/download/v2026.08.06/RetroArch_Lakka_v1.22.2_Platform_BIOS_Pack.zip"
+    wget -O "$workdir/bios.zip.001" "https://github.com/Abdess/retrobios/releases/download/v2026.09.04/RetroArch_Lakka_v1.22.2_BIOS_Pack.zip.001"
+    wget -O "$workdir/bios.zip.002" "https://github.com/Abdess/retrobios/releases/download/v2026.09.04/RetroArch_Lakka_v1.22.2_BIOS_Pack.zip.002"
+    cat "$workdir/bios.zip.001" "$workdir/bios.zip.002" > "$workdir/bios.zip"
     unzip -o "$workdir/bios.zip" -d "$workdir/RetroArch-Linux-x86_64/RetroArch-Linux-x86_64.AppImage.home/.config/retroarch/system/"
 
 rm -f /usr/local/bin/retroarch
