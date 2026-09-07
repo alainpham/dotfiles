@@ -3,6 +3,7 @@ set -euo pipefail
 prvfld=$(pwd)
 mkdir -p /home/$TARGET_USERNAME/wm
 cd /home/$TARGET_USERNAME/wm
+rm -rf /home/$TARGET_USERNAME/wm/sdl-jstest
 git clone https://github.com/Grumbel/sdl-jstest.git
 
 mkdir -p build /home/$TARGET_USERNAME/wm/sdl-jstest/build
