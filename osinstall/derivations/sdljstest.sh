@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 prvfld=$(pwd)
+mkdir -p /home/$TARGET_USERNAME/wm
 cd /home/$TARGET_USERNAME/wm
 git clone https://github.com/Grumbel/sdl-jstest.git
 
