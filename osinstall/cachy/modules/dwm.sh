@@ -17,14 +17,12 @@ localectl set-x11-keymap "${KEYBOARD_LAYOUT}" "${KEYBOARD_MODEL}" "${KEYBOARD_VA
 ####################
 # compile all dwm stuff
 pacman -S --needed --noconfirm \
-  gcc make cmake \
   libx11 \
   libxft \
   libxrandr \
   imlib2 \
   freetype2 \
-  libxinerama \
-  ncurses
+  libxinerama
 
 pacman -S --needed --noconfirm \
   xorg-server xorg-xinit numlockx 
