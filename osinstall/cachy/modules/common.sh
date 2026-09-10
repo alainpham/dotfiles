@@ -42,6 +42,7 @@ pacman -S --needed --noconfirm \
     cloud-guest-utils \
     bmon \
     jc \
+    bc \
     bchunk
 
 systemctl enable --now sshd.service
