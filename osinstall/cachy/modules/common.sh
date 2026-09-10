@@ -43,7 +43,7 @@ pacman -S --needed --noconfirm \
     bmon \
     jc \
     bc \
-    vim vi \
+    vim \
     bchunk
 
 systemctl enable --now sshd.service
