@@ -1,6 +1,6 @@
 
 
-ihw(){
+ihw_tumbleweed(){
     zypper in -y --auto-agree-with-licenses intel-media-driver intel-gpu-tools
     zypper in -y --auto-agree-with-licenses openSUSE-repos-Tumbleweed-NVIDIA
     zypper ref
