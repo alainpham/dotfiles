@@ -11,12 +11,12 @@ export NERDFONTS="Noto "
 export MAJOR_KUBE_VERSION=v1.35
 
 # https://github.com/k3s-io/k3s/releases
-export K3S_VERSION="v1.35.6+k3s1"
+export K3S_VERSION="v1.35.8+k3s1"
 
 # https://github.com/derailed/k9s/releases
 export K9S_VERSION=v0.51.0
 
-# Speedtest ookla https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz
+# Speedtest ookla https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz https://www.speedtest.net/apps/cli
 export SPEEDTEST_VERSION=1.2.0
 
 # https://github.com/pythops/bluetui/releases
