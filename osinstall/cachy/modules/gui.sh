@@ -69,6 +69,7 @@ pacman -S --needed --noconfirm \
     sdl3 \
     rofi
 
+systemctl enable --now cups.service cups.socket
 # for llamacpp
 
 
