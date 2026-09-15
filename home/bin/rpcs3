@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ -f /usr/local/bin/rpcs3 ]; then
+    export APPCMD=/usr/local/bin/rpcs3
+elif [ -f /run/current-system/sw/bin/rpcs3 ]; then
+    export APPCMD=/run/current-system/sw/bin/rpcs3
+else
+    echo "app not found" >&2
+    notify-send "app not found"
+    exit 1
+fi
+
+source $HOME/bin/drisetup
+
+$APPCMD "$@"
