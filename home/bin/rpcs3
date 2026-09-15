@@ -12,4 +12,11 @@ fi
 
 source $HOME/bin/drisetup
 
+# install firmware
+if [ -s ~/.config/rpcs3/dev_flash/vsh/etc/version.txt ]; then
+  echo "Firmware already installed: $(head -n1 ~/.config/rpcs3/dev_flash/vsh/etc/version.txt)"
+else
+  timeout 120 /usr/local/bin/rpcs3 --headless --installfw "/home/user/ROMs/ps3/PS3UPDAT.PUP"
+fi
+
 $APPCMD "$@"
