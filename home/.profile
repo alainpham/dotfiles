@@ -26,3 +26,6 @@ if command -v xrandr >/dev/null 2>&1 && [ "$DISPLAY" = ":0" ]; then
 
 fi
 
+# custom aliases
+alias vi='vim'
+alias ll='ls -larth'
