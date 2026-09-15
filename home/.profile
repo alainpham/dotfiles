@@ -25,3 +25,8 @@ if command -v xrandr >/dev/null 2>&1 && [ "$DISPLAY" = ":0" ]; then
     [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources && echo ".Xresources loaded">>~/.xinit.log
 
 fi
+
+shopt -s expand_aliases
+
+alias ll='ls -larth'
+alias vi='vim'
