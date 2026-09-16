@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/sources.sh
+
+
 echo "install nerdfonts"
 for font in ${NERDFONTS} ; do
  echo "installing $font"

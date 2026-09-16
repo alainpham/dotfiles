@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/sources.sh
+
 retroarch_version_file="/opt/appimages/retroarch.version"
 # https://buildbot.libretro.com/stable/
 if [ ! -f /opt/appimages/RetroArch-Linux-x86_64.AppImage ] || [ "$(cat ${retroarch_version_file} 2>/dev/null)" != "${RETROARCH_VERSION}" ]; then

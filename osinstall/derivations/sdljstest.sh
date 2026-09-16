@@ -1,5 +1,8 @@
 #!/bin/bash
 set -euo pipefail
+
+source /etc/profile.d/sources.sh
+
 prvfld=$(pwd)
 mkdir -p /home/$TARGET_USERNAME/wm
 cd /home/$TARGET_USERNAME/wm

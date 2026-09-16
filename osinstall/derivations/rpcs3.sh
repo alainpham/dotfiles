@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/sources.sh
+
 export APPNAME=rpcs3
 export APPIMAGEURL=${RPCS3_LINK}
 

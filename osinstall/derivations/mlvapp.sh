@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/sources.sh
+
+
 export APPNAME=mlvapp
 export APPIMAGEURL=https://github.com/ilia3101/MLV-App/releases/download/Qtv${MLVAPP_VERSION}/MLVApp.v${MLVAPP_VERSION}.Linux.x86_64.AppImage
 export APPIMAGEVERSION=${MLVAPP_VERSION}

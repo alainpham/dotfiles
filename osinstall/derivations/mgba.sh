@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/sources.sh
+
 export APPNAME=mgba
 export APPIMAGEURL=https://s3.amazonaws.com/mgba/mGBA-build-latest-appimage-x64.appimage
 export APPIMAGEVERSION=$(date +"%Y-%m")

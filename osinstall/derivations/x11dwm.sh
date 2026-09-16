@@ -2,6 +2,8 @@
 # installing dwm with x11
 set -euo pipefail
 
+source /etc/profile.d/sources.sh
+
 rm -rf /home/$TARGET_USERNAME/wm
 mkdir -p /home/$TARGET_USERNAME/wm
 cd /home/$TARGET_USERNAME/wm

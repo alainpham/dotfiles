@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/sources.sh
+
 if [ "$(k3s --version 2>/dev/null | awk 'NR==1{print $3}')" != "${K3S_VERSION}" ]; then
     curl -Lo /tmp/k3s https://github.com/k3s-io/k3s/releases/download/${K3S_VERSION}/k3s
     mv /tmp/k3s /usr/local/bin/k3s

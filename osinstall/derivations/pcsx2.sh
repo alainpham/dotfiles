@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/sources.sh
+
 export APPNAME=pcsx2
 export APPIMAGEURL=https://github.com/PCSX2/pcsx2/releases/download/v${PCSX2_VERSION}/pcsx2-v${PCSX2_VERSION}-linux-appimage-x64-Qt.AppImage
 export APPIMAGEVERSION=${PCSX2_VERSION}
