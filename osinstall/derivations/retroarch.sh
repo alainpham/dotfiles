@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/vars.sh
 source /etc/profile.d/sources.sh
 
 retroarch_version_file="/opt/appimages/retroarch.version"

@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/vars.sh
 source /etc/profile.d/sources.sh
 
 echo downloading https://install.speedtest.net/app/cli/ookla-speedtest-$SPEEDTEST_VERSION-linux-x86_64.tgz

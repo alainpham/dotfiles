@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+source /etc/profile.d/vars.sh
 source /etc/profile.d/sources.sh
 
 if [ "$(k3s --version 2>/dev/null | awk 'NR==1{print $3}')" != "${K3S_VERSION}" ]; then
