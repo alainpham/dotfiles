@@ -2,14 +2,9 @@
 stow --no-folding --target=/home/$USER --adopt home
 git restore .
 
-echo copy vars.sh file
-cp $TARGETVARS /etc/profile.d/vars.sh
-chmod 644 /etc/profile.d/vars.sh
-source /etc/profile.d/vars.sh
-
 echo copy sources.sh file
-cp /home/$TARGET_USERNAME/dotfiles/osinstall/sources.sh /etc/profile.d/sources.sh
-chmod 644 /etc/profile.d/sources.sh
+sudo cp /home/$TARGET_USERNAME/dotfiles/osinstall/sources.sh /etc/profile.d/sources.sh
+sudo chmod 644 /etc/profile.d/sources.sh
 source /etc/profile.d/sources.sh
 
 #####################
