@@ -7,6 +7,7 @@ pacman -S --needed --noconfirm \
     maven \
     nodejs \
     npm \
+    pnpm \
     go
 
 pacman -S --needed --noconfirm \
