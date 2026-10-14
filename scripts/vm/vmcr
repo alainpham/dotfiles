@@ -182,7 +182,13 @@ until ssh ${SSH_OPTS} ${USER}@${IP} true >/dev/null 2>&1; do
 done
 
 echo "$(date -R) Running firstboot on ${USER}@${IP}..."
-ssh ${SSH_OPTS} ${USER}@${IP} sudo /usr/local/bin/firstboot
+# only execute if /usr/local/bin/firstboot on remote machine 
+if ! ssh ${SSH_OPTS} ${USER}@${IP} test -f /usr/local/bin/firstboot; then
+    echo "$(date -R) /usr/local/bin/firstboot not found on ${USER}@${IP}. skipping firstboot execution."
+else
+    echo "$(date -R) /usr/local/bin/firstboot found on ${USER}@${IP}. executing firstboot."
+    ssh ${SSH_OPTS} ${USER}@${IP} sudo /usr/local/bin/firstboot
+fi
 
 lineinfile "/etc/NetworkManager/dnsmasq.d/vms" ".address=.$1" "address=/$1/$IP"
 nmcli general reload
