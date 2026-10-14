@@ -15,16 +15,28 @@ case "$ID" in
 esac
 echo "detected OS : $OS"
 
-select file in "$SCRIPT_DIR/vars/"*.sh; do
-    if [[ -n "$file" ]]; then
-        echo "You selected: $file"
-        export TARGETVARS=$file
-        cat $TARGETVARS
-        break
-    else
-        echo "Invalid selection. Please try again."
+# Optional first arg: vars name (e.g. ubvm) -> vars/ubvm.sh, no prompt.
+if [[ -n "${1:-}" ]]; then
+    file="$SCRIPT_DIR/vars/${1%.sh}.sh"
+    if [[ ! -f "$file" ]]; then
+        echo "Vars file not found: $file" >&2
+        exit 1
     fi
-done
+    echo "Using vars: $file"
+    export TARGETVARS=$file
+    cat $TARGETVARS
+else
+    select file in "$SCRIPT_DIR/vars/"*.sh; do
+        if [[ -n "$file" ]]; then
+            echo "You selected: $file"
+            export TARGETVARS=$file
+            cat $TARGETVARS
+            break
+        else
+            echo "Invalid selection. Please try again."
+        fi
+    done
+fi
 
 # select file in "$SCRIPT_DIR/hw/"*.sh; do
 #     if [[ -n $file ]]; then
