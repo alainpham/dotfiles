@@ -63,7 +63,7 @@ else
     exit 1
 fi
 
-vmcr $vmname 4096 4 $DISTRO_NAME $ipaddrsuffix 20G linux2024
+vmcr $vmname 4096 4 $DISTRO_NAME $ipaddrsuffix 10G linux2024
 
 
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
@@ -71,3 +71,6 @@ echo "$(date -R) Bootstrapping dotfiles on $vmname..."
 ssh ${SSH_OPTS} $vmname 'curl -L bit.ly/gdot | sh'
 echo "$(date -R) Running install on $vmname..."
 ssh -t ${SSH_OPTS} $vmname "sudo /home/${USER}/dotfiles/osinstall/install $vmname"
+
+
+cp /home/${USER}/virt/runtime/ubvm.qcow2 /home/${USER}/virt/images/lnsv.qcow2
