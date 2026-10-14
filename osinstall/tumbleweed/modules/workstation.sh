@@ -19,6 +19,7 @@ flatpak install -y flathub com.obsproject.Studio
 
 flatpak install -y flathub io.dbeaver.DBeaverCommunity
 flatpak install -y flathub org.kde.kdenlive
+flatpak install -y flathub org.shotcut.Shotcut
 flatpak install -y flathub org.onlyoffice.desktopeditors
 flatpak install -y flathub com.jgraph.drawio.desktop
 flatpak install -y flathub org.beeref.BeeRef

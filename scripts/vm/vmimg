@@ -50,4 +50,17 @@ VMS_DIR=/home/${USER}/virt/runtime
 mkdir -p $DIR
 mkdir -p $VMS_DIR
 
-curl -Lo /home/user/virt/images/$DISTRO_NAME.qcow2 $DISTRO_URL
+curl -Lo /home/${USER}/virt/images/$DISTRO_NAME.qcow2 $DISTRO_URL
+
+if [ "$DISTRO_NAME" == "opensusetumbleweed" ]; then
+    ipaddrsuffix=80
+    vmname="twvm"
+elif [ "$DISTRO_NAME" == "ubuntu" ]; then
+    ipaddrsuffix=90
+    vmname="ubvm"
+else
+    echo "Unknown distro: $DISTRO_NAME" >&2
+    exit 1
+fi
+
+vmcr $vmname 4096 4 $DISTRO_NAME $ipaddrsuffix 20G linux2024

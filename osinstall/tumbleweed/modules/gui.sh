@@ -44,7 +44,7 @@ zypper in -y \
     mediainfo \
     mediainfo-gui \
     cups \
-    xsane \
+    simple-scan \
     speedcrunch \
     fontawesome-fonts \
     fontawesome-fonts-web \
