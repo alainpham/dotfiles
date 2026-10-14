@@ -26,7 +26,7 @@ else
 fi
 
 if [ ! -e /home/$TARGET_USERNAME/.local/bin/codex ]; then 
-    curl -fsSL https://chatgpt.com/codex/install.sh | sudo -u $TARGET_USERNAME bash
+    sudo -u $TARGET_USERNAME bash -lc 'npm install -g --prefix /home/user/.local @openai/codex@latest'
 else
     echo codex already installed
 fi
