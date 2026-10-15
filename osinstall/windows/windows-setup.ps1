@@ -1,10 +1,10 @@
-﻿# Windows Standard Setup - Step by Step
+# Windows Standard Setup - Step by Step
 # Run as Administrator
 #
 # If you get "not authorized to run scripts", launch it with:
 #   powershell -ExecutionPolicy Bypass -File .\windows-setup.ps1
 
-# ── Versions ─────────────────────────────────────────────────────────────────
+# -- Versions -----------------------------------------------------------------
 $MAVEN_VERSION          = "3.9.16"
 $RETROARCH_VERSION      = "1.22.2"
 $RETROARCH_BIOS_VERSION = "v2026.08.06"
@@ -14,7 +14,7 @@ $CEMU_VERSION           = "2.6"
 $BTHPS3_VERSION         = "2.17.0"
 $DSHIDMINI_VERSION      = "3.5.1"
 
-# ── Step definitions ─────────────────────────────────────────────────────────
+# -- Step definitions ---------------------------------------------------------
 $Steps = @(
     @{ Title = "Activate Administrator account and set password"; Action = {
         net user administrator /active:yes
@@ -70,7 +70,7 @@ $Steps = @(
         Set-ItemProperty -Path "HKCU:\Control Panel\International" -Name "sTimeFormat"     -Value "HH:mm:ss"
         Set-ItemProperty -Path "HKCU:\Control Panel\International" -Name "iFirstDayOfWeek" -Value "0"
         Set-ItemProperty -Path "HKCU:\Control Panel\International" -Name "iMeasure"        -Value "0"
-        Set-ItemProperty -Path "HKCU:\Control Panel\International" -Name "sCurrency"       -Value "€"
+        Set-ItemProperty -Path "HKCU:\Control Panel\International" -Name "sCurrency"       -Value ([char]0x20AC)
         Set-ItemProperty -Path "HKCU:\Control Panel\International" -Name "sMonThousandSep" -Value " "
         Set-TimeZone -Name "Romance Standard Time"
         Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" `
@@ -463,11 +463,11 @@ public class NativeMethods {
     }}
 )
 
-# ── Menu ─────────────────────────────────────────────────────────────────────
+# -- Menu ---------------------------------------------------------------------
 function Show-Menu {
-    Write-Host "`n╔══════════════════════════════════════════╗" -ForegroundColor Cyan
-    Write-Host "║     Windows Standard Setup               ║" -ForegroundColor Cyan
-    Write-Host "╚══════════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host "`n+==========================================+" -ForegroundColor Cyan
+    Write-Host "|     Windows Standard Setup               |" -ForegroundColor Cyan
+    Write-Host "+==========================================+" -ForegroundColor Cyan
     Write-Host ""
     for ($i = 0; $i -lt $Steps.Count; $i++) {
         Write-Host ("  {0,2}. {1}" -f ($i + 1), $Steps[$i].Title)
@@ -493,9 +493,9 @@ function Parse-Selection {
 
 function Run-Step {
     param($Step, [int]$Number)
-    Write-Host "`n──────────────────────────────────────────" -ForegroundColor Cyan
+    Write-Host "`n------------------------------------------" -ForegroundColor Cyan
     Write-Host " Step $Number : $($Step.Title)" -ForegroundColor Cyan
-    Write-Host "──────────────────────────────────────────" -ForegroundColor Cyan
+    Write-Host "------------------------------------------" -ForegroundColor Cyan
     $confirm = Read-Host "Run? (Y/n/q to quit)"
     if ($confirm -eq 'q') { Write-Host "Exiting." -ForegroundColor Yellow; exit }
     if ($confirm -eq 'n') { Write-Host "Skipped." -ForegroundColor DarkGray; return }
@@ -507,7 +507,7 @@ function Run-Step {
     }
 }
 
-# ── Main loop ─────────────────────────────────────────────────────────────────
+# -- Main loop -----------------------------------------------------------------
 while ($true) {
     Show-Menu
     $raw = Read-Host "Selection"
