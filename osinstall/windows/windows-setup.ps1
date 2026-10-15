@@ -114,10 +114,17 @@ public class NativeMethods {
         $Shortcut.WorkingDirectory = "C:\syncthing"
         $Shortcut.Save()
     }},
-    @{ Title = "Install core apps (Terminal, qView, Chrome, Bitwarden, Git, 7zip, AutoHotkey, NodeJS, OpenJDK, VSCode)"; Action = {
+    @{ Title = "Install Google Chrome (enterprise MSI)"; Action = {
+        # Google's enterprise MSI instead of winget: winget's manifest hash goes stale with each new release
+        mkdir -Force c:\temp | Out-Null
+        curl.exe -L "https://dl.google.com/dl/chrome/install/googlechromestandaloneenterprise64.msi" -o c:\temp\chrome.msi
+        $ChromeInstall = Start-Process msiexec.exe -ArgumentList '/i "c:\temp\chrome.msi" /qn /norestart' -Wait -PassThru
+        Remove-Item c:\temp\chrome.msi -Force
+        if ($ChromeInstall.ExitCode -notin @(0, 3010)) { throw "Chrome installation failed with exit code $($ChromeInstall.ExitCode)." }
+    }},
+    @{ Title = "Install core apps (Terminal, qView, Bitwarden, Git, 7zip, AutoHotkey, NodeJS, OpenJDK, VSCode)"; Action = {
         winget install --id Microsoft.WindowsTerminal       -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id jurplel.qView                   -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Google.Chrome                   -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id WinDirStat.WinDirStat           -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Notepad++.Notepad++             -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Bitwarden.Bitwarden             -e --accept-source-agreements --accept-package-agreements --silent
