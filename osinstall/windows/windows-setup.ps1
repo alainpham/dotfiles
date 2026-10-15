@@ -117,9 +117,7 @@ public class NativeMethods {
     @{ Title = "Install core apps (Terminal, qView, Chrome, Bitwarden, Git, 7zip, AutoHotkey, NodeJS, OpenJDK, VSCode)"; Action = {
         winget install --id Microsoft.WindowsTerminal       -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id jurplel.qView                   -e --accept-source-agreements --accept-package-agreements --silent
-        # Chrome's installer changes often, so its manifest hash is frequently stale
-        winget settings --enable InstallerHashOverride
-        winget install --id Google.Chrome                   -e --ignore-security-hash --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Google.Chrome                   -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id WinDirStat.WinDirStat           -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Notepad++.Notepad++             -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Bitwarden.Bitwarden             -e --accept-source-agreements --accept-package-agreements --silent
