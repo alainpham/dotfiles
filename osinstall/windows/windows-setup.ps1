@@ -99,6 +99,25 @@ public class NativeMethods {
     @{ Title = "Install winget (needed on Win10 / LTSC)"; Action = {
         Invoke-WebRequest https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1 -UseBasicParsing | iex
     }},
+    @{ Title = "Install essentials (Chrome, Terminal, qView, WinDirStat, Notepad++, Git, 7zip, WinSCP, LocalSend, Postman, Moonlight)"; Action = {
+        # Chrome via Google's enterprise MSI instead of winget: winget's manifest hash goes stale with each new release
+        mkdir -Force c:\temp | Out-Null
+        curl.exe -L "https://dl.google.com/dl/chrome/install/googlechromestandaloneenterprise64.msi" -o c:\temp\chrome.msi
+        $ChromeInstall = Start-Process msiexec.exe -ArgumentList '/i "c:\temp\chrome.msi" /qn /norestart' -Wait -PassThru
+        Remove-Item c:\temp\chrome.msi -Force
+        if ($ChromeInstall.ExitCode -notin @(0, 3010)) { Write-Warning "Chrome installation failed with exit code $($ChromeInstall.ExitCode)." }
+
+        winget install --id Microsoft.WindowsTerminal       -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id jurplel.qView                   -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id WinDirStat.WinDirStat           -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Notepad++.Notepad++             -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Git.Git                         -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id 7zip.7zip                       -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id WinSCP.WinSCP                   -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id LocalSend.LocalSend             -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Postman.Postman                 -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id MoonlightGameStreamingProject.Moonlight -e --accept-source-agreements --accept-package-agreements --silent
+    }},
     @{ Title = "Install Syncthing and WireGuard"; Action = {
         winget install --id Syncthing.Syncthing -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id WireGuard.WireGuard -e --accept-source-agreements --accept-package-agreements --silent
@@ -114,23 +133,9 @@ public class NativeMethods {
         $Shortcut.WorkingDirectory = "C:\syncthing"
         $Shortcut.Save()
     }},
-    @{ Title = "Install Google Chrome (enterprise MSI)"; Action = {
-        # Google's enterprise MSI instead of winget: winget's manifest hash goes stale with each new release
-        mkdir -Force c:\temp | Out-Null
-        curl.exe -L "https://dl.google.com/dl/chrome/install/googlechromestandaloneenterprise64.msi" -o c:\temp\chrome.msi
-        $ChromeInstall = Start-Process msiexec.exe -ArgumentList '/i "c:\temp\chrome.msi" /qn /norestart' -Wait -PassThru
-        Remove-Item c:\temp\chrome.msi -Force
-        if ($ChromeInstall.ExitCode -notin @(0, 3010)) { throw "Chrome installation failed with exit code $($ChromeInstall.ExitCode)." }
-    }},
-    @{ Title = "Install core apps (Terminal, qView, Bitwarden, Git, 7zip, AutoHotkey, NodeJS, OpenJDK, VSCode)"; Action = {
-        winget install --id Microsoft.WindowsTerminal       -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id jurplel.qView                   -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id WinDirStat.WinDirStat           -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Notepad++.Notepad++             -e --accept-source-agreements --accept-package-agreements --silent
+    @{ Title = "Install core apps (Bitwarden, AutoHotkey, NodeJS, OpenJDK, VSCode)"; Action = {
         winget install --id Bitwarden.Bitwarden             -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Git.Git                         -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id 7zip.7zip                       -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id AutoHotkey.AutoHotkey           -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id AutoHotkey.AutoHotkey          -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id OpenJS.NodeJS.LTS               -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Microsoft.OpenJDK.25            -e --accept-source-agreements --accept-package-agreements --silent
         winget install --force Microsoft.VisualStudioCode   --accept-source-agreements --accept-package-agreements `
@@ -150,15 +155,11 @@ public class NativeMethods {
             [Environment]::SetEnvironmentVariable("Path", $currentPath + ";" + $newPath, [EnvironmentVariableTarget]::Machine)
         }
     }},
-    @{ Title = "Install extra apps (Moonlight, Postman, VLC, GIMP, WinSCP, Inkscape, LibreHardwareMonitor, LocalSend)"; Action = {
-        winget install --id MoonlightGameStreamingProject.Moonlight   -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Postman.Postman                           -e --accept-source-agreements --accept-package-agreements --silent
+    @{ Title = "Install extra apps (VLC, GIMP, Inkscape, LibreHardwareMonitor)"; Action = {
         winget install --id VideoLAN.VLC                              -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id GIMP.GIMP.3                               -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id WinSCP.WinSCP                             -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Inkscape.Inkscape                         -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id LibreHardwareMonitor.LibreHardwareMonitor  -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id LocalSend.LocalSend  -e --accept-source-agreements --accept-package-agreements --silent
     }},
     @{ Title = "Install MSYS2"; Action = {
         winget install --id MSYS2.MSYS2 -e --accept-source-agreements --accept-package-agreements --silent
