@@ -115,16 +115,18 @@ public class NativeMethods {
         $Shortcut.Save()
     }},
     @{ Title = "Install core apps (Terminal, qView, Chrome, Bitwarden, Git, 7zip, AutoHotkey, NodeJS, OpenJDK, VSCode)"; Action = {
-        winget install --id Microsoft.WindowsTerminal          -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id jurplel.qView                      -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Google.Chrome                      -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Bitwarden.Bitwarden                   -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Git.Git                            -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id 7zip.7zip                          -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id AutoHotkey.AutoHotkey              -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id OpenJS.NodeJS.22                   -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Microsoft.OpenJDK.25               -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --force Microsoft.VisualStudioCode --accept-source-agreements --accept-package-agreements `
+        winget install --id Microsoft.WindowsTerminal       -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id jurplel.qView                   -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Google.Chrome                   -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id WinDirStat.WinDirStat           -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Notepad++.Notepad++             -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Bitwarden.Bitwarden             -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Git.Git                         -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id 7zip.7zip                       -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id AutoHotkey.AutoHotkey           -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id OpenJS.NodeJS.LTS               -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Microsoft.OpenJDK.25            -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --force Microsoft.VisualStudioCode   --accept-source-agreements --accept-package-agreements `
             --override '/VERYSILENT /SP- /MERGETASKS="runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath"'
     }},
     @{ Title = "Install Apache Maven $MAVEN_VERSION to C:\apps\maven"; Action = {
