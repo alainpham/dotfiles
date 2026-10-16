@@ -287,30 +287,27 @@ public class NativeMethods {
         Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
         Start-Process explorer.exe
     }},
-    @{ Title = "Install latest BthPS3 and DsHidMini drivers"; Action = {
+    @{ Title = "Install latest BthPS3 driver"; Action = {
         $BthPS3Release = Invoke-RestMethod -Uri "https://api.github.com/repos/nefarius/BthPS3/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
-        $DsHidMiniRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/nefarius/DsHidMini/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
         $BthPS3Assets = @($BthPS3Release.assets | Where-Object { $_.name -match '^Nefarius_BthPS3_Drivers_x64_arm64_.*\.msi$' })
-        $DsHidMiniAssets = @($DsHidMiniRelease.assets | Where-Object { $_.name -match '^Nefarius_DsHidMini_Drivers_x64_arm64_.*\.msi$' })
         if ($BthPS3Assets.Count -ne 1) { throw "Expected one BthPS3 MSI in release $($BthPS3Release.tag_name), found $($BthPS3Assets.Count)." }
-        if ($DsHidMiniAssets.Count -ne 1) { throw "Expected one DsHidMini MSI in release $($DsHidMiniRelease.tag_name), found $($DsHidMiniAssets.Count)." }
-
         mkdir -Force "C:\temp" | Out-Null
-        Push-Location C:\temp
-        try {
-            $BthPS3Msi = Join-Path "C:\temp" ($BthPS3Assets[0].name)
-            $DsHidMiniMsi = Join-Path "C:\temp" ($DsHidMiniAssets[0].name)
-            curl.exe -fL ($BthPS3Assets[0].browser_download_url) -o $BthPS3Msi
-            if ($LASTEXITCODE -ne 0) { throw "Failed to download $($BthPS3Assets[0].name)." }
-            curl.exe -fL ($DsHidMiniAssets[0].browser_download_url) -o $DsHidMiniMsi
-            if ($LASTEXITCODE -ne 0) { throw "Failed to download $($DsHidMiniAssets[0].name)." }
-            $BthPS3Install = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $BthPS3Msi, "/qn", "/norestart") -Wait -PassThru
-            if ($BthPS3Install.ExitCode -notin @(0, 3010)) { throw "BthPS3 installation failed with exit code $($BthPS3Install.ExitCode)." }
-            $DsHidMiniInstall = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $DsHidMiniMsi, "/qn", "/norestart") -Wait -PassThru
-            if ($DsHidMiniInstall.ExitCode -notin @(0, 3010)) { throw "DsHidMini installation failed with exit code $($DsHidMiniInstall.ExitCode)." }
-        } finally {
-            Pop-Location
-        }
+        $BthPS3Msi = Join-Path "C:\temp" ($BthPS3Assets[0].name)
+        curl.exe -fL ($BthPS3Assets[0].browser_download_url) -o $BthPS3Msi
+        if ($LASTEXITCODE -ne 0) { throw "Failed to download $($BthPS3Assets[0].name)." }
+        $BthPS3Install = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $BthPS3Msi, "/qn", "/norestart") -Wait -PassThru -ErrorAction Stop
+        if ($BthPS3Install.ExitCode -notin @(0, 3010)) { throw "BthPS3 installation failed with exit code $($BthPS3Install.ExitCode)." }
+    }},
+    @{ Title = "Install latest DsHidMini driver"; Action = {
+        $DsHidMiniRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/nefarius/DsHidMini/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
+        $DsHidMiniAssets = @($DsHidMiniRelease.assets | Where-Object { $_.name -match '^Nefarius_DsHidMini_Drivers_x64_arm64_.*\.msi$' })
+        if ($DsHidMiniAssets.Count -ne 1) { throw "Expected one DsHidMini MSI in release $($DsHidMiniRelease.tag_name), found $($DsHidMiniAssets.Count)." }
+        mkdir -Force "C:\temp" | Out-Null
+        $DsHidMiniMsi = Join-Path "C:\temp" ($DsHidMiniAssets[0].name)
+        curl.exe -fL ($DsHidMiniAssets[0].browser_download_url) -o $DsHidMiniMsi
+        if ($LASTEXITCODE -ne 0) { throw "Failed to download $($DsHidMiniAssets[0].name)." }
+        $DsHidMiniInstall = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $DsHidMiniMsi, "/qn", "/norestart") -Wait -PassThru -ErrorAction Stop
+        if ($DsHidMiniInstall.ExitCode -notin @(0, 3010)) { throw "DsHidMini installation failed with exit code $($DsHidMiniInstall.ExitCode)." }
     }},
     @{ Title = "Install RetroArch $RETROARCH_VERSION + cores + BIOS and create shortcut"; Action = {
 
