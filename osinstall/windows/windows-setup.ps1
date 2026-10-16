@@ -299,6 +299,30 @@ public class NativeMethods {
         if ($BthPS3Install.ExitCode -notin @(0, 3010)) { throw "BthPS3 installation failed with exit code $($BthPS3Install.ExitCode)." }
     }},
     @{ Title = "Install latest DsHidMini driver"; Action = {
+        $Principal = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
+        if (-not $Principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+            throw "Run PowerShell as Administrator before installing DsHidMini."
+        }
+        $UacEnabled = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name EnableLUA -ErrorAction Stop).EnableLUA
+        if ($UacEnabled -ne 1) { throw "DsHidMini requires UAC enabled. Enable UAC, reboot, then retry." }
+
+        $ProgramFiles64 = if ($env:ProgramW6432) { $env:ProgramW6432 } else { $env:ProgramFiles }
+        $DotNetRoot = Join-Path $ProgramFiles64 "dotnet"
+        if ((Get-CimInstance Win32_Processor | Select-Object -First 1).Architecture -eq 12) {
+            $DotNetRoot = Join-Path $DotNetRoot "x64"
+        }
+        $DesktopRuntimeRoot = Join-Path $DotNetRoot "shared\Microsoft.WindowsDesktop.App"
+        $DesktopRuntime10 = @(Get-ChildItem -LiteralPath $DesktopRuntimeRoot -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^10\.0\.' })
+        if ($DesktopRuntime10.Count -eq 0) {
+            if (-not (Get-Command winget.exe -ErrorAction SilentlyContinue)) {
+                throw "DsHidMini requires .NET 10 Desktop Runtime (x64). Install Microsoft.DotNet.DesktopRuntime.10, then retry."
+            }
+            winget.exe install --id Microsoft.DotNet.DesktopRuntime.10 --exact --source winget --architecture x64 --silent --accept-source-agreements --accept-package-agreements
+            if ($LASTEXITCODE -ne 0) { throw "Could not install .NET 10 Desktop Runtime (x64) with winget (exit code $LASTEXITCODE)." }
+            $DesktopRuntime10 = @(Get-ChildItem -LiteralPath $DesktopRuntimeRoot -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^10\.0\.' })
+            if ($DesktopRuntime10.Count -eq 0) { throw ".NET 10 Desktop Runtime (x64) was not found after installation. Restart Windows, then retry." }
+        }
+
         $DsHidMiniRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/nefarius/DsHidMini/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
         $DsHidMiniAssets = @($DsHidMiniRelease.assets | Where-Object { $_.name -match '^Nefarius_DsHidMini_Drivers_x64_arm64_.*\.msi$' })
         if ($DsHidMiniAssets.Count -ne 1) { throw "Expected one DsHidMini MSI in release $($DsHidMiniRelease.tag_name), found $($DsHidMiniAssets.Count)." }
@@ -306,8 +330,11 @@ public class NativeMethods {
         $DsHidMiniMsi = Join-Path "C:\temp" ($DsHidMiniAssets[0].name)
         curl.exe -fL ($DsHidMiniAssets[0].browser_download_url) -o $DsHidMiniMsi
         if ($LASTEXITCODE -ne 0) { throw "Failed to download $($DsHidMiniAssets[0].name)." }
-        $DsHidMiniInstall = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $DsHidMiniMsi, "/qn", "/norestart") -Wait -PassThru -ErrorAction Stop
-        if ($DsHidMiniInstall.ExitCode -notin @(0, 3010)) { throw "DsHidMini installation failed with exit code $($DsHidMiniInstall.ExitCode)." }
+        $DsHidMiniLog = "C:\temp\DsHidMini-install.log"
+        $DsHidMiniInstall = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $DsHidMiniMsi, "/qn", "/norestart", "/L*V", $DsHidMiniLog) -Wait -PassThru -ErrorAction Stop
+        if ($DsHidMiniInstall.ExitCode -notin @(0, 3010)) {
+            throw "DsHidMini installation failed with exit code $($DsHidMiniInstall.ExitCode). See $DsHidMiniLog for the cause."
+        }
     }},
     @{ Title = "Install RetroArch $RETROARCH_VERSION + cores + BIOS and create shortcut"; Action = {
 
