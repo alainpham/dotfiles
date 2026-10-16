@@ -5,14 +5,9 @@
 #   powershell -ExecutionPolicy Bypass -File .\windows-setup.ps1
 
 # -- Versions -----------------------------------------------------------------
-$MAVEN_VERSION          = "3.9.16"
+$MAVEN_VERSION          = "3.10.0"
 $RETROARCH_VERSION      = "1.22.2"
-$RETROARCH_BIOS_VERSION = "v2026.08.06"
-$PCSX2_VERSION          = "2.6.3"
-$DOLPHIN_VERSION        = "2606a"
-$CEMU_VERSION           = "2.6"
-$BTHPS3_VERSION         = "2.17.0"
-$DSHIDMINI_VERSION      = "3.5.1"
+$DOLPHIN_VERSION        = "2609a"
 
 # -- Step definitions ---------------------------------------------------------
 $Steps = @(
@@ -107,16 +102,16 @@ public class NativeMethods {
         Remove-Item c:\temp\chrome.msi -Force
         if ($ChromeInstall.ExitCode -notin @(0, 3010)) { Write-Warning "Chrome installation failed with exit code $($ChromeInstall.ExitCode)." }
 
-        winget install --id Microsoft.WindowsTerminal       -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id jurplel.qView                   -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id WinDirStat.WinDirStat           -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Notepad++.Notepad++             -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Git.Git                         -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id 7zip.7zip                       -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id WinSCP.WinSCP                   -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id LocalSend.LocalSend             -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id Postman.Postman                 -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id MoonlightGameStreamingProject.Moonlight -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Microsoft.WindowsTerminal                   -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id jurplel.qView                               -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id WinDirStat.WinDirStat                       -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Notepad++.Notepad++                         -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Git.Git                                     -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id 7zip.7zip                                   -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id WinSCP.WinSCP                               -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id LocalSend.LocalSend                         -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id Postman.Postman                             -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id MoonlightGameStreamingProject.Moonlight     -e --accept-source-agreements --accept-package-agreements --silent
     }},
     @{ Title = "Install Syncthing and WireGuard"; Action = {
         winget install --id Syncthing.Syncthing -e --accept-source-agreements --accept-package-agreements --silent
@@ -292,28 +287,48 @@ public class NativeMethods {
         Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
         Start-Process explorer.exe
     }},
-    @{ Title = "Install BthPS3 $BTHPS3_VERSION and DsHidMini $DSHIDMINI_VERSION drivers"; Action = {
+    @{ Title = "Install latest BthPS3 and DsHidMini drivers"; Action = {
+        $BthPS3Release = Invoke-RestMethod -Uri "https://api.github.com/repos/nefarius/BthPS3/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
+        $DsHidMiniRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/nefarius/DsHidMini/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
+        $BthPS3Assets = @($BthPS3Release.assets | Where-Object { $_.name -match '^Nefarius_BthPS3_Drivers_x64_arm64_.*\.msi$' })
+        $DsHidMiniAssets = @($DsHidMiniRelease.assets | Where-Object { $_.name -match '^Nefarius_DsHidMini_Drivers_x64_arm64_.*\.msi$' })
+        if ($BthPS3Assets.Count -ne 1) { throw "Expected one BthPS3 MSI in release $($BthPS3Release.tag_name), found $($BthPS3Assets.Count)." }
+        if ($DsHidMiniAssets.Count -ne 1) { throw "Expected one DsHidMini MSI in release $($DsHidMiniRelease.tag_name), found $($DsHidMiniAssets.Count)." }
+
         mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
-        $BthPS3Msi = "C:\temp\Nefarius_BthPS3_Drivers_x64_arm64_v$($BTHPS3_VERSION).msi"
-        $DsHidMiniMsi = "C:\temp\Nefarius_DsHidMini_Drivers_x64_arm64_v$($DSHIDMINI_VERSION).msi"
-        curl.exe -L "https://github.com/nefarius/BthPS3/releases/download/setup-v$($BTHPS3_VERSION)/Nefarius_BthPS3_Drivers_x64_arm64_v$($BTHPS3_VERSION).msi" -o $BthPS3Msi
-        curl.exe -L "https://github.com/nefarius/DsHidMini/releases/download/setup-v$($DSHIDMINI_VERSION)/Nefarius_DsHidMini_Drivers_x64_arm64_v$($DSHIDMINI_VERSION).msi" -o $DsHidMiniMsi
-        $BthPS3Install = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $BthPS3Msi, "/qn", "/norestart") -Wait -PassThru
-        if ($BthPS3Install.ExitCode -notin @(0, 3010)) { throw "BthPS3 installation failed with exit code $($BthPS3Install.ExitCode)." }
-        $DsHidMiniInstall = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $DsHidMiniMsi, "/qn", "/norestart") -Wait -PassThru
-        if ($DsHidMiniInstall.ExitCode -notin @(0, 3010)) { throw "DsHidMini installation failed with exit code $($DsHidMiniInstall.ExitCode)." }
-        Pop-Location
+        try {
+            $BthPS3Msi = Join-Path "C:\temp" ($BthPS3Assets[0].name)
+            $DsHidMiniMsi = Join-Path "C:\temp" ($DsHidMiniAssets[0].name)
+            curl.exe -fL ($BthPS3Assets[0].browser_download_url) -o $BthPS3Msi
+            if ($LASTEXITCODE -ne 0) { throw "Failed to download $($BthPS3Assets[0].name)." }
+            curl.exe -fL ($DsHidMiniAssets[0].browser_download_url) -o $DsHidMiniMsi
+            if ($LASTEXITCODE -ne 0) { throw "Failed to download $($DsHidMiniAssets[0].name)." }
+            $BthPS3Install = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $BthPS3Msi, "/qn", "/norestart") -Wait -PassThru
+            if ($BthPS3Install.ExitCode -notin @(0, 3010)) { throw "BthPS3 installation failed with exit code $($BthPS3Install.ExitCode)." }
+            $DsHidMiniInstall = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $DsHidMiniMsi, "/qn", "/norestart") -Wait -PassThru
+            if ($DsHidMiniInstall.ExitCode -notin @(0, 3010)) { throw "DsHidMini installation failed with exit code $($DsHidMiniInstall.ExitCode)." }
+        } finally {
+            Pop-Location
+        }
     }},
     @{ Title = "Install RetroArch $RETROARCH_VERSION + cores + BIOS and create shortcut"; Action = {
+
+        $biosRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/Abdess/retrobios/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
+        $biosAssets = @($biosRelease.assets | Where-Object { $_.name -match '^RetroArch_Lakka_.*\.zip$' } | Sort-Object name)
+        if ($biosAssets.Count -eq 0) { throw "No RetroArch/Lakka BIOS ZIP assets found in release $($biosRelease.tag_name)." }
         mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
         curl.exe -LO "https://buildbot.libretro.com/stable/${RETROARCH_VERSION}/windows/x86_64/RetroArch.7z"
         curl.exe -LO "https://buildbot.libretro.com/stable/${RETROARCH_VERSION}/windows/x86_64/RetroArch_cores.7z"
         & "C:\Program Files\7-Zip\7z.exe" x RetroArch.7z -y
         & "C:\Program Files\7-Zip\7z.exe" x RetroArch_cores.7z -y
-        curl.exe -L "https://github.com/Abdess/retrobios/releases/download/${RETROARCH_BIOS_VERSION}/RetroArch_Lakka_v${RETROARCH_VERSION}_Platform_BIOS_Pack.zip" -o bios.zip
-        & "C:\Program Files\7-Zip\7z.exe" x "bios.zip" -o".\RetroArch-Win64\system\" -y
+        foreach ($biosAsset in $biosAssets) {
+            curl.exe -fL $biosAsset.browser_download_url -o $biosAsset.name
+            if ($LASTEXITCODE -ne 0) { throw "Failed to download $($biosAsset.name)." }
+            & "C:\Program Files\7-Zip\7z.exe" x $biosAsset.name -o".\RetroArch-Win64\system\" -y
+            if ($LASTEXITCODE -ne 0) { throw "Failed to extract $($biosAsset.name)." }
+        }
         mkdir -Force "C:\apps" | Out-Null
         Remove-Item "C:\apps\RetroArch-Win64" -Recurse -Force -ErrorAction SilentlyContinue
         Move-Item RetroArch-Win64 "C:\apps\" -Force
@@ -361,23 +376,32 @@ public class NativeMethods {
             Copy-Item (Join-Path "C:\dotfiles\home\ES-DE\gamelists" $GameList) $GameListPath -Force
         }
     }},
-    @{ Title = "Install PCSX2 v$PCSX2_VERSION + BIOS"; Action = {
+    @{ Title = "Install latest PCSX2 + BIOS"; Action = {
+        $PCSX2Release = Invoke-RestMethod -Uri "https://api.github.com/repos/PCSX2/pcsx2/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
+        $PCSX2Assets = @($PCSX2Release.assets | Where-Object { $_.name -match '^pcsx2-v.*-windows-x64-Qt\.7z$' })
+        if ($PCSX2Assets.Count -ne 1) { throw "Expected one Windows x64 PCSX2 archive in release $($PCSX2Release.tag_name), found $($PCSX2Assets.Count)." }
+
         mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
-        curl.exe -L "https://github.com/PCSX2/pcsx2/releases/download/v$($PCSX2_VERSION)/pcsx2-v$($PCSX2_VERSION)-windows-x64-Qt.7z" -o pcsx2.7z
-        & "C:\Program Files\7-Zip\7z.exe" x pcsx2.7z -opcsx2 -f
-        Move-Item pcsx2 "C:\apps" -Force
-        $WshShell = New-Object -ComObject WScript.Shell
-        $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\pcsx2.lnk")
-        $Shortcut.TargetPath = "C:\apps\pcsx2\pcsx2-qt.exe"
-        $Shortcut.WorkingDirectory = "C:\apps\pcsx2\"
-        $Shortcut.Save()
-        $username = $env:USERNAME
-        mkdir -Force "C:\Users\$username\Documents\PCSX2\bios" | Out-Null
-        curl.exe -L https://github.com/archtaurus/RetroPieBIOS/raw/master/BIOS/pcsx2/bios/ps2-0230a-20080220.bin -o "C:\Users\$username\Documents\PCSX2\bios\ps2-0230a-20080220.bin"
-        Pop-Location
+        try {
+            curl.exe -fL ($PCSX2Assets[0].browser_download_url) -o pcsx2.7z
+            if ($LASTEXITCODE -ne 0) { throw "Failed to download $($PCSX2Assets[0].name)." }
+            & "C:\Program Files\7-Zip\7z.exe" x pcsx2.7z -opcsx2 -y
+            if ($LASTEXITCODE -ne 0) { throw "Failed to extract $($PCSX2Assets[0].name)." }
+            Move-Item pcsx2 "C:\apps" -Force
+            $WshShell = New-Object -ComObject WScript.Shell
+            $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\pcsx2.lnk")
+            $Shortcut.TargetPath = "C:\apps\pcsx2\pcsx2-qt.exe"
+            $Shortcut.WorkingDirectory = "C:\apps\pcsx2\"
+            $Shortcut.Save()
+            $username = $env:USERNAME
+            mkdir -Force "C:\Users\$username\Documents\PCSX2\bios" | Out-Null
+            curl.exe -L https://github.com/archtaurus/RetroPieBIOS/raw/master/BIOS/pcsx2/bios/ps2-0230a-20080220.bin -o "C:\Users\$username\Documents\PCSX2\bios\ps2-0230a-20080220.bin"
+        } finally {
+            Pop-Location
+        }
     }},
-    @{ Title = "Configure PCSX2 v$PCSX2_VERSION"; Action = {
+    @{ Title = "Configure PCSX2"; Action = {
         $username = $env:USERNAME
         mkdir -Force "C:\Users\$username\Documents\PCSX2\inis" | Out-Null
         Copy-Item "C:\dotfiles\home\.config\PCSX2\inis\PCSX2-win.ini" "C:\Users\$username\Documents\PCSX2\inis\PCSX2.ini" -Force
@@ -405,24 +429,37 @@ public class NativeMethods {
         Copy-Item "C:\dotfiles\home\.config\dolphin-emu\GFX.ini" "$cfg\GFX.ini" -Force
         Copy-Item "C:\dotfiles\home\.config\dolphin-emu\Hotkeys.ini" "$cfg\Hotkeys.ini" -Force
     }},
-    @{ Title = "Install Cemu v$CEMU_VERSION"; Action = {
+    @{ Title = "Install latest Cemu"; Action = {
+        $CemuRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/cemu-project/Cemu/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
+        $CemuAssets = @($CemuRelease.assets | Where-Object { $_.name -match '^cemu-.*-windows-x64\.zip$' })
+        if ($CemuAssets.Count -ne 1) { throw "Expected one Windows x64 Cemu ZIP in release $($CemuRelease.tag_name), found $($CemuAssets.Count)." }
+
         mkdir -Force "C:\temp" | Out-Null
-        Push-Location C:\temp
-        curl.exe -L "https://github.com/cemu-project/Cemu/releases/download/v$($CEMU_VERSION)/cemu-$($CEMU_VERSION)-windows-x64.zip" -o cmu.zip
-        & "C:\Program Files\7-Zip\7z.exe" x cmu.zip -y
-        if (Test-Path "C:\apps\cemu") {
-            Remove-Item "C:\apps\cemu" -Recurse -Force -ErrorAction Stop
+        $CemuStaging = Join-Path "C:\temp" ("cemu-" + [guid]::NewGuid().ToString("N"))
+        New-Item -ItemType Directory -Path $CemuStaging -ErrorAction Stop | Out-Null
+        try {
+            $CemuZip = Join-Path $CemuStaging ($CemuAssets[0].name)
+            curl.exe -fL ($CemuAssets[0].browser_download_url) -o $CemuZip
+            if ($LASTEXITCODE -ne 0) { throw "Failed to download $($CemuAssets[0].name)." }
+            & "C:\Program Files\7-Zip\7z.exe" x $CemuZip "-o$CemuStaging" -y
+            if ($LASTEXITCODE -ne 0) { throw "Failed to extract $($CemuAssets[0].name)." }
+            $CemuFolders = @(Get-ChildItem -Path $CemuStaging -Directory -Filter "Cemu*")
+            if ($CemuFolders.Count -ne 1) { throw "Expected one Cemu folder in $($CemuAssets[0].name), found $($CemuFolders.Count)." }
+            if (Test-Path "C:\apps\cemu") {
+                Remove-Item "C:\apps\cemu" -Recurse -Force -ErrorAction Stop
+            }
+            Move-Item -LiteralPath ($CemuFolders[0].FullName) -Destination "C:\apps\cemu" -Force -ErrorAction Stop
+            Copy-Item "C:\dotfiles\home\bin\cemu.bat" "C:\apps\cemu\cemu.bat" -Force
+            $WshShell = New-Object -ComObject WScript.Shell
+            $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\cemu.lnk")
+            $Shortcut.TargetPath = "C:\apps\cemu\cemu.bat"
+            $Shortcut.WorkingDirectory = "C:\apps\cemu"
+            $Shortcut.Save()
+        } finally {
+            Remove-Item $CemuStaging -Recurse -Force -ErrorAction SilentlyContinue
         }
-        Move-Item Cemu* "C:\apps\cemu" -Force
-        Copy-Item "C:\dotfiles\home\bin\cemu.bat" "C:\apps\cemu\cemu.bat" -Force
-        $WshShell = New-Object -ComObject WScript.Shell
-        $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\cemu.lnk")
-        $Shortcut.TargetPath = "C:\apps\cemu\cemu.bat"
-        $Shortcut.WorkingDirectory = "C:\apps\cemu"
-        $Shortcut.Save()
-        Pop-Location
     }},
-    @{ Title = "Configure Cemu v$CEMU_VERSION"; Action = {
+    @{ Title = "Configure Cemu"; Action = {
         $username = $env:USERNAME
         $cfg = "C:\Users\$username\AppData\Roaming\Cemu"
         mkdir -Force "$cfg\controllerProfiles" | Out-Null
