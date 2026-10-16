@@ -86,5 +86,18 @@ for domain in "$WILDCARD_DOMAIN" "$K3S_WILDCARD_DOMAIN"; do
     fi
 done
 
+# make sure ubvm is fully off before copying its disk
+if [ "$(virsh domstate ubvm 2>/dev/null)" != "shut off" ]; then
+    echo "$(date -R) Shutting down ubvm..."
+    virsh shutdown ubvm
+    for i in $(seq 1 60); do
+        [ "$(virsh domstate ubvm 2>/dev/null)" == "shut off" ] && break
+        sleep 2
+    done
+    if [ "$(virsh domstate ubvm 2>/dev/null)" != "shut off" ]; then
+        echo "$(date -R) ubvm did not shut down gracefully, forcing off..."
+        virsh destroy ubvm
+    fi
+fi
 
 cp /home/${USER}/virt/runtime/ubvm.qcow2 /home/${USER}/virt/images/lnsv.qcow2
