@@ -311,16 +311,22 @@ public class NativeMethods {
         if ((Get-CimInstance Win32_Processor | Select-Object -First 1).Architecture -eq 12) {
             $DotNetRoot = Join-Path $DotNetRoot "x64"
         }
-        $DesktopRuntimeRoot = Join-Path $DotNetRoot "shared\Microsoft.WindowsDesktop.App"
-        $DesktopRuntime10 = @(Get-ChildItem -LiteralPath $DesktopRuntimeRoot -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^10\.0\.' })
-        if ($DesktopRuntime10.Count -eq 0) {
-            if (-not (Get-Command winget.exe -ErrorAction SilentlyContinue)) {
-                throw "DsHidMini requires .NET 10 Desktop Runtime (x64). Install Microsoft.DotNet.DesktopRuntime.10, then retry."
+        $RequiredRuntimes = @(
+            @{ Name = ".NET 10 Desktop Runtime (x64)"; Package = "Microsoft.DotNet.DesktopRuntime.10"; Shared = "Microsoft.WindowsDesktop.App" },
+            @{ Name = "ASP.NET Core 10 Runtime (x64)"; Package = "Microsoft.DotNet.AspNetCore.10"; Shared = "Microsoft.AspNetCore.App" }
+        )
+        foreach ($Runtime in $RequiredRuntimes) {
+            $RuntimeRoot = Join-Path $DotNetRoot "shared\$($Runtime.Shared)"
+            $InstalledRuntime10 = @(Get-ChildItem -LiteralPath $RuntimeRoot -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^10\.0\.' })
+            if ($InstalledRuntime10.Count -eq 0) {
+                if (-not (Get-Command winget.exe -ErrorAction SilentlyContinue)) {
+                    throw "DsHidMini requires $($Runtime.Name). Install $($Runtime.Package), then retry."
+                }
+                winget.exe install --id $Runtime.Package --exact --source winget --architecture x64 --silent --accept-source-agreements --accept-package-agreements
+                if ($LASTEXITCODE -ne 0) { throw "Could not install $($Runtime.Name) with winget (exit code $LASTEXITCODE)." }
+                $InstalledRuntime10 = @(Get-ChildItem -LiteralPath $RuntimeRoot -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^10\.0\.' })
+                if ($InstalledRuntime10.Count -eq 0) { throw "$($Runtime.Name) was not found after installation. Restart Windows, then retry." }
             }
-            winget.exe install --id Microsoft.DotNet.DesktopRuntime.10 --exact --source winget --architecture x64 --silent --accept-source-agreements --accept-package-agreements
-            if ($LASTEXITCODE -ne 0) { throw "Could not install .NET 10 Desktop Runtime (x64) with winget (exit code $LASTEXITCODE)." }
-            $DesktopRuntime10 = @(Get-ChildItem -LiteralPath $DesktopRuntimeRoot -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^10\.0\.' })
-            if ($DesktopRuntime10.Count -eq 0) { throw ".NET 10 Desktop Runtime (x64) was not found after installation. Restart Windows, then retry." }
         }
 
         $DsHidMiniRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/nefarius/DsHidMini/releases/latest" -UserAgent "dotfiles-windows-setup" -ErrorAction Stop
