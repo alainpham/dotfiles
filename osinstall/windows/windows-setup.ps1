@@ -347,7 +347,7 @@ public class NativeMethods {
     @{ Title = "Install EmulationStation DE"; Action = {
         mkdir -Force "C:\temp" | Out-Null
         Push-Location C:\temp
-        curl.exe -L https://gitlab.com/es-de/emulationstation-de/-/package_files/288156909/download -o estation.zip
+        curl.exe -L https://gitlab.com/es-de/emulationstation-de/-/package_files/357718057/download -o estation.zip
         & "C:\Program Files\7-Zip\7z.exe" x estation.zip -y
         Move-Item ES-DE "C:\apps" -Force
         $WshShell = New-Object -ComObject WScript.Shell
