@@ -47,6 +47,12 @@ if [ "$ID" = "opensuse-leap" ]; then
     zypper --gpg-auto-import-keys refresh
 fi
 
+if grep -qiE '(microsoft|wsl)' /proc/sys/kernel/osrelease || [ -n "${WSL_INTEROP:-}" ]; then
+    echo "WSL detected, skipping virt-what installation"
+else
+    zypper in -y virt-what
+fi
+
 
 zypper in -y terminfo \
     tmux \
@@ -55,7 +61,6 @@ zypper in -y terminfo \
     htop \
     btop \
     nvtop \
-    virt-what \
     wireguard-tools \
     iotop \
     wol \
