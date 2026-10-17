@@ -49,7 +49,7 @@ fi
 
 if grep -qiE '(microsoft|wsl)' /proc/sys/kernel/osrelease || [ -n "${WSL_INTEROP:-}" ]; then
     echo "WSL detected, skipping virt-what installation"
-    zypper in -y envsubst
+    zypper in -y envsubst busybox-bind-utils
 else
     zypper in -y virt-what
 fi
