@@ -1,0 +1,11 @@
+# After installation
+- Setup tumbleweed with osinstaller
+- create ssh keys for windows and wsl
+- wsl : systemd activate
+- connect vscode
+- connect chrome
+- install codex on powerhsell
+- install chatgpt app
+- wireguard import
+- configure git .config file with proper user.
+- default terminal on tumbleweed

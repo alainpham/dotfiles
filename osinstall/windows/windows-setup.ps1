@@ -49,6 +49,16 @@ $Steps = @(
         Stop-Process -ProcessName explorer -Force -ErrorAction SilentlyContinue
         Start-Process explorer
     }},
+    @{ Title = "Disable recent files and frequent folders in Quick Access"; Action = {
+        $ExplorerPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer"
+        if (!(Test-Path -LiteralPath $ExplorerPath)) {
+            New-Item -Path $ExplorerPath -ErrorAction Stop | Out-Null
+        }
+        Set-ItemProperty -Path $ExplorerPath -Name "ShowRecent" -Type DWord -Value 0 -ErrorAction Stop
+        Set-ItemProperty -Path $ExplorerPath -Name "ShowFrequent" -Type DWord -Value 0 -ErrorAction Stop
+        Stop-Process -ProcessName explorer -Force -ErrorAction SilentlyContinue
+        Start-Process explorer
+    }},
     @{ Title = "Restore classic right-click context menu (Windows 11 only)"; Action = {
         $os = Get-CimInstance Win32_OperatingSystem
         if ([int]$os.BuildNumber -lt 22000) {
