@@ -63,6 +63,7 @@ else
     exit 1
 fi
 
+vmdl ubvm
 vmcr $vmname 4096 4 $DISTRO_NAME $ipaddrsuffix 10G linux2024
 
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
