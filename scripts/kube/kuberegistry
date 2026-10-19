@@ -1,0 +1,132 @@
+#!/bin/bash
+
+# Usage: ./kuberegistry [namespace] [storage-size]
+# Deploys registry:latest + joxit/docker-registry-ui:latest and exposes both with kubeexpose
+# Requires: kubectl, kubeexpose, $K3S_WILDCARD_DOMAIN environment variable
+
+set -e
+
+NAMESPACE="${1:-registry}"
+STORAGE_SIZE="${2:-20Gi}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+if [[ -z "$K3S_WILDCARD_DOMAIN" ]]; then
+    echo "Error: K3S_WILDCARD_DOMAIN environment variable not set."
+    exit 2
+fi
+
+# ── Create namespace ──────────────────────────────────────────────────────────
+kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+
+# ── Registry + UI ─────────────────────────────────────────────────────────────
+cat <<EOF | kubectl apply -n "$NAMESPACE" -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: registry-data
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: ${STORAGE_SIZE}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+      - name: registry
+        image: registry:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: REGISTRY_STORAGE_DELETE_ENABLED
+          value: "true"
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/registry
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: registry-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reg
+spec:
+  selector:
+    app: registry
+  ports:
+  - port: 5000
+    targetPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry-ui
+  template:
+    metadata:
+      labels:
+        app: registry-ui
+    spec:
+      containers:
+      - name: registry-ui
+        image: joxit/docker-registry-ui:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: SINGLE_REGISTRY
+          value: "true"
+        - name: REGISTRY_TITLE
+          value: "reg.${K3S_WILDCARD_DOMAIN}"
+        - name: NGINX_PROXY_PASS_URL
+          value: "http://reg:5000"
+        - name: DELETE_IMAGES
+          value: "true"
+        - name: SHOW_CONTENT_DIGEST
+          value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rui
+spec:
+  selector:
+    app: registry-ui
+  ports:
+  - port: 80
+    targetPort: 80
+EOF
+
+# ── Expose ────────────────────────────────────────────────────────────────────
+"$SCRIPT_DIR/kubeexpose" reg 5000 "$NAMESPACE"
+"$SCRIPT_DIR/kubeexpose" rui 80 "$NAMESPACE"
+
+# Longer timeouts so big layer pushes don't get cut by haproxy's 50s default
+kubectl annotate ingress reg -n "$NAMESPACE" --overwrite \
+  haproxy.org/timeout-server=10m \
+  haproxy.org/timeout-client=10m
+
+kubectl rollout status deployment/registry -n "$NAMESPACE"
+kubectl rollout status deployment/registry-ui -n "$NAMESPACE"
+
+echo "Registry:    https://reg.${K3S_WILDCARD_DOMAIN}"
+echo "Registry UI: https://rui.${K3S_WILDCARD_DOMAIN}"
