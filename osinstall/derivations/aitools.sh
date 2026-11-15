@@ -7,15 +7,17 @@ source /etc/profile.d/sources.sh
 
 
 # nvm
-if [ ! -e "/home/$TARGET_USERNAME/.config/nvm/nvm.sh" ]; then
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | sudo -H -u "$TARGET_USERNAME" env NVM_DIR="/home/$TARGET_USERNAME/.config/nvm" bash
+if [ ! -e "/home/$TARGET_USERNAME/.nvm/nvm.sh" ]; then
+    mkdir /home/$TARGET_USERNAME/.nvm
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | sudo -H -u "$TARGET_USERNAME" bash -c 'export NVM_DIR="${HOME}/.nvm"; exec bash'
 else
     echo nvm already installed
 fi
 
 # pi in nvm
-sudo -H -u "$TARGET_USERNAME" env NVM_DIR="/home/$TARGET_USERNAME/.config/nvm" bash -c '
+sudo -H -u "$TARGET_USERNAME" bash -c '
     set -e
+    export NVM_DIR="${HOME}/.nvm"
     source "$NVM_DIR/nvm.sh"
     nvm install --lts
     nvm use --lts
