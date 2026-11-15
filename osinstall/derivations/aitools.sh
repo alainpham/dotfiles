@@ -13,12 +13,13 @@ else
     echo nvm already installed
 fi
 
-# pi and nvm
+# pi in nvm
 sudo -H -u "$TARGET_USERNAME" env NVM_DIR="/home/$TARGET_USERNAME/.config/nvm" bash -c '
     set -e
     source "$NVM_DIR/nvm.sh"
     nvm install --lts
     nvm use --lts
+    nvm alias default "ts/*"
     if [ ! -e "$(npm prefix -g)/bin/pi" ]; then
         npm install -g --ignore-scripts @earendil-works/pi-coding-agent
     else
