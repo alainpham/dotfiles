@@ -19,9 +19,12 @@ sudo -H -u "$TARGET_USERNAME" env NVM_DIR="/home/$TARGET_USERNAME/.config/nvm" b
     source "$NVM_DIR/nvm.sh"
     nvm install --lts
     nvm use --lts
-    nvm alias default "ts/*"
+    nvm alias default "lts/*"
     if [ ! -e "$(npm prefix -g)/bin/pi" ]; then
         npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+        pi install npm:pi-llama-cpp
+        pi install npm:pi-web-access
+        pi install npm:pi-playwright
     else
         echo pi already installed
     fi
