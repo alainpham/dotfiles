@@ -24,12 +24,12 @@ sudo -H -u "$TARGET_USERNAME" bash -c '
     nvm alias default "lts/*"
     if [ ! -e "$(npm prefix -g)/bin/pi" ]; then
         npm install -g --ignore-scripts @earendil-works/pi-coding-agent
-        pi install npm:pi-llama-cpp
-        pi install npm:pi-web-access
-        pi install npm:pi-playwright
     else
         echo pi already installed
     fi
+    pi install npm:pi-llama-cpp
+    pi install npm:pi-web-access
+    pi install npm:pi-playwright
 '
 
 if [ ! -e /home/$TARGET_USERNAME/.opencode/bin/opencode ]; then 
