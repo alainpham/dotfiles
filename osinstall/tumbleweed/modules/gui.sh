@@ -106,6 +106,9 @@ if [ ! -f /opt/rpms/vscode.rpm ]; then
 fi
 zypper install -y /opt/rpms/vscode.rpm
 
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/ides.sh
+
+
 
 
 # hypervisor

@@ -100,6 +100,7 @@ fi
 # VS Code
 pacman -S --needed --noconfirm code
 
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/ides.sh
 
 
 # hypervisor
