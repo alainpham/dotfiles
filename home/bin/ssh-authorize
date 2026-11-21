@@ -1,4 +1,4 @@
 #!/bin/bash
 
-curl -s https://github.com/alainpham.keys > /home/${HOME}/.ssh/authorized_keys
-chmod 600 /home/${HOME}/.ssh/authorized_keys
+curl -s https://github.com/alainpham.keys > ${HOME}/.ssh/authorized_keys
+chmod 600 ${HOME}/.ssh/authorized_keys
