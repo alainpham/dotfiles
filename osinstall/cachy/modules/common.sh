@@ -51,3 +51,6 @@ systemctl enable --now sshd.service
 if command -v ufw >/dev/null 2>&1; then
     ufw disable
 fi
+
+#ytdlp
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh

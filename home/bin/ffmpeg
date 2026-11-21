@@ -1,0 +1,51 @@
+#!/bin/bash
+# Use linuxserver/ffmpeg as a local command. Docker pulls it on first use.
+set -euo pipefail
+
+if ! command -v docker >/dev/null 2>&1; then
+    echo "ffmpeg: Docker is required but was not found in PATH" >&2
+    exit 127
+fi
+
+workdir=$(pwd -P)
+docker_args=(
+    run --rm --interactive
+    --network host
+    --user "$(id -u):$(id -g)"
+    --workdir "$workdir"
+    # Bypass the image's root-only user setup and run as the calling user.
+    --entrypoint /usr/local/bin/ffmpeg
+)
+
+# Preserve permissions on shared media directories.
+for group in $(id -G); do
+    docker_args+=(--group-add "$group")
+done
+
+# Keep host paths unchanged, including paths in playlists and filters.
+# Also mount the working directory's top-level tree to support ../ paths.
+worktree=${workdir#/}
+worktree=/${worktree%%/*}
+case $worktree in
+    /|/bin|/sbin|/usr|/lib|/lib64|/etc|/dev|/proc|/sys|/run|/var)
+        worktree=$workdir ;;
+esac
+declare -A mounted=()
+for directory in /home "${HOME:-/home}" /tmp /mnt /media "$worktree"; do
+    # Never hide the entire image or its runtime directories.
+    case $directory in
+        /|/bin|/sbin|/usr|/lib|/lib64|/etc|/dev|/proc|/sys|/run|/var) continue ;;
+    esac
+    [[ -d $directory && ! ${mounted[$directory]+yes} ]] || continue
+    docker_args+=(--volume "$directory:$directory")
+    mounted[$directory]=1
+done
+
+for variable in FFREPORT AV_LOG_FORCE_COLOR AV_LOG_FORCE_NOCOLOR; do
+    if [[ -v $variable ]]; then
+        docker_args+=(--env "$variable")
+    fi
+done
+
+# No TTY: keep piped or redirected binary output intact.
+exec docker "${docker_args[@]}" "${FFMPEG_DOCKER_IMAGE:-linuxserver/ffmpeg:latest}" "$@"

@@ -93,9 +93,6 @@ flatpak install -y flathub com.moonlight_stream.Moonlight
 flatpak install -y flathub org.mozilla.firefox
 flatpak install -y flathub com.google.Chrome
 
-#ytdlp
-bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh
-
 if [ "$SUNSHINE_ON_BOOT" == "true" ]; then
     touch /home/${TARGET_USERNAME}/.sunshineonboot
 fi

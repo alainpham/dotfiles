@@ -82,3 +82,6 @@ zypper in -y terminfo \
     bchunk
 
 # these are only packaged on Tumbleweed, not Leap 16
+
+#ytdlp
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh

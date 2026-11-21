@@ -45,3 +45,6 @@ cat << EOF | tee /etc/apt/apt.conf.d/20auto-upgrades
 APT::Periodic::Update-Package-Lists "0";
 APT::Periodic::Unattended-Upgrade "0";
 EOF
+
+#ytdlp
+bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh

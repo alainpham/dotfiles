@@ -86,8 +86,6 @@ flatpak install -y flathub com.google.Chrome
 for pkg in MozillaFirefox MozillaFirefox-branding-openSUSE; do
     rpm -q "$pkg" >/dev/null 2>&1 && zypper rm -y "$pkg"
 done
-#ytdlp
-bash /home/$TARGET_USERNAME/dotfiles/osinstall/derivations/yt.sh
 
 if [ "$SUNSHINE_ON_BOOT" == "true" ]; then
     touch /home/${TARGET_USERNAME}/.sunshineonboot
