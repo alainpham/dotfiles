@@ -8,7 +8,7 @@ source /etc/profile.d/sources.sh
 
 # nvm
 if [ ! -e "/home/$TARGET_USERNAME/.nvm/nvm.sh" ]; then
-    mkdir /home/$TARGET_USERNAME/.nvm
+    mkdir -p /home/$TARGET_USERNAME/.nvm
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | sudo -H -u "$TARGET_USERNAME" bash -c 'export NVM_DIR="${HOME}/.nvm"; exec bash'
 else
     echo nvm already installed
