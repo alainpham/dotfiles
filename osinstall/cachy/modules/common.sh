@@ -44,7 +44,9 @@ pacman -S --needed --noconfirm \
     jc \
     bc \
     vim \
-    bchunk
+    bchunk \
+    github-cli
+
 
 systemctl enable --now sshd.service
 

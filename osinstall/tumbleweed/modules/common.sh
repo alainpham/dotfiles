@@ -79,7 +79,8 @@ zypper in -y terminfo \
     bmon\
     jc \
     tini \
-    bchunk
+    bchunk \
+    gh
 
 # these are only packaged on Tumbleweed, not Leap 16
 
