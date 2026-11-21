@@ -140,11 +140,13 @@ public class NativeMethods {
     }},
     @{ Title = "Install core apps (Bitwarden, AutoHotkey, NodeJS, OpenJDK, VSCode)"; Action = {
         winget install --id Bitwarden.Bitwarden             -e --accept-source-agreements --accept-package-agreements --silent
-        winget install --id AutoHotkey.AutoHotkey          -e --accept-source-agreements --accept-package-agreements --silent
+        winget install --id AutoHotkey.AutoHotkey           -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id OpenJS.NodeJS.LTS               -e --accept-source-agreements --accept-package-agreements --silent
         winget install --id Microsoft.OpenJDK.25            -e --accept-source-agreements --accept-package-agreements --silent
         winget install --force Microsoft.VisualStudioCode   --accept-source-agreements --accept-package-agreements `
             --override '/VERYSILENT /SP- /MERGETASKS="runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath"'
+        winget install --id ZedIndustries.Zed               -e --accept-source-agreements --accept-package-agreements --silent
+
     }},
     @{ Title = "Install Apache Maven $MAVEN_VERSION to C:\apps\maven"; Action = {
         mkdir -Force c:\temp | Out-Null
