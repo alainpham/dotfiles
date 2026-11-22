@@ -11,7 +11,7 @@ export NERDFONTS="Noto "
 export MAJOR_KUBE_VERSION=v1.35
 
 # https://github.com/k3s-io/k3s/releases
-export K3S_VERSION="v1.35.8+k3s1"
+export K3S_VERSION="v1.35.10+k3s1"
 
 # https://github.com/derailed/k9s/releases
 export K9S_VERSION=v0.51.0
@@ -32,9 +32,9 @@ export MLVAPP_VERSION=1.16
 ##############################
 
 # https://gitlab.com/es-de/emulationstation-de/-/releases
-export ESDE_VERSION=3.4.1
+export ESDE_VERSION=3.5.0
 
-export ESDE_VERSION_ID=288156961
+export ESDE_VERSION_ID=357718352
 
 # https://buildbot.libretro.com/stable/
 export RETROARCH_VERSION=1.22.2
@@ -43,8 +43,8 @@ export RETROARCH_VERSION=1.22.2
 export PCSX2_VERSION=2.8.2
 
 #  https://rpcs3.net/download 
-export RPCS3_VERSION=0.0.42-20018
-export RPCS3_LINK=https://github.com/RPCS3/rpcs3-binaries-linux/releases/download/build-6c0e2823f83037debd9a8ac8541521e61d7663bd/rpcs3-v0.0.42-20018-6c0e2823_linux64.AppImage
+export RPCS3_VERSION=0.0.43-20644
+export RPCS3_LINK=https://github.com/RPCS3/rpcs3-binaries-linux/releases/download/build-3bfac607760d39dcdbe77eb137ab6dbb723b3b36/rpcs3-v0.0.43-20644-3bfac607_linux64.AppImage
 #  https://github.com/hrydgard/ppsspp/releases/latest
 export PPSSPP_VERSION=1.20.4
 
