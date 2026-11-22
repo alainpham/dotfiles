@@ -1,0 +1,94 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "icon_theme": "Material Icon Theme",
+  "auto_install_extensions": {
+    "csv": true,
+    "dockerfile": true,
+    "emmet": true,
+    "git-firefly": true,
+    "helm": true,
+    "html": true,
+    "ini": true,
+    "java": true,
+    "make": true,
+    "material-icon-theme": true,
+    "php": true,
+    "powershell": true,
+    "scss": true,
+    "sql": true,
+    "terraform": true,
+    "toml": true,
+    "xml": true
+  },
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry"
+    },
+    "codex-acp": {
+      "type": "registry"
+    }
+  },
+  "cli_default_open_behavior": "new_window",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false
+  },
+  "project_panel": {
+    "dock": "left"
+  },
+  "agent": {
+    "tool_permissions": {
+      "tools": {
+        "create_directory": {
+          "default": "allow"
+        },
+        "terminal": {
+          "default": "allow"
+        }
+      }
+    },
+    "threads_sidebar": {
+      "position": "right"
+    },
+    "dock": "right",
+    "default_profile": "write",
+    "default_model": {
+      "enable_thinking": true,
+      "provider": "llama.cpp",
+      "model": "Cyber-Tiel-Coder-35B-A3B-MTP",
+    },
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "ui_font_size": 16,
+  "buffer_font_size": 14,
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "Gruvbox Dark Hard",
+  },
+  "edit_predictions": {
+    "provider": "open_ai_compatible_api",
+    "open_ai_compatible_api": {
+      "prediction_debounce": 10,
+      "api_url": "http://127.0.0.1:9931/v1/completions",
+      "model": "qwen2.5-coder-1.5b-base",
+      "prompt_format": "qwen",
+      "max_output_tokens": 512
+    }
+  },
+  // Chat (agent panel) and inline assist (ctrl-enter) via llama-fim.sh on 9931.
+  "language_models": {
+    "llama.cpp": {
+      "api_url": "http://localhost:9931"
+    }
+  }
+}

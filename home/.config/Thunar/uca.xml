@@ -24,4 +24,16 @@
         <startup-notify/>
         <directories/>
 </action>
+<action>
+        <icon>zed</icon>
+        <name>Zed</name>
+        <submenu></submenu>
+        <unique-id>0003</unique-id>
+        <command>zed %f</command>
+        <description>Open Zed here</description>
+        <range></range>
+        <patterns>*</patterns>
+        <startup-notify/>
+        <directories/>
+</action>
 </actions>
