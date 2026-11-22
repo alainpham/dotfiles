@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CORE_VERSION=20260913
+export CORE_VERSION=20261122
 
 ##############################
 # TOOLING                    #
@@ -42,7 +42,7 @@ export RETROARCH_VERSION=1.22.2
 #  https://github.com/PCSX2/pcsx2/releases/latest
 export PCSX2_VERSION=2.8.2
 
-#  https://rpcs3.net/download 
+#  https://rpcs3.net/download
 export RPCS3_VERSION=0.0.43-20644
 export RPCS3_LINK=https://github.com/RPCS3/rpcs3-binaries-linux/releases/download/build-3bfac607760d39dcdbe77eb137ab6dbb723b3b36/rpcs3-v0.0.43-20644-3bfac607_linux64.AppImage
 #  https://github.com/hrydgard/ppsspp/releases/latest
@@ -50,4 +50,3 @@ export PPSSPP_VERSION=1.20.4
 
 # https://github.com/cemu-project/Cemu/releases/latest
 export CEMU_VERSION=2.6
-
