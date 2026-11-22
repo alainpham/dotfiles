@@ -13,7 +13,7 @@
         <directories/>
 </action>
 <action>
-        <icon>vscode</icon>
+        <icon>story-editor</icon>
         <name>VSCode</name>
         <submenu></submenu>
         <unique-id>0002</unique-id>
@@ -25,7 +25,7 @@
         <directories/>
 </action>
 <action>
-        <icon>zed</icon>
+        <icon>code-function</icon>
         <name>Zed</name>
         <submenu></submenu>
         <unique-id>0003</unique-id>
