@@ -7,7 +7,7 @@ export KEYBOARD_VARIANT="azerty"
 export WILDCARD_DOMAIN="paaon.alainpham.net"
 export K3S_WILDCARD_DOMAIN="kaaon.alainpham.net"
 export PUBLIC_WILDCARD_DOMAIN="web.alainpham.net"
-export DISABLE_TURBO_BOOST="false"
+export DISABLE_TURBO_BOOST="true"
 export NUMLOCK_ON_BOOT="true"
 export AUTOMATIC_LOGIN="true"
 
