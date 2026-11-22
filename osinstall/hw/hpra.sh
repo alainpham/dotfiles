@@ -1,5 +1,4 @@
-
-ihw(){
+ihw_cachy(){
     sudo tee /etc/systemd/system/rt3290-shutdown.service > /dev/null <<'EOF'
 [Unit]
 Description=Unload RT3290 Wi-Fi driver before shutdown
