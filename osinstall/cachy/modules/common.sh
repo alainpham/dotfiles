@@ -6,7 +6,7 @@ source /etc/profile.d/sources.sh
 
 #####################
 echo setup fastboot in /boot/efi/loader/loader.conf
-if bootctl is-installed; then
+if command -v bootctl >/dev/null 2>&1 && bootctl is-installed; then
     bootctl set-timeout 1
 fi
 
