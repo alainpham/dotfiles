@@ -2,5 +2,5 @@
 Type=Application
 Name=ctext
 Exec=ctext %f
-Icon=vscode
+Icon=code-function
 Terminal=false
