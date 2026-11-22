@@ -29,7 +29,7 @@
         <name>Zed</name>
         <submenu></submenu>
         <unique-id>0003</unique-id>
-        <command>zed %f</command>
+        <command>/home/user/.local/bin/zed %f</command>
         <description>Open Zed here</description>
         <range></range>
         <patterns>*</patterns>
