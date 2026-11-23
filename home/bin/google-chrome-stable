@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ -f /run/current-system/sw/bin/google-chrome-stable ]; then
     APPCMD=/run/current-system/sw/bin/google-chrome-stable
 elif [ -f /usr/bin/google-chrome-stable ]; then
