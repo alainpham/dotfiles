@@ -5,7 +5,7 @@ if [ -f /run/current-system/sw/bin/google-chrome-stable ]; then
 elif [ -f /usr/bin/google-chrome-stable ]; then
     APPCMD=/usr/bin/google-chrome-stable
 elif [ -f /var/lib/flatpak/exports/share/applications/com.google.Chrome.desktop ]; then
-    APPCMD="flatpak run --die-with-parent --filesystem=/tmp"
+    APPCMD="flatpak run --die-with-parent "
     FLATPAK_APPID=com.google.Chrome
 else
     echo "app not found" >&2
