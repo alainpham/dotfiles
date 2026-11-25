@@ -30,7 +30,8 @@ deployment:
   kind: DaemonSet
 
 service:
-  type: ClusterIP
+  spec:            # chart >= 43 moved service.type under service.spec
+    type: ClusterIP
 
 ports:
   web:
@@ -41,6 +42,9 @@ ports:
     hostPort: 443
     expose:
       default: true
+    transport:
+      respondingTimeouts:
+        readTimeout: 0   # no cut-off for long uploads (e.g. docker push of big layers); Traefik v3 default is 60s
 
 tlsStore:
   default:
