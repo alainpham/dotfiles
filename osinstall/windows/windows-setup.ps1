@@ -146,7 +146,12 @@ public class NativeMethods {
         winget install --force Microsoft.VisualStudioCode   --accept-source-agreements --accept-package-agreements `
             --override '/VERYSILENT /SP- /MERGETASKS="runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath"'
         winget install --id ZedIndustries.Zed               -e --accept-source-agreements --accept-package-agreements --silent
-
+    }},
+    @{ Title = "Copy Configs"; Action = {
+        $ZedSettingsSource = Join-Path $PSScriptRoot '..\..\home\.config\zed\settings.json'
+        $ZedConfigDirectory = Join-Path $env:APPDATA 'Zed'
+        New-Item -ItemType Directory -Path $ZedConfigDirectory -Force -ErrorAction Stop | Out-Null
+        Copy-Item -LiteralPath $ZedSettingsSource -Destination (Join-Path $ZedConfigDirectory 'settings.json') -Force -ErrorAction Stop
     }},
     @{ Title = "Install Apache Maven $MAVEN_VERSION to C:\apps\maven"; Action = {
         mkdir -Force c:\temp | Out-Null
